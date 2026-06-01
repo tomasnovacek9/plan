@@ -1,0 +1,25 @@
+html,body,input,textarea,button,select{
+  font-family:'Open Sans',sans-serif!important;
+}
+
+/* tlačítko znovu načíst stejná velikost */
+button{
+  font-size:12.5px!important;
+  font-weight:700!important;
+}
+
+/* profesionální podpis */
+#signature{
+  min-height:74px!important;
+  line-height:1.45!important;
+  font-size:12.5px!important;
+}
+
+/* menší elegantní text funkce pod jménem */
+.signatureHint{
+  display:block;
+  margin-top:4px;
+  font-size:12px;
+  font-weight:700;
+  color:#667085;
+}

@@ -1,0 +1,12 @@
+/* všechny dny stejné */
+.dayCell{
+  background:#eef5fb!important;
+}
+
+/* zrušit zebra/alternating efekty */
+tr:nth-child(even) .dayCell,
+tr:nth-child(odd) .dayCell,
+tbody tr:nth-child(even) .dayCell,
+tbody tr:nth-child(odd) .dayCell{
+  background:#eef5fb!important;
+}

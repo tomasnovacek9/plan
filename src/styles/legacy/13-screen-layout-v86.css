@@ -1,0 +1,149 @@
+/* Poznámka v levém zadávání: bílá, jako běžný formulář */
+#weeklyNoteInput{
+  background:#fff!important;
+  border:1px solid #d0d5dd!important;
+  border-radius:14px!important;
+  border-left:4px solid var(--gold)!important;
+  min-height:125px!important;
+  font-size:14px!important;
+  font-weight:700!important;
+  color:#344054!important;
+}
+
+/* V náhledu poznámka zůstává zvýrazněná */
+.weeklyNotePreviewV8{
+  background:linear-gradient(135deg,#fff8dd,#fffdf3)!important;
+  border-left:6px solid var(--gold)!important;
+  color:#9b1c1c!important;
+}
+
+/* Hlavička podle skutečného vzhledu ze screenshotu */
+.compactHeaderV62{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 150px!important;
+  align-items:start!important;
+  gap:18px!important;
+  padding:0 0 7px 0!important;
+  margin:0 0 6px 0!important;
+  border-bottom:3px solid #0f4c81!important;
+}
+
+.compactHeaderLeftV62{
+  display:grid!important;
+  grid-template-rows:auto auto auto!important;
+  align-content:start!important;
+  text-align:left!important;
+  min-height:94px!important;
+}
+
+.compactHeaderSchoolV62{
+  grid-row:1!important;
+  font-size:15px!important;
+  line-height:1.15!important;
+  font-weight:800!important;
+  color:#475467!important;
+  margin:0!important;
+  padding:0!important;
+}
+
+.compactHeaderTitleV62{
+  grid-row:2!important;
+  font-size:38px!important;
+  line-height:.95!important;
+  font-weight:900!important;
+  letter-spacing:.2px!important;
+  color:#0f4c81!important;
+  text-transform:uppercase!important;
+  margin:16px 0 0 0!important;
+  padding:0!important;
+}
+
+.compactHeaderDatesV62{
+  grid-row:3!important;
+  position:static!important;
+  font-size:16px!important;
+  line-height:1.1!important;
+  font-weight:900!important;
+  color:#334155!important;
+  margin:2px 0 0 0!important;
+  text-align:left!important;
+  white-space:nowrap!important;
+}
+
+.compactHeaderLogoV62{
+  width:148px!important;
+  height:104px!important;
+  object-fit:contain!important;
+  justify-self:end!important;
+  align-self:start!important;
+  margin:0!important;
+}
+
+/* Záloha, kdyby se v některé verzi použila původní hlavička */
+.docHeader,.planHeader{
+  padding:0 0 7px 0!important;
+  margin:0 0 6px 0!important;
+  border-bottom:3px solid #0f4c81!important;
+}
+
+.docSchool,.planSchool,.schoolName,.schoolTitle{
+  font-size:15px!important;
+  font-weight:800!important;
+  color:#475467!important;
+}
+
+.docTitle,.planTitle{
+  font-size:38px!important;
+  font-weight:900!important;
+  color:#0f4c81!important;
+}
+
+.docDates,.planDates,.weekDates,.dateRange{
+  font-size:16px!important;
+  font-weight:900!important;
+  color:#334155!important;
+}
+
+/* Badge EduPage: zachovat jako pill při všech stavech */
+.edupageStatusV55,
+.edupageBadgeV80,
+.edupageBadgeV81{
+  font-family:inherit!important;
+}
+
+/* tisk */
+@page{
+  size:A4 landscape;
+  margin:7mm;
+}
+
+@media print{
+  .compactHeaderV62{
+    grid-template-columns:minmax(0,1fr) 126px!important;
+    gap:10px!important;
+    padding-bottom:4px!important;
+    margin-bottom:4px!important;
+  }
+
+  .compactHeaderLeftV62{
+    min-height:80px!important;
+  }
+
+  .compactHeaderSchoolV62{
+    font-size:12px!important;
+  }
+
+  .compactHeaderTitleV62{
+    font-size:30px!important;
+    margin-top:10px!important;
+  }
+
+  .compactHeaderDatesV62{
+    font-size:13px!important;
+  }
+
+  .compactHeaderLogoV62{
+    width:124px!important;
+    height:86px!important;
+  }
+}

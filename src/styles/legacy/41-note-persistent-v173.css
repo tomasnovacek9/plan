@@ -1,0 +1,13 @@
+/* odstranit duplicitní původní nadpis uvnitř sjednoceného modulu */
+.unifiedWeekNoteV171 .sectionTitle,
+.unifiedWeekNoteV171 h2,
+.unifiedWeekNoteV171 h3,
+.unifiedWeekNoteV171 .manualEventTitleV166,
+.unifiedWeekNoteV171 .manualEventTitleV167{
+  display:none!important;
+}
+
+/* ponechat jen náš jeden nadpis */
+.unifiedWeekNoteV171 .unifiedWeekNoteTitleV171{
+  display:block!important;
+}

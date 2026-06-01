@@ -1,0 +1,154 @@
+/* LEVÝ PANEL – jednotný moderní vzhled */
+.panel{
+  background:#f6f9fc!important;
+  border-radius:22px!important;
+  padding:16px!important;
+  border:1px solid #dbe7f3!important;
+  box-shadow:0 14px 34px rgba(15,76,129,.08)!important;
+}
+
+/* všechny moduly vlevo stejně */
+.panel .section,
+.weeklyNotePanel,
+#weeklyNoteSection{
+  background:#ffffff!important;
+  border:1px solid #d9e4f2!important;
+  border-left:5px solid var(--gold)!important;
+  border-radius:18px!important;
+  padding:14px!important;
+  margin-bottom:14px!important;
+  box-shadow:0 8px 22px rgba(15,76,129,.055)!important;
+}
+
+/* nadpisy modulů */
+.panel .sectionTitle,
+.weeklyNotePanelTitle{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:8px!important;
+  margin:0 0 10px 0!important;
+  color:var(--blue-dark)!important;
+  font-size:14px!important;
+  font-weight:900!important;
+  letter-spacing:.1px!important;
+  text-align:left!important;
+}
+
+.panel .sectionTitle::before,
+.weeklyNotePanelTitle::before{
+  content:"";
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:var(--gold);
+  flex:0 0 auto;
+}
+
+/* popisky polí */
+.panel label{
+  display:block!important;
+  margin:0 0 6px 0!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  color:#667085!important;
+}
+
+/* vstupní pole jednotně */
+.panel input,
+.panel textarea,
+.panel select,
+#weeklyNoteInput,
+#signature{
+  width:100%!important;
+  background:#ffffff!important;
+  border:1px solid #d0d5dd!important;
+  border-radius:13px!important;
+  color:#344054!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:14px!important;
+  font-weight:600!important;
+  line-height:1.35!important;
+  padding:9px 12px!important;
+  box-shadow:none!important;
+  outline:none!important;
+}
+
+.panel input:focus,
+.panel textarea:focus,
+.panel select:focus,
+#weeklyNoteInput:focus,
+#signature:focus{
+  border-color:#0f4c81!important;
+  box-shadow:0 0 0 4px rgba(15,76,129,.10)!important;
+}
+
+/* poznámka má být větší, ale stále stejný styl */
+#weeklyNoteInput{
+  min-height:98px!important;
+  resize:vertical!important;
+}
+
+/* podpis menší */
+#signature{
+  min-height:42px!important;
+  height:42px!important;
+  resize:vertical!important;
+}
+
+/* tlačítka sjednoceně */
+.panel button{
+  border-radius:13px!important;
+  border:1px solid #cbd5e1!important;
+  background:#ffffff!important;
+  color:#0f172a!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:12.5px!important;
+  font-weight:850!important;
+  padding:9px 11px!important;
+  box-shadow:0 4px 12px rgba(15,76,129,.06)!important;
+}
+
+.panel button:hover{
+  background:#eef6ff!important;
+  border-color:#9cc5e8!important;
+}
+
+/* předchozí/další týden více jako ovládání aplikace */
+#weekButtonsWrapperV7{
+  gap:9px!important;
+}
+
+#weekButtonsWrapperV7 > div{
+  gap:9px!important;
+}
+
+/* status EduPage sladit s kartami */
+.edupageStatusV55,
+.edupageBadgeV80,
+.edupageBadgeV81,
+.edupageBadgeV80,
+.edupageBadgeV81{
+  font-family:'Open Sans',sans-serif!important;
+  border-radius:999px!important;
+  box-shadow:none!important;
+}
+
+/* grafika dole čistě bez další karty */
+.brainGraphicWrapV60,
+.brainGraphicWrapV61,
+.brainGraphicWrapV62{
+  background:#ffffff!important;
+  border:1px solid #d9e4f2!important;
+  border-radius:18px!important;
+  padding:12px!important;
+  margin-top:14px!important;
+  box-shadow:0 8px 22px rgba(15,76,129,.05)!important;
+}
+
+/* Náhled poznámky zůstává zvýrazněný v pravé části */
+.weeklyNotePreviewV8{
+  background:linear-gradient(135deg,#fff8dd,#fffdf3)!important;
+  border-left:6px solid var(--gold)!important;
+  color:#9b1c1c!important;
+}

@@ -1,0 +1,7 @@
+.weeklyNotePanelTitle::before{
+  content:none!important;
+  display:none!important;
+}
+.weeklyNotePanelTitle{
+  gap:0!important;
+}

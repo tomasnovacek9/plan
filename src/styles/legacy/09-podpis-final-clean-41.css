@@ -1,0 +1,33 @@
+.signatureWrapV16,
+.signatureWrapV17,
+.signatureWrap35,
+.signatureWrap36,
+.signatureWrap40,
+.signatureBlock,
+.docSignature,
+.footerSignature{
+  display:none!important;
+}
+
+.podpisFinal41{
+  width:100%;
+  margin-top:10mm;
+  display:flex;
+  justify-content:flex-end;
+}
+
+.podpisFinal41Box{
+  font-family:'Open Sans', Arial, sans-serif;
+  font-size:14px;
+  line-height:1.35;
+  text-align:right;
+  color:#111827;
+}
+
+.podpisFinal41Name{
+  font-weight:800;
+}
+
+.podpisFinal41Role{
+  font-weight:400;
+}

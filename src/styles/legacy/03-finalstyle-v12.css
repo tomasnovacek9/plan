@@ -1,0 +1,75 @@
+/* Poznámka úplně samostatně */
+.weeklyNotePanel{
+  margin:16px 0 18px 0!important;
+  padding:14px!important;
+  border-radius:18px!important;
+  background:#fff!important;
+  border-left:4px solid rgba(242,210,13,.65)!important;
+  box-shadow:0 2px 10px rgba(0,0,0,.04)!important;
+}
+.weeklyNotePanelTitle{
+  font-size:15px;
+  font-weight:900;
+  color:var(--blue-dark);
+  margin-bottom:8px;
+}
+#weeklyNoteInput{
+  width:100%;
+  min-height:105px;
+  font-size:15px!important;
+  font-weight:700!important;
+  line-height:1.35;
+  border:2px solid #f3e3a0!important;
+  border-left:6px solid var(--gold)!important;
+  background:#fff8dd!important;
+  border-radius:14px!important;
+  color:#9b1c1c!important;
+}
+
+/* Náhled poznámky */
+.weeklyNotePreviewV8{
+  margin:0 0 5mm 0;
+  padding:3.5mm 4mm;
+  border-radius:12px;
+  background:linear-gradient(135deg,#fff8dd,#fffdf3);
+  border-left:6px solid var(--gold);
+  color:#9b1c1c;
+  font-size:15px;
+  font-weight:900;
+  line-height:1.4;
+  box-shadow:0 3px 12px rgba(0,0,0,.05);
+}
+
+/* Opakované akce: jemné barvy jen ve sloupcích akce/osoba, ne ve sloupci den */
+.repeatedEventV9 td{
+  border-left:inherit!important;
+}
+.repeatedEventV9 .dayCell{
+  background:inherit!important;
+}
+.repeatedEventV9 .eventCell,
+.repeatedEventV9 .personCell{
+  border-left:0!important;
+}
+.repeatEventBadgeV9{
+  display:none!important;
+}
+
+@media screen{
+  .repeatColorV9-1 .eventCell,.repeatColorV9-1 .personCell{background:#fff8dd!important}
+  .repeatColorV9-2 .eventCell,.repeatColorV9-2 .personCell{background:#eef6ff!important}
+  .repeatColorV9-3 .eventCell,.repeatColorV9-3 .personCell{background:#eefbf3!important}
+  .repeatColorV9-4 .eventCell,.repeatColorV9-4 .personCell{background:#f4f3ff!important}
+  .repeatColorV9-5 .eventCell,.repeatColorV9-5 .personCell{background:#fff1f1!important}
+  .repeatColorV9-6 .eventCell,.repeatColorV9-6 .personCell{background:#fdf2fa!important}
+}
+
+/* Tisk černobíle: bez barevných ploch a bez silných okrajů */
+@media print{
+  .repeatedEventV9 td,
+  .repeatedEventV9 .eventCell,
+  .repeatedEventV9 .personCell{
+    background:#fff!important;
+    border-left:inherit!important;
+  }
+}

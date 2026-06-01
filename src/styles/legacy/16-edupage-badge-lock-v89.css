@@ -1,0 +1,50 @@
+#calendarInfo{
+  min-height:34px!important;
+}
+.eduBadgeLockV89{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  padding:6px 10px!important;
+  border-radius:999px!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  line-height:1!important;
+  border:1px solid rgba(0,0,0,.08)!important;
+}
+.eduBadgeLockV89 .dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+}
+.eduBadgeLockV89.loading{
+  background:#fff7e6!important;
+  color:#8a5300!important;
+  border-color:#fedf89!important;
+}
+.eduBadgeLockV89.loading .dot{
+  background:#f59e0b!important;
+  animation:eduPulseV89 .85s infinite;
+}
+.eduBadgeLockV89.connected{
+  background:#ecfdf3!important;
+  color:#067647!important;
+  border-color:#abefc6!important;
+}
+.eduBadgeLockV89.connected .dot{
+  background:#12b76a!important;
+}
+.eduBadgeLockV89.error{
+  background:#fff1f1!important;
+  color:#b42318!important;
+  border-color:#fecdca!important;
+}
+.eduBadgeLockV89.error .dot{
+  background:#f04438!important;
+}
+@keyframes eduPulseV89{
+  0%{opacity:.45}
+  50%{opacity:1}
+  100%{opacity:.45}
+}

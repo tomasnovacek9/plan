@@ -1,0 +1,65 @@
+/* Přepínače v levém panelu */
+.displayOptionsV184{
+  background:#ffffff;
+  border:1px solid #d9e4f2;
+  border-left:5px solid var(--gold);
+  border-radius:18px;
+  padding:14px;
+  margin-bottom:14px;
+  box-shadow:0 8px 22px rgba(15,76,129,.055);
+}
+
+.displayOptionsTitleV184{
+  margin:0 0 10px 0;
+  color:var(--blue-dark);
+  font-size:14px;
+  font-weight:900;
+}
+
+.displayOptionV184{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:8px 0;
+  color:#475467;
+  font-size:12px;
+  font-weight:800;
+}
+
+.displayOptionV184 input{
+  width:16px!important;
+  height:16px!important;
+  margin:0!important;
+}
+
+/* Datum vytvoření */
+.createdDateV184{
+  width:100%;
+  margin-top:8px;
+  padding-top:7px;
+  border-top:1px solid #e2e8f0;
+  text-align:right;
+  font-size:10px;
+  color:#94a3b8;
+  font-weight:700;
+}
+
+.hideCreatedDateV184 .createdDateV184{
+  display:none!important;
+}
+
+/* Skrytý víkend */
+.hideWeekendV184 tr.weekendRowV184{
+  display:none!important;
+}
+
+@media print{
+  .displayOptionsV184{
+    display:none!important;
+  }
+
+  .createdDateV184{
+    font-size:7.5pt!important;
+    margin-top:5mm!important;
+  }
+}

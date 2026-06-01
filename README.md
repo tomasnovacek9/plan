@@ -25,6 +25,23 @@ Pak otevri:
 http://localhost:4173
 ```
 
+## Struktura
+
+Aktualni verze vychazi z puvodniho jednosouboroveho HTML, ale inline casti jsou
+rozdelene do samostatnych souboru:
+
+- `index.html` drzi kostru stranky a poradi nacitani.
+- `src/styles/legacy/` obsahuje puvodni styly rozdelene podle jejich historickych `id`.
+- `src/scripts/legacy/` obsahuje puvodni skripty rozdelene podle jejich historickych `id`.
+- `src/styles/pro-redesign.css` je nova moderni vizualni vrstva.
+- `src/scripts/pro-redesign.js` obsahuje drobne nove chovani panelu.
+- `src/assets/generated/` obsahuje obrazky vytazene z puvodnich base64 dat.
+- `tools/` obsahuje pomocne skripty pro opakovatelny cleanup inline assetu.
+
+Pri dalsich upravach je nejbezpecnejsi sahat nejdriv do `pro-redesign.css`
+a `pro-redesign.js`. Legacy soubory je dobre menit jen cilene, protoze kopiruji
+puvodni funkcni aplikaci.
+
 ## Nasazeni
 
 Projekt je staticky. Na Cloudflare Pages nebo podobny hosting staci nasadit cely obsah repozitare.

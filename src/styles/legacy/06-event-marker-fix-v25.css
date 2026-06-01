@@ -1,0 +1,54 @@
+.eventCell{
+  position:relative!important;
+  padding-left:18px!important;
+}
+
+@media screen{
+  /* EVENT CELL */
+  .repeatColorV9-1 .eventCell{background:#fff8dd!important;}
+  .repeatColorV9-2 .eventCell{background:#eef6ff!important;}
+  .repeatColorV9-3 .eventCell{background:#eefbf3!important;}
+  .repeatColorV9-4 .eventCell{background:#f4f3ff!important;}
+  .repeatColorV9-5 .eventCell{background:#fff1f1!important;}
+  .repeatColorV9-6 .eventCell{background:#fdf2fa!important;}
+
+  .repeatColorV9-1 .eventCell{border-left:6px solid #c9a400!important;}
+  .repeatColorV9-2 .eventCell{border-left:6px solid #3b82f6!important;}
+  .repeatColorV9-3 .eventCell{border-left:6px solid #22a06b!important;}
+  .repeatColorV9-4 .eventCell{border-left:6px solid #7c6cf2!important;}
+  .repeatColorV9-5 .eventCell{border-left:6px solid #d14343!important;}
+  .repeatColorV9-6 .eventCell{border-left:6px solid #c241a0!important;}
+
+  /* PERSON CELL */
+  .repeatColorV9-1 .personCell{background:#fff8dd!important;}
+  .repeatColorV9-2 .personCell{background:#eef6ff!important;}
+  .repeatColorV9-3 .personCell{background:#eefbf3!important;}
+  .repeatColorV9-4 .personCell{background:#f4f3ff!important;}
+  .repeatColorV9-5 .personCell{background:#fff1f1!important;}
+  .repeatColorV9-6 .personCell{background:#fdf2fa!important;}
+}
+
+@media print{
+  .eventCell{
+    padding-left:18px!important;
+  }
+
+  .repeatColorV9-1 .eventCell,
+  .repeatColorV9-2 .eventCell,
+  .repeatColorV9-3 .eventCell,
+  .repeatColorV9-4 .eventCell,
+  .repeatColorV9-5 .eventCell,
+  .repeatColorV9-6 .eventCell{
+    background:#fff!important;
+    border-left:4px solid #777!important;
+  }
+
+  .repeatColorV9-1 .personCell,
+  .repeatColorV9-2 .personCell,
+  .repeatColorV9-3 .personCell,
+  .repeatColorV9-4 .personCell,
+  .repeatColorV9-5 .personCell,
+  .repeatColorV9-6 .personCell{
+    background:#fff!important;
+  }
+}

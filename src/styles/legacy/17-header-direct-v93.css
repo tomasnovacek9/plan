@@ -1,0 +1,93 @@
+/* Přímá úprava skutečné hlavičky v renderPreview – bez zásahu do funkcí */
+.previewPage .docHeader.headerV93{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 165px!important;
+  align-items:start!important;
+  gap:18px!important;
+  padding:0 0 7px 0!important;
+  margin:0 0 6px 0!important;
+  border-bottom:3px solid #0f4c81!important;
+}
+
+.previewPage .docHeaderTextV93{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  text-align:left!important;
+  min-height:112px!important;
+}
+
+.previewPage .docSchoolFullV93{
+  font-size:15px!important;
+  line-height:1.15!important;
+  font-weight:800!important;
+  color:#475467!important;
+  margin:0!important;
+  padding:0!important;
+}
+
+.previewPage .docHeader.headerV93 .docTitle{
+  font-size:39px!important;
+  line-height:.92!important;
+  font-weight:900!important;
+  letter-spacing:.2px!important;
+  text-transform:uppercase!important;
+  color:#0f4c81!important;
+  margin:17px 0 0 0!important;
+  padding:0!important;
+  text-align:left!important;
+}
+
+.previewPage .docHeader.headerV93 .docDates{
+  font-size:16px!important;
+  line-height:1.08!important;
+  font-weight:900!important;
+  color:#334155!important;
+  margin:3px 0 0 0!important;
+  padding:0!important;
+  text-align:left!important;
+  white-space:nowrap!important;
+}
+
+.previewPage .docHeader.headerV93 .docLogo{
+  width:162px!important;
+  height:112px!important;
+  max-width:162px!important;
+  max-height:112px!important;
+  object-fit:contain!important;
+  justify-self:end!important;
+  align-self:start!important;
+  margin:0!important;
+}
+
+@media print{
+  .previewPage .docHeader.headerV93{
+    grid-template-columns:minmax(0,1fr) 132px!important;
+    gap:10px!important;
+    padding-bottom:4px!important;
+    margin-bottom:4px!important;
+  }
+
+  .previewPage .docHeaderTextV93{
+    min-height:90px!important;
+  }
+
+  .previewPage .docSchoolFullV93{
+    font-size:12px!important;
+  }
+
+  .previewPage .docHeader.headerV93 .docTitle{
+    font-size:31px!important;
+    margin-top:11px!important;
+  }
+
+  .previewPage .docHeader.headerV93 .docDates{
+    font-size:13px!important;
+  }
+
+  .previewPage .docHeader.headerV93 .docLogo{
+    width:130px!important;
+    height:90px!important;
+  }
+}

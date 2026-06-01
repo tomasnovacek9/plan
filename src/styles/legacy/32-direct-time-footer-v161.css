@@ -1,0 +1,131 @@
+/* Čas se nyní generuje přímo v renderPreview – bez blikání a bez dodatečného přepisování */
+.previewPage .timeCell{
+  width:30mm!important;
+  min-width:30mm!important;
+  max-width:30mm!important;
+  padding-left:2mm!important;
+  padding-right:2mm!important;
+  text-align:left!important;
+  vertical-align:top!important;
+  white-space:nowrap!important;
+  font-variant-numeric:tabular-nums!important;
+}
+
+.timeCleanV161{
+  display:inline-flex!important;
+  align-items:baseline!important;
+  justify-content:flex-start!important;
+  white-space:nowrap!important;
+  font-variant-numeric:tabular-nums!important;
+}
+
+.timeRangeV161{
+  display:inline-block!important;
+  font-size:10px!important;
+  font-weight:600!important;
+  color:#64748b!important;
+  white-space:nowrap!important;
+}
+
+.lessonV161{
+  display:inline-block!important;
+  margin-left:8px!important;
+  font-size:7.5px!important;
+  font-weight:500!important;
+  color:#9ea8b5!important;
+  white-space:nowrap!important;
+}
+
+/* Zkrácení zbytečné bílé plochy */
+.previewPage{
+  min-height:auto!important;
+  height:auto!important;
+  padding-bottom:8px!important;
+}
+
+/* podpis o řádek níž pod tabulkou */
+.podpisFinal41{
+  width:100%!important;
+  margin-top:18px!important;
+  margin-bottom:0!important;
+  display:flex!important;
+  justify-content:flex-end!important;
+}
+
+.podpisFinal41Box{
+  font-family:'Open Sans', Arial, sans-serif!important;
+  font-size:14px!important;
+  line-height:1.35!important;
+  text-align:right!important;
+  color:#111827!important;
+}
+
+.podpisFinal41Name{
+  font-weight:800!important;
+}
+
+.podpisFinal41Role{
+  font-weight:400!important;
+}
+
+/* patička přímo pod obsahem stránky, ne v šedém okraji */
+.schoolFooterV161{
+  width:100%;
+  text-align:center;
+  margin:14px auto 0 auto;
+  line-height:1.15;
+  user-select:none;
+}
+
+.schoolFooterMainV161{
+  font-size:10px;
+  font-weight:600;
+  color:#64748b;
+  letter-spacing:.1px;
+}
+
+.schoolFooterAuthorV161{
+  margin-top:2px;
+  font-size:8px;
+  color:#a1a1aa;
+}
+
+@media print{
+  .timeCell{
+    width:30mm!important;
+    min-width:30mm!important;
+    max-width:30mm!important;
+    padding-left:2mm!important;
+    padding-right:2mm!important;
+  }
+
+  .timeRangeV161{
+    font-size:8pt!important;
+  }
+
+  .lessonV161{
+    font-size:6.4pt!important;
+  }
+
+  .previewPage{
+    min-height:auto!important;
+    height:auto!important;
+    padding-bottom:2mm!important;
+  }
+
+  .podpisFinal41{
+    margin-top:5mm!important;
+  }
+
+  .schoolFooterV161{
+    margin-top:4mm!important;
+  }
+
+  .schoolFooterMainV161{
+    font-size:8pt!important;
+  }
+
+  .schoolFooterAuthorV161{
+    font-size:6.5pt!important;
+  }
+}

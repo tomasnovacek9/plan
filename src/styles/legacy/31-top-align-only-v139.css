@@ -1,0 +1,18 @@
+/* Jen vrátit vertikální zarovnání nahoru */
+/* NIC jiného neměníme */
+
+.previewPage .eventCell,
+.previewPage .personCell,
+.previewPage .timeCell,
+.previewPage .dayCell{
+  vertical-align:top!important;
+}
+
+@media print{
+  .eventCell,
+  .personCell,
+  .timeCell,
+  .dayCell{
+    vertical-align:top!important;
+  }
+}

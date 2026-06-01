@@ -1,0 +1,20 @@
+/* Skrýt datum Od/Do jen v levém ovládacím panelu */
+#weekFrom,
+#weekTo{
+  position:absolute!important;
+  left:-9999px!important;
+  width:1px!important;
+  height:1px!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+
+#weekFrom.closest-hide,
+#weekTo.closest-hide{
+  display:none!important;
+}
+
+/* schovat celé řádky/fieldy obsahující weekFrom/weekTo pomocí JS třídy */
+.hideWeekDateFieldV103{
+  display:none!important;
+}

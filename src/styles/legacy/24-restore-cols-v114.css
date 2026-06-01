@@ -1,0 +1,41 @@
+@media print{
+
+  /* vrátit původní proporce */
+  .dayCell{
+    width:auto!important;
+    min-width:unset!important;
+    max-width:none!important;
+    font-size:inherit!important;
+    line-height:inherit!important;
+    padding-left:inherit!important;
+    padding-right:inherit!important;
+  }
+
+  .timeCell{
+    width:auto!important;
+    min-width:unset!important;
+    max-width:none!important;
+    font-size:inherit!important;
+    line-height:inherit!important;
+    padding-left:inherit!important;
+    padding-right:inherit!important;
+  }
+
+  .personCell{
+    width:auto!important;
+    min-width:unset!important;
+    max-width:none!important;
+    font-size:inherit!important;
+    line-height:inherit!important;
+  }
+
+  .eventCell{
+    width:auto!important;
+    font-size:inherit!important;
+    line-height:inherit!important;
+  }
+
+  table{
+    table-layout:auto!important;
+  }
+}

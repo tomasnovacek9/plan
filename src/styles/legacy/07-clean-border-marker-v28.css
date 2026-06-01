@@ -1,0 +1,56 @@
+/* Zruší všechny staré pseudo-prvky, které překrývaly text */
+.eventCell::before,
+.repeatColorV9-1 .eventCell::before,
+.repeatColorV9-2 .eventCell::before,
+.repeatColorV9-3 .eventCell::before,
+.repeatColorV9-4 .eventCell::before,
+.repeatColorV9-5 .eventCell::before,
+.repeatColorV9-6 .eventCell::before{
+  content:none!important;
+  display:none!important;
+}
+
+/* Všechny názvy začínají stejně díky průhlednému levému okraji */
+.eventCell{
+  border-left:6px solid transparent!important;
+  padding-left:12px!important;
+  position:static!important;
+}
+
+/* Opakované akce: jen jeden elegantní levý barevný okraj */
+@media screen{
+  .repeatColorV9-1 .eventCell{background:#fff8dd!important;border-left-color:#c9a400!important;}
+  .repeatColorV9-2 .eventCell{background:#eef6ff!important;border-left-color:#3b82f6!important;}
+  .repeatColorV9-3 .eventCell{background:#eefbf3!important;border-left-color:#22a06b!important;}
+  .repeatColorV9-4 .eventCell{background:#f4f3ff!important;border-left-color:#7c6cf2!important;}
+  .repeatColorV9-5 .eventCell{background:#fff1f1!important;border-left-color:#d14343!important;}
+  .repeatColorV9-6 .eventCell{background:#fdf2fa!important;border-left-color:#c241a0!important;}
+
+  .repeatColorV9-1 .personCell{background:#fff8dd!important;}
+  .repeatColorV9-2 .personCell{background:#eef6ff!important;}
+  .repeatColorV9-3 .personCell{background:#eefbf3!important;}
+  .repeatColorV9-4 .personCell{background:#f4f3ff!important;}
+  .repeatColorV9-5 .personCell{background:#fff1f1!important;}
+  .repeatColorV9-6 .personCell{background:#fdf2fa!important;}
+}
+
+@media print{
+  .repeatColorV9-1 .eventCell,
+  .repeatColorV9-2 .eventCell,
+  .repeatColorV9-3 .eventCell,
+  .repeatColorV9-4 .eventCell,
+  .repeatColorV9-5 .eventCell,
+  .repeatColorV9-6 .eventCell{
+    background:#fff!important;
+    border-left-color:#777!important;
+  }
+
+  .repeatColorV9-1 .personCell,
+  .repeatColorV9-2 .personCell,
+  .repeatColorV9-3 .personCell,
+  .repeatColorV9-4 .personCell,
+  .repeatColorV9-5 .personCell,
+  .repeatColorV9-6 .personCell{
+    background:#fff!important;
+  }
+}

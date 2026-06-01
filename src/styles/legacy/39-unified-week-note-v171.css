@@ -1,0 +1,70 @@
+/* Sjednocení Poznámky do plánu do jednoho modulu */
+
+/* schovat samostatný novější box, ale ponechat funkce */
+.weekNoteManagerV170{
+  display:none!important;
+}
+
+/* původní modul s textovým polem přestylovat jako ostatní moduly */
+#weeklyNoteInput,
+textarea[name='weeklyNote']{
+  width:100%!important;
+}
+
+/* obal sekce poznámky */
+.unifiedWeekNoteV171{
+  background:#ffffff!important;
+  border:1px solid #d9e4f2!important;
+  border-left:5px solid #0f4c81!important;
+  border-radius:18px!important;
+  padding:14px!important;
+  margin-bottom:14px!important;
+  box-shadow:0 8px 22px rgba(15,76,129,.055)!important;
+}
+
+/* nadpis modulu */
+.unifiedWeekNoteTitleV171{
+  margin:0 0 8px 0;
+  color:var(--blue-dark);
+  font-size:14px;
+  font-weight:900;
+}
+
+.unifiedWeekNoteInfoV171{
+  font-size:10.5px;
+  color:#94a3b8;
+  font-weight:700;
+  margin-bottom:8px;
+}
+
+/* tlačítko */
+.weekNoteAddBtnV171{
+  width:100%!important;
+  margin-top:8px!important;
+  border-radius:13px!important;
+  border:1px solid #0f4c81!important;
+  background:#0f4c81!important;
+  color:#fff!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  font-weight:850!important;
+  padding:10px 12px!important;
+  cursor:pointer!important;
+}
+
+/* informace o uložení */
+.weekNoteStoredInlineV171{
+  display:none;
+  margin-top:8px;
+  padding:8px;
+  border-radius:12px;
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  color:#475467;
+  font-size:11px;
+  line-height:1.3;
+}
+
+.weekNoteStoredInlineV171.show{
+  display:block;
+}

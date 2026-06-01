@@ -1,0 +1,22 @@
+/* posun celé stránky výš */
+.previewPage{
+  margin-top:-10px!important;
+  padding-top:0!important;
+}
+
+/* menší mezera nad hlavičkou */
+.previewPage .docHeader.headerV93{
+  margin-top:-6px!important;
+  padding-top:0!important;
+}
+
+/* tisk */
+@media print{
+  .previewPage{
+    margin-top:-6px!important;
+  }
+
+  .previewPage .docHeader.headerV93{
+    margin-top:-3px!important;
+  }
+}

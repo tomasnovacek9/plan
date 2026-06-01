@@ -1,0 +1,47 @@
+/* Automatické ukládání poznámky – bez tlačítka */
+#weekNoteAddBtnV171{
+  display:none!important;
+}
+
+/* pryč duplicitní nadpisy uvnitř původní sekce */
+.unifiedWeekNoteV171 > .sectionTitle,
+.unifiedWeekNoteV171 > h3,
+.unifiedWeekNoteV171 > h2{
+  display:none!important;
+}
+
+.unifiedWeekNoteTitleV171{
+  margin-bottom:6px!important;
+}
+
+.unifiedWeekNoteInfoV171{
+  margin-bottom:8px!important;
+}
+
+.weekNoteStoredInlineV171{
+  display:none!important;
+}
+
+.weekNoteAutoStatusV172{
+  margin-top:7px;
+  padding:7px 8px;
+  border-radius:11px;
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  color:#64748b;
+  font-size:10.5px;
+  font-weight:800;
+  line-height:1.25;
+}
+
+.weekNoteAutoStatusV172.saving{
+  background:#fff7e6;
+  border-color:#ffd891;
+  color:#7a4b00;
+}
+
+.weekNoteAutoStatusV172.saved{
+  background:#f0fdf4;
+  border-color:#bbf7d0;
+  color:#166534;
+}

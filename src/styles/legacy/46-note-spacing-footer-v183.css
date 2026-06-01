@@ -1,0 +1,28 @@
+/* Odstranit odrážku před nadpisem Poznámka do plánu */
+#weeklyNoteSection .noteModuleTitleFixedV180::before,
+#weeklyNoteSection .unifiedWeekNoteTitleV171::before,
+.unifiedWeekNoteV171 .noteModuleTitleFixedV180::before,
+.unifiedWeekNoteV171 .unifiedWeekNoteTitleV171::before{
+  display:none!important;
+  content:none!important;
+}
+
+/* V náhledu: podobná mezera nahoře i dole kolem poznámky */
+.previewPage .notePreviewNoBlueV182,
+.previewPage .planMessageFixedV180,
+.previewPage .planNoteRedV179,
+.previewPage .notePreviewFinalV178,
+.previewPage .planPreviewNoteV177,
+.previewPage .planPreviewNoteV176,
+.previewPage .planNoteV174,
+.previewPage .planMessage{
+  margin:8px 0 8px 0!important;
+}
+
+/* Patička blíž k bílé stránce */
+.webCopyrightV167,
+.schoolFooterOutsideV164,
+.schoolFooterInsideV166,
+.schoolFooterInsideV165{
+  margin-top:8px!important;
+}

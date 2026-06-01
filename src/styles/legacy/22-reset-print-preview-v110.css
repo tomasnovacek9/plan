@@ -1,0 +1,34 @@
+@page{
+  size:A4 portrait;
+  margin:5mm;
+}
+
+@media print{
+  html,body{
+    margin:0!important;
+    padding:0!important;
+    background:#fff!important;
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+  }
+
+  .panel,
+  .toolbar,
+  .topbar,
+  .appToolbar{
+    display:none!important;
+  }
+
+  .layout,
+  .previewWrap,
+  .preview,
+  .previewPage{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    box-shadow:none!important;
+    background:#fff!important;
+  }
+}

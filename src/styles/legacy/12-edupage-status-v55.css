@@ -1,0 +1,49 @@
+.edupageStatusV55{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:800;
+  line-height:1;
+  width:max-content;
+  margin-top:8px;
+  border:1px solid rgba(0,0,0,.08);
+}
+.edupageStatusDotV55{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+.edupageStatusV55.loading{
+  background:#fff7e6;
+  color:#8a5300;
+}
+.edupageStatusV55.loading .edupageStatusDotV55{
+  background:#f59e0b;
+  box-shadow:0 0 0 4px rgba(245,158,11,.16);
+  animation:pulseV55 1s infinite;
+}
+.edupageStatusV55.connected{
+  background:#ecfdf3;
+  color:#067647;
+}
+.edupageStatusV55.connected .edupageStatusDotV55{
+  background:#12b76a;
+  box-shadow:0 0 0 4px rgba(18,183,106,.14);
+}
+.edupageStatusV55.error{
+  background:#fff1f1;
+  color:#b42318;
+}
+.edupageStatusV55.error .edupageStatusDotV55{
+  background:#f04438;
+  box-shadow:0 0 0 4px rgba(240,68,56,.14);
+}
+@keyframes pulseV55{
+  0%{opacity:.45}
+  50%{opacity:1}
+  100%{opacity:.45}
+}

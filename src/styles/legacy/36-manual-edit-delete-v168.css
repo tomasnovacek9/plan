@@ -1,0 +1,85 @@
+.manualListV168{
+  grid-column:1 / -1;
+  margin-top:8px;
+  display:grid;
+  gap:6px;
+}
+
+.manualListTitleV168{
+  font-size:12px;
+  font-weight:900;
+  color:#475467;
+  margin-top:4px;
+}
+
+.manualItemV168{
+  border:1px solid #e2e8f0;
+  background:#f8fafc;
+  border-radius:12px;
+  padding:8px;
+  display:grid;
+  grid-template-columns:1fr auto auto;
+  gap:6px;
+  align-items:center;
+}
+
+.manualItemTextV168{
+  font-size:11px;
+  line-height:1.25;
+  color:#334155;
+}
+
+.manualItemTextV168 strong{
+  color:#0f4c81;
+}
+
+.manualMiniBtnV168{
+  border-radius:9px!important;
+  padding:6px 8px!important;
+  font-size:11px!important;
+  font-weight:850!important;
+  cursor:pointer!important;
+  border:1px solid #d0d5dd!important;
+  background:#fff!important;
+  color:#0f4c81!important;
+}
+
+.manualDeleteBtnV168{
+  color:#b42318!important;
+  border-color:#fecaca!important;
+  background:#fff5f5!important;
+}
+
+.manualEditNoticeV168{
+  grid-column:1 / -1;
+  display:none;
+  padding:7px 8px;
+  border-radius:10px;
+  background:#fff7e6;
+  border:1px solid #ffd891;
+  color:#7a4b00;
+  font-size:11px;
+  font-weight:800;
+}
+
+.manualEditNoticeV168.show{
+  display:block;
+}
+
+.manualCancelBtnV168{
+  grid-column:1 / -1;
+  display:none;
+  border-radius:13px!important;
+  border:1px solid #d0d5dd!important;
+  background:#fff!important;
+  color:#475467!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  font-weight:850!important;
+  padding:9px 12px!important;
+  cursor:pointer!important;
+}
+
+.manualCancelBtnV168.show{
+  display:block;
+}

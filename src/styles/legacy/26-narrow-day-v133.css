@@ -1,0 +1,23 @@
+/* Jen lehce užší den/datum => více místa pro Akce */
+
+.previewPage .dayCell{
+  width:13mm!important;
+  min-width:13mm!important;
+  max-width:13mm!important;
+
+  padding-left:1mm!important;
+  padding-right:1mm!important;
+
+  text-align:center!important;
+}
+
+@media print{
+  .dayCell{
+    width:13mm!important;
+    min-width:13mm!important;
+    max-width:13mm!important;
+
+    padding-left:1mm!important;
+    padding-right:1mm!important;
+  }
+}

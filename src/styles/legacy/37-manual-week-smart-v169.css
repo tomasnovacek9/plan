@@ -1,0 +1,7 @@
+.manualQuickV169{grid-column:1 / -1}
+.manualQuickGridV169{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px}
+.manualQuickBtnV169{border:1px solid #d0d5dd!important;background:#f8fafc!important;color:#344054!important;border-radius:10px!important;padding:7px 8px!important;font-size:11px!important;font-weight:850!important;cursor:pointer!important}
+.manualQuickBtnV169:hover{background:#eef5fb!important;border-color:#b8c7d9!important}
+.manualListWeekInfoV169{font-size:10.5px;color:#94a3b8;font-weight:700;margin-top:-2px}
+.manualHiddenCountV169{font-size:10.5px;color:#94a3b8;font-weight:700;padding:4px 2px 0}
+.manualTimeHintV169{grid-column:1 / -1;font-size:10.5px;color:#94a3b8;font-weight:700;margin-top:-2px}

@@ -1,0 +1,68 @@
+/* Modul Poznámka do plánu – jeden nadpis, automatické ukládání */
+.weekNoteManagerV170,
+#weekNoteAddBtnV171,
+.weekNoteStoredInlineV171{
+  display:none!important;
+}
+
+/* schovat duplicitní vložený nadpis z předchozích verzí */
+.unifiedWeekNoteTitleV171,
+.unifiedWeekNoteInfoV171,
+.unifiedWeekNoteV171 > .sectionTitle{
+  display:none!important;
+}
+
+/* použít původní nadpis jen jednou */
+.weeklyNotePanelTitle{
+  display:block!important;
+  font-size:14px!important;
+  font-weight:900!important;
+  color:var(--blue-dark)!important;
+  margin-bottom:8px!important;
+}
+
+/* celý modul sladit s ostatními */
+#weeklyNoteSection,
+.unifiedWeekNoteV171{
+  background:#ffffff!important;
+  border:1px solid #d9e4f2!important;
+  border-left:5px solid #0f4c81!important;
+  border-radius:18px!important;
+  padding:14px!important;
+  margin-bottom:14px!important;
+  box-shadow:0 8px 22px rgba(15,76,129,.055)!important;
+}
+
+#weeklyNoteInput{
+  background:#fff!important;
+  border:1px solid #d0d5dd!important;
+  border-radius:13px!important;
+  color:#344054!important;
+  font-size:13px!important;
+  font-weight:600!important;
+  min-height:82px!important;
+}
+
+.noteAutoStatusV174{
+  margin-top:7px;
+  padding:7px 8px;
+  border-radius:11px;
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  color:#64748b;
+  font-size:10.5px;
+  font-weight:800;
+  line-height:1.25;
+}
+
+.noteAutoStatusV174.saving{
+  background:#fff7e6;
+  border-color:#ffd891;
+  color:#7a4b00;
+}
+
+.noteAutoStatusV174.saved{
+  background:#f0fdf4;
+  border-color:#bbf7d0;
+  color:#166534;
+}

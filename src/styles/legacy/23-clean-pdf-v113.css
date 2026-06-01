@@ -1,0 +1,146 @@
+/* =====================================================
+   NOVÝ ČISTÝ PDF/TISK REŽIM
+   PDF používá stejný layout jako tisk
+   bez html2pdf deformací a prázdné stránky
+   ===================================================== */
+
+@page{
+  size:A4 portrait;
+  margin:8mm 6mm 6mm 6mm;
+}
+
+@media print{
+
+  html,
+  body{
+    margin:0!important;
+    padding:0!important;
+    background:#ffffff!important;
+
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+    color-adjust:exact!important;
+  }
+
+  *{
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+    color-adjust:exact!important;
+  }
+
+  /* skrýt UI */
+  .panel,
+  .toolbar,
+  .topbar,
+  .appToolbar{
+    display:none!important;
+  }
+
+  /* žádná prázdná stránka */
+  .layout,
+  .previewWrap,
+  .preview,
+  .previewPage{
+    page-break-before:auto!important;
+    break-before:auto!important;
+    page-break-after:auto!important;
+    break-after:auto!important;
+  }
+
+  .layout,
+  .previewWrap,
+  .preview{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    box-shadow:none!important;
+    background:#fff!important;
+  }
+
+  /* HLAVNÍ STRÁNKA */
+  .previewPage{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding-top:4mm!important;
+    padding-left:0!important;
+    padding-right:0!important;
+    padding-bottom:0!important;
+
+    border:0!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    background:#fff!important;
+    overflow:visible!important;
+  }
+
+  /* HLAVIČKA */
+  .docHeader.headerV93{
+    margin-top:0!important;
+    padding-top:0!important;
+
+    grid-template-columns:minmax(0,1fr) 120px!important;
+    align-items:start!important;
+  }
+
+  .docSchoolFullV93{
+    font-size:11pt!important;
+    line-height:1.1!important;
+  }
+
+  .docHeader.headerV93 .docTitle{
+    font-size:30pt!important;
+    line-height:.95!important;
+  }
+
+  .docHeader.headerV93 .docDates{
+    font-size:12pt!important;
+  }
+
+  /* LOGO - bez deformace */
+  .docHeader.headerV93 .docLogo{
+    width:118px!important;
+    height:auto!important;
+    max-width:118px!important;
+    max-height:none!important;
+    object-fit:contain!important;
+    aspect-ratio:auto!important;
+  }
+
+  /* TABULKA */
+  table{
+    width:100%!important;
+    table-layout:fixed!important;
+    border-collapse:separate!important;
+    border-spacing:0!important;
+  }
+
+  th{
+    background:#0f4c81!important;
+    color:#ffffff!important;
+  }
+
+  /* zachovat barvy */
+  .dayCell{
+    background:#eef5fb!important;
+    color:#0f4c81!important;
+  }
+
+  .repeatColorV50-1 .eventCell{border-left-color:#c9a400!important}
+  .repeatColorV50-2 .eventCell{border-left-color:#3b82f6!important}
+  .repeatColorV50-3 .eventCell{border-left-color:#22a06b!important}
+  .repeatColorV50-4 .eventCell{border-left-color:#7c6cf2!important}
+  .repeatColorV50-5 .eventCell{border-left-color:#d14343!important}
+  .repeatColorV50-6 .eventCell{border-left-color:#c241a0!important}
+
+  /* podpis držet pohromadě */
+  .podpisFinal41,
+  .signatureWrapFinal34,
+  .signatureWrap40,
+  .signatureWrap36{
+    break-inside:avoid!important;
+    page-break-inside:avoid!important;
+  }
+}

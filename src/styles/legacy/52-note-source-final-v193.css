@@ -1,0 +1,76 @@
+/* =====================================================
+   FINÁLNĚ: poznámka v náhledu se už rovnou renderuje správně
+   ===================================================== */
+.previewPage .planNoteFinalV193{
+  background:#fff7e6!important;
+  border:1px solid #f6d58d!important;
+  border-left:6px solid #9f1239!important;
+  border-radius:16px!important;
+  color:#7f1d1d!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  line-height:1.45!important;
+  font-weight:850!important;
+  padding:10px 12px!important;
+  margin:8px 0 8px 0!important;
+  box-shadow:0 6px 16px rgba(159,18,57,.06)!important;
+}
+
+/* kdyby starý blok ještě někde přežil */
+.previewPage .notePreviewNoBlueV182,
+.previewPage .multilineNoteFinalV186,
+.previewPage .planMessageFixedV180,
+.previewPage .planMessageStableV189,
+.previewPage .planMessage{
+  background:#fff7e6!important;
+  border:1px solid #f6d58d!important;
+  border-left:6px solid #9f1239!important;
+  border-radius:16px!important;
+  color:#7f1d1d!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  line-height:1.45!important;
+  font-weight:850!important;
+  padding:10px 12px!important;
+  margin:8px 0 8px 0!important;
+  box-shadow:0 6px 16px rgba(159,18,57,.06)!important;
+  white-space:pre-line!important;
+}
+
+/* patička výš */
+.webCopyrightV167,
+.schoolFooterOutsideV164,
+.schoolFooterInsideV166,
+.schoolFooterInsideV165,
+.schoolFooterV161,
+.schoolFooterV160,
+.schoolFooterV157{
+  margin-top:-10mm!important;
+}
+
+/* přepínače zůstanou dvě stejně velká tlačítka vedle sebe */
+.displayOptionsV184{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+}
+.displayOptionsTitleV184{
+  grid-column:1 / -1!important;
+}
+.displayOptionV184{
+  width:100%!important;
+  min-height:34px!important;
+  margin:0!important;
+  padding:6px 8px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:8px!important;
+  border-radius:12px!important;
+  font-size:11px!important;
+}
+.displayOptionV184 input{
+  width:28px!important;
+  height:16px!important;
+  flex:0 0 28px!important;
+}

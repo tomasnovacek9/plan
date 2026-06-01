@@ -1,0 +1,32 @@
+/* název školy výš – zarovnání k horní hraně loga */
+.previewPage .docSchoolFullV93{
+  transform:translateY(-4px)!important;
+}
+
+/* textový blok roztáhnout na výšku loga */
+.previewPage .docHeaderTextV93{
+  min-height:112px!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+
+/* TÝDENNÍ PLÁN + datum dolů */
+.previewPage .docHeader.headerV93 .docTitle{
+  margin-top:auto!important;
+  margin-bottom:2px!important;
+}
+
+.previewPage .docHeader.headerV93 .docDates{
+  margin-top:0!important;
+}
+
+/* tisková varianta */
+@media print{
+  .previewPage .docSchoolFullV93{
+    transform:translateY(-2px)!important;
+  }
+
+  .previewPage .docHeaderTextV93{
+    min-height:90px!important;
+  }
+}

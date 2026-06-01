@@ -1,0 +1,27 @@
+/* Den/Datum ještě trochu širší */
+
+.previewPage .dayCell{
+  width:18mm!important;
+  min-width:18mm!important;
+  max-width:18mm!important;
+
+  padding-left:2mm!important;
+  padding-right:2mm!important;
+
+  text-align:center!important;
+  vertical-align:middle!important;
+}
+
+@media print{
+  .dayCell{
+    width:18mm!important;
+    min-width:18mm!important;
+    max-width:18mm!important;
+
+    padding-left:2mm!important;
+    padding-right:2mm!important;
+
+    text-align:center!important;
+    vertical-align:middle!important;
+  }
+}

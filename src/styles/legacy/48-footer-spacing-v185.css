@@ -1,0 +1,41 @@
+/* Menší mezera mezi podpisem a "Vytvořeno" */
+.createdDateV184{
+  margin-top:2px!important;
+  padding-top:3px!important;
+  border-top:0!important;
+}
+
+/* Patička úplně ke světlému okraji stránky */
+.webCopyrightV167,
+.schoolFooterOutsideV164,
+.schoolFooterInsideV166,
+.schoolFooterInsideV165,
+.schoolFooterV161,
+.schoolFooterV160,
+.schoolFooterV157{
+  margin-top:2px!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+}
+
+/* Zkrácení spodní části stránky */
+.previewPage{
+  padding-bottom:8mm!important;
+}
+
+/* Menší mezera pod podpisem */
+.signatureBlock,
+.signatureSection,
+.directorSignature,
+[class*="signature"]{
+  margin-bottom:2mm!important;
+  padding-bottom:0!important;
+}
+
+/* Patička opravdu dole */
+.createdDateV184 + .webCopyrightV167,
+.createdDateV184 + .schoolFooterOutsideV164,
+.createdDateV184 + .schoolFooterInsideV166,
+.createdDateV184 + .schoolFooterInsideV165{
+  margin-top:0!important;
+}

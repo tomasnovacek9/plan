@@ -1,0 +1,129 @@
+/* ==========================================
+   Poznámka v náhledu: bez modrého probliknutí
+   + menší mezera před tabulkou
+   ========================================== */
+
+.previewPage .planMessageFixedV180,
+.previewPage .planNoteRedV179,
+.previewPage .notePreviewFinalV178,
+.previewPage .planPreviewNoteV177,
+.previewPage .planPreviewNoteV176,
+.previewPage .planNoteV174,
+.previewPage .planMessage,
+.previewPage .notice.planMessageFixedV180,
+.previewPage .notice.planNoteMessageV180,
+.previewPage .notePreviewNoBlueV182{
+  background:#fff7e6!important;
+  border:1px solid #f6d58d!important;
+  border-left:6px solid #9f1239!important;
+  border-radius:16px!important;
+  color:#7f1d1d!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  line-height:1.45!important;
+  font-weight:850!important;
+  padding:10px 12px!important;
+  margin:8px 0 4px 0!important;
+  box-shadow:0 6px 16px rgba(159,18,57,.06)!important;
+}
+
+/* tabulka hned pod poznámkou */
+.previewPage .notePreviewNoBlueV182 + table,
+.previewPage .planMessageFixedV180 + table,
+.previewPage .planMessage + table{
+  margin-top:2px!important;
+}
+
+/* ==========================================
+   Levá část: sjednocení modulů
+   Poznámka do plánu = žluté zvýraznění jako ostatní
+   ========================================== */
+
+#weeklyNoteSection,
+.unifiedWeekNoteV171,
+.noteModuleFixedV180,
+.noteModuleRedV179,
+.noteFinalBoxV178{
+  background:#ffffff!important;
+  border:1px solid #d9e4f2!important;
+  border-left:5px solid var(--gold)!important;
+  border-radius:18px!important;
+  padding:14px!important;
+  margin-bottom:14px!important;
+  box-shadow:0 8px 22px rgba(15,76,129,.055)!important;
+}
+
+/* nadpis v poznámkovém modulu žlutě jako ostatní moduly */
+#weeklyNoteSection .noteModuleTitleFixedV180,
+#weeklyNoteSection .unifiedWeekNoteTitleV171,
+.unifiedWeekNoteV171 .noteModuleTitleFixedV180,
+.unifiedWeekNoteV171 .unifiedWeekNoteTitleV171{
+  display:block!important;
+  margin:0 0 8px 0!important;
+  padding:0!important;
+  color:var(--blue-dark)!important;
+  background:transparent!important;
+  border:0!important;
+  font-size:14px!important;
+  line-height:1.25!important;
+  font-weight:900!important;
+}
+
+#weeklyNoteSection .noteModuleTitleFixedV180::before,
+#weeklyNoteSection .unifiedWeekNoteTitleV171::before,
+.unifiedWeekNoteV171 .noteModuleTitleFixedV180::before,
+.unifiedWeekNoteV171 .unifiedWeekNoteTitleV171::before{
+  content:"";
+  display:inline-block;
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:var(--gold);
+  margin-right:8px;
+  vertical-align:1px;
+}
+
+/* staré modré/duplicitní části pryč */
+#weeklyNoteSection .sectionTitle,
+#weeklyNoteSection .weeklyNotePanelTitle,
+#weeklyNoteSection .unifiedWeekNoteInfoV171,
+#weeklyNoteSection .weekNoteManagerV170,
+.unifiedWeekNoteV171 .sectionTitle,
+.unifiedWeekNoteV171 .weeklyNotePanelTitle,
+.unifiedWeekNoteV171 .unifiedWeekNoteInfoV171,
+.unifiedWeekNoteV171 .weekNoteManagerV170{
+  display:none!important;
+}
+
+/* textarea v modulu */
+#weeklyNoteInput,
+#weeklyNoteSection textarea,
+.unifiedWeekNoteV171 textarea{
+  width:100%!important;
+  min-height:82px!important;
+  background:#ffffff!important;
+  border:1px solid #d0d5dd!important;
+  border-radius:13px!important;
+  color:#344054!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  font-weight:600!important;
+  line-height:1.35!important;
+  padding:9px 10px!important;
+  box-shadow:none!important;
+  resize:vertical!important;
+}
+
+/* automatické uložení neutrálně */
+.noteAutoStatusV174,
+#noteAutoStatusV174{
+  margin-top:8px!important;
+  padding:7px 8px!important;
+  border-radius:11px!important;
+  background:#f8fafc!important;
+  border:1px solid #e2e8f0!important;
+  color:#64748b!important;
+  font-size:10.5px!important;
+  font-weight:800!important;
+  line-height:1.25!important;
+}

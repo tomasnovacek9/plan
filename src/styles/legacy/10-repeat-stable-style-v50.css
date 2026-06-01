@@ -1,0 +1,48 @@
+.eventCell{
+  border-left:6px solid transparent!important;
+  padding-left:12px!important;
+}
+
+/* clear any pseudo markers from previous versions */
+.eventCell::before,
+.personCell::before{
+  content:none!important;
+  display:none!important;
+}
+
+@media screen{
+  .repeatColorV50-1 .eventCell{background:#fff8dd!important;border-left-color:#c9a400!important;}
+  .repeatColorV50-2 .eventCell{background:#eef6ff!important;border-left-color:#3b82f6!important;}
+  .repeatColorV50-3 .eventCell{background:#eefbf3!important;border-left-color:#22a06b!important;}
+  .repeatColorV50-4 .eventCell{background:#f4f3ff!important;border-left-color:#7c6cf2!important;}
+  .repeatColorV50-5 .eventCell{background:#fff1f1!important;border-left-color:#d14343!important;}
+  .repeatColorV50-6 .eventCell{background:#fdf2fa!important;border-left-color:#c241a0!important;}
+
+  .repeatColorV50-1 .personCell{background:#fff8dd!important;}
+  .repeatColorV50-2 .personCell{background:#eef6ff!important;}
+  .repeatColorV50-3 .personCell{background:#eefbf3!important;}
+  .repeatColorV50-4 .personCell{background:#f4f3ff!important;}
+  .repeatColorV50-5 .personCell{background:#fff1f1!important;}
+  .repeatColorV50-6 .personCell{background:#fdf2fa!important;}
+}
+
+@media print{
+  .repeatColorV50-1 .eventCell,
+  .repeatColorV50-2 .eventCell,
+  .repeatColorV50-3 .eventCell,
+  .repeatColorV50-4 .eventCell,
+  .repeatColorV50-5 .eventCell,
+  .repeatColorV50-6 .eventCell{
+    background:#fff!important;
+    border-left-color:#777!important;
+  }
+
+  .repeatColorV50-1 .personCell,
+  .repeatColorV50-2 .personCell,
+  .repeatColorV50-3 .personCell,
+  .repeatColorV50-4 .personCell,
+  .repeatColorV50-5 .personCell,
+  .repeatColorV50-6 .personCell{
+    background:#fff!important;
+  }
+}

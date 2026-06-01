@@ -1,0 +1,51 @@
+body.pdfExportingV205 .panel,
+body.pdfExportingV205 .responsibleUndoOutsideV200,
+body.pdfExportingV205 .responsibleHintSubtleV200{
+  display:none!important;
+}
+
+body.pdfExportingV205 .previewPage{
+  width:190mm!important;
+  max-width:190mm!important;
+  margin:0 auto!important;
+  padding:8mm 8mm 10mm 8mm!important;
+  background:#fff!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+}
+
+body.pdfExportingV205 .previewWrapper{
+  padding-top:10mm!important;
+}
+
+body.pdfExportingV205 img{
+  width:auto!important;
+  height:auto!important;
+  max-width:100%!important;
+  max-height:28mm!important;
+  object-fit:contain!important;
+}
+
+body.pdfExportingV205 table{
+  width:100%!important;
+  border-collapse:collapse!important;
+  table-layout:fixed!important;
+}
+
+body.pdfExportingV205 th:nth-child(1),
+body.pdfExportingV205 td:nth-child(1){width:16%!important;}
+
+body.pdfExportingV205 th:nth-child(2),
+body.pdfExportingV205 td:nth-child(2){width:15%!important;}
+
+body.pdfExportingV205 th:nth-child(3),
+body.pdfExportingV205 td:nth-child(3){width:44%!important;}
+
+body.pdfExportingV205 th:nth-child(4),
+body.pdfExportingV205 td:nth-child(4){width:25%!important;}
+
+body.pdfExportingV205 td,
+body.pdfExportingV205 th{
+  white-space:normal!important;
+  overflow-wrap:break-word!important;
+}

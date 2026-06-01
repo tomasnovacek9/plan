@@ -1,0 +1,46 @@
+/* Víceřádková poznámka v náhledu – stále stejný žluto/červený styl */
+.previewPage .notePreviewNoBlueV182,
+.previewPage .planMessageFixedV180,
+.previewPage .planNoteRedV179,
+.previewPage .notePreviewFinalV178,
+.previewPage .planPreviewNoteV177,
+.previewPage .planPreviewNoteV176,
+.previewPage .planNoteV174,
+.previewPage .planMessage,
+.previewPage .multilineNoteFinalV186{
+  background:#fff7e6!important;
+  border:1px solid #f6d58d!important;
+  border-left:6px solid #9f1239!important;
+  border-radius:16px!important;
+  color:#7f1d1d!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  line-height:1.45!important;
+  font-weight:850!important;
+  padding:10px 12px!important;
+  margin:8px 0 8px 0!important;
+  box-shadow:0 6px 16px rgba(159,18,57,.06)!important;
+  white-space:pre-line!important;
+}
+
+/* posun celé bílé stránky v náhledu mírně dolů */
+.previewPage{
+  margin-top:5mm!important;
+}
+
+/* patička o kousek výš / blíž k bílé stránce */
+.webCopyrightV167,
+.schoolFooterOutsideV164,
+.schoolFooterInsideV166,
+.schoolFooterInsideV165,
+.schoolFooterV161,
+.schoolFooterV160,
+.schoolFooterV157{
+  margin-top:-1mm!important;
+}
+
+/* datum vytvoření držet blíž podpisu */
+.createdDateV184{
+  margin-top:1px!important;
+  padding-top:2px!important;
+}
