@@ -1,0 +1,34 @@
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .appHeader,
+  .controlPanel,
+  .previewToolbar {
+    display: none !important;
+  }
+
+  .appShell,
+  .workspace,
+  .previewArea {
+    display: block;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .previewPage {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0;
+    box-shadow: none;
+  }
+}

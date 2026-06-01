@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Generator tydenniho planu skoly</title>
+    <link rel="stylesheet" href="./src/styles/base.css">
+    <link rel="stylesheet" href="./src/styles/layout.css">
+    <link rel="stylesheet" href="./src/styles/print.css">
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
+    <script type="module" src="./src/main.js"></script>
+  </head>
+  <body>
+    <div class="appShell">
+      <header class="appHeader">
+        <div class="brandMark" aria-hidden="true">JB</div>
+        <div>
+          <h1>Generator tydenniho planu</h1>
+          <p>Import z EduPage kalendare, rucni upravy a hotovy tiskovy vystup A4.</p>
+        </div>
+        <div class="headerActions">
+          <button class="ghostButton" id="saveButton" type="button">Ulozit</button>
+          <button class="ghostButton" id="loadButton" type="button">Nacist</button>
+          <button class="primaryButton" id="pdfButton" type="button">PDF</button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <aside class="controlPanel" aria-label="Nastaveni planu">
+          <section class="panelSection compact">
+            <div class="sectionHeader">
+              <h2>Tyden</h2>
+              <span id="calendarStatus" class="statusBadge">Cekam</span>
+            </div>
+            <div class="twoCols">
+              <label>
+                Od
+                <input id="weekFrom" type="date">
+              </label>
+              <label>
+                Do
+                <input id="weekTo" type="date">
+              </label>
+            </div>
+            <div class="buttonGrid">
+              <button id="prevWeekButton" type="button">Predchozi</button>
+              <button id="currentWeekButton" type="button">Aktualni</button>
+              <button id="nextWeekButton" type="button">Dalsi</button>
+              <button id="importCalendarButton" type="button">Nacist kalendar</button>
+            </div>
+            <label class="fileButton">
+              Import .ics souboru
+              <input id="icsFileInput" type="file" accept=".ics,text/calendar">
+            </label>
+          </section>
+
+          <section class="panelSection">
+            <div class="sectionHeader">
+              <h2>Rucni zaznam</h2>
+              <button id="clearFormButton" type="button">Vycistit</button>
+            </div>
+            <input id="manualId" type="hidden">
+            <div class="twoCols">
+              <label>
+                Datum
+                <input id="eventDate" type="date">
+              </label>
+              <label>
+                Typ
+                <select id="eventType">
+                  <option value="timed">Cas</option>
+                  <option value="allDay">Cely den</option>
+                </select>
+              </label>
+            </div>
+            <div class="twoCols" id="timeFields">
+              <label>
+                Od
+                <input id="eventFrom" type="time" value="08:00">
+              </label>
+              <label>
+                Do
+                <input id="eventTo" type="time" value="08:45">
+              </label>
+            </div>
+            <label>
+              Akce
+              <textarea id="eventTitle" rows="3" placeholder="Napriklad porada pedagogicke rady"></textarea>
+            </label>
+            <label>
+              Zodpovida
+              <input id="eventPerson" placeholder="Napriklad Novakova">
+            </label>
+            <button class="primaryButton fullWidth" id="addEventButton" type="button">Pridat do planu</button>
+          </section>
+
+          <section class="panelSection">
+            <div class="sectionHeader">
+              <h2>Poznamka tydne</h2>
+              <span id="noteStatus" class="muted">Automaticky se uklada</span>
+            </div>
+            <textarea id="weekNote" rows="4" placeholder="Dulezite informace pro tento tyden"></textarea>
+          </section>
+
+          <section class="panelSection">
+            <div class="sectionHeader">
+              <h2>Zobrazeni</h2>
+            </div>
+            <label class="checkRow">
+              <input id="hideWeekend" type="checkbox">
+              Skryt vikend
+            </label>
+            <label class="checkRow">
+              <input id="hideCreatedDate" type="checkbox">
+              Skryt datum vytvoreni
+            </label>
+            <label class="checkRow">
+              <input id="skipReservations" type="checkbox" checked>
+              Vynechat rezervace
+            </label>
+            <label class="checkRow">
+              <input id="skipSubjects" type="checkbox" checked>
+              Vynechat beznou vyuku
+            </label>
+          </section>
+
+          <section class="panelSection">
+            <div class="sectionHeader">
+              <h2>Rucni zaznamy</h2>
+              <button id="clearManualButton" type="button">Smazat vse</button>
+            </div>
+            <div id="manualList" class="manualList"></div>
+          </section>
+        </aside>
+
+        <section class="previewArea" aria-label="Nahled dokumentu">
+          <div class="previewToolbar">
+            <strong>Nahled A4</strong>
+            <div>
+              <button id="printButton" type="button">Tisk</button>
+              <button id="resetButton" class="dangerButton" type="button">Reset</button>
+            </div>
+          </div>
+          <article id="previewPage" class="previewPage"></article>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
