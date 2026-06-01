@@ -5,29 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Generátor týdenního plánu školy z EduPage kalendáře</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<link rel="stylesheet" href="src/styles/legacy/00-base-styles.css">
-
-<link id="v12-css" rel="stylesheet" href="src/styles/legacy/01-v12-css.css">
-
-
-<link id="panel-layout-v5" rel="stylesheet" href="src/styles/legacy/02-panel-layout-v5.css">
-
-
-<link id="finalstyle-v12" rel="stylesheet" href="src/styles/legacy/03-finalstyle-v12.css">
-
-
+<link rel="stylesheet" href="src/styles/legacy/bundle.css">
 <link rel="preconnect" href="https://fonts.googleapis.com/">
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
 
-<link id="font-style-v14" rel="stylesheet" href="src/styles/legacy/04-font-style-v14.css">
 
 
 
 
 
-<link id="headline-v15" rel="stylesheet" href="src/styles/legacy/05-headline-v15.css">
 
 
 
@@ -45,155 +33,51 @@
 
 
 
-<link id="event-marker-fix-v25" rel="stylesheet" href="src/styles/legacy/06-event-marker-fix-v25.css">
 
 
-<link id="clean-border-marker-v28" rel="stylesheet" href="src/styles/legacy/07-clean-border-marker-v28.css">
 
 
-<link id="uniform-day-column-v29" rel="stylesheet" href="src/styles/legacy/08-uniform-day-column-v29.css">
 
 
-<link id="podpis-final-clean-41" rel="stylesheet" href="src/styles/legacy/09-podpis-final-clean-41.css">
 
 
-<link id="repeat-stable-style-v50" rel="stylesheet" href="src/styles/legacy/10-repeat-stable-style-v50.css">
 
 
-<link id="signature-field-compact-v51" rel="stylesheet" href="src/styles/legacy/11-signature-field-compact-v51.css">
 
 
-<link id="edupage-status-v55" rel="stylesheet" href="src/styles/legacy/12-edupage-status-v55.css">
 
 
-<link id="screen-layout-v86" rel="stylesheet" href="src/styles/legacy/13-screen-layout-v86.css">
 
 
-<link id="left-panel-unified-v88" rel="stylesheet" href="src/styles/legacy/14-left-panel-unified-v88.css">
 
 
-<link id="note-title-no-dot-v89" rel="stylesheet" href="src/styles/legacy/15-note-title-no-dot-v89.css">
 
 
-<link id="edupage-badge-lock-v89" rel="stylesheet" href="src/styles/legacy/16-edupage-badge-lock-v89.css">
 
 
-<link id="header-direct-v93" rel="stylesheet" href="src/styles/legacy/17-header-direct-v93.css">
 
 
-<link id="header-align-v94" rel="stylesheet" href="src/styles/legacy/18-header-align-v94.css">
 
 
-<link id="move-header-up-v95" rel="stylesheet" href="src/styles/legacy/19-move-header-up-v95.css">
 
 
-<link id="export-esborovna-v102" rel="stylesheet" href="src/styles/legacy/20-export-esborovna-v102.css">
 
 
-<link id="hide-left-dates-v103" rel="stylesheet" href="src/styles/legacy/21-hide-left-dates-v103.css">
 
 
-<link id="reset-print-preview-v110" rel="stylesheet" href="src/styles/legacy/22-reset-print-preview-v110.css">
 
 
-<link id="clean-pdf-v113" rel="stylesheet" href="src/styles/legacy/23-clean-pdf-v113.css">
 
 
-<link id="restore-cols-v114" rel="stylesheet" href="src/styles/legacy/24-restore-cols-v114.css">
 
 
-<link id="pdf-button-cols-v115" rel="stylesheet" href="src/styles/legacy/25-pdf-button-cols-v115.css">
 
-
-<link id="narrow-day-v133" rel="stylesheet" href="src/styles/legacy/26-narrow-day-v133.css">
-
-
-<link id="day-padding-v134" rel="stylesheet" href="src/styles/legacy/27-day-padding-v134.css">
-
-
-<link id="day-equal-padding-v135" rel="stylesheet" href="src/styles/legacy/28-day-equal-padding-v135.css">
-
-
-<link id="day-slightly-wider-v136" rel="stylesheet" href="src/styles/legacy/29-day-slightly-wider-v136.css">
-
-
-<link id="day-bit-more-v137" rel="stylesheet" href="src/styles/legacy/30-day-bit-more-v137.css">
-
-
-<link id="top-align-only-v139" rel="stylesheet" href="src/styles/legacy/31-top-align-only-v139.css">
-
-
-<link id="direct-time-footer-v161" rel="stylesheet" href="src/styles/legacy/32-direct-time-footer-v161.css">
-
-
-<link id="empty-days-all-day-v162" rel="stylesheet" href="src/styles/legacy/33-empty-days-all-day-v162.css">
-
-
-<link id="footer-bg-allday-v164" rel="stylesheet" href="src/styles/legacy/34-footer-bg-allday-v164.css">
-
-
-<link id="manual-event-real-v167" rel="stylesheet" href="src/styles/legacy/35-manual-event-real-v167.css">
-
-
-<link id="manual-edit-delete-v168" rel="stylesheet" href="src/styles/legacy/36-manual-edit-delete-v168.css">
-
-
-<link id="manual-week-smart-v169" rel="stylesheet" href="src/styles/legacy/37-manual-week-smart-v169.css">
-
-
-<link id="time-note-week-v170" rel="stylesheet" href="src/styles/legacy/38-time-note-week-v170.css">
-
-
-<link id="unified-week-note-v171" rel="stylesheet" href="src/styles/legacy/39-unified-week-note-v171.css">
-
-
-<link id="note-autosave-v172" rel="stylesheet" href="src/styles/legacy/40-note-autosave-v172.css">
-
-
-<link id="note-persistent-v173" rel="stylesheet" href="src/styles/legacy/41-note-persistent-v173.css">
-
-
-<link id="note-direct-render-v174" rel="stylesheet" href="src/styles/legacy/42-note-direct-render-v174.css">
-
-
-<link id="note-source-fixed-v180" rel="stylesheet" href="src/styles/legacy/43-note-source-fixed-v180.css">
-
-
-<link id="note-colors-final-v181" rel="stylesheet" href="src/styles/legacy/44-note-colors-final-v181.css">
-
-
-<link id="note-no-blue-left-yellow-v182" rel="stylesheet" href="src/styles/legacy/45-note-no-blue-left-yellow-v182.css">
-
-
-<link id="note-spacing-footer-v183" rel="stylesheet" href="src/styles/legacy/46-note-spacing-footer-v183.css">
-
-
-<link id="weekend-created-v184" rel="stylesheet" href="src/styles/legacy/47-weekend-created-v184.css">
-
-
-<link id="footer-spacing-v185" rel="stylesheet" href="src/styles/legacy/48-footer-spacing-v185.css">
-
-
-<link id="multiline-note-page-align-v186" rel="stylesheet" href="src/styles/legacy/49-multiline-note-page-align-v186.css">
-
-
-<link id="final-polish-v188" rel="stylesheet" href="src/styles/legacy/50-final-polish-v188.css">
-
-
-<link id="restore-controls-note-v190" rel="stylesheet" href="src/styles/legacy/51-restore-controls-note-v190.css">
-
-
-<link id="note-source-final-v193" rel="stylesheet" href="src/styles/legacy/52-note-source-final-v193.css">
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 
-<link id="week-switch-pdf-v205" rel="stylesheet" href="src/styles/legacy/53-week-switch-pdf-v205.css">
-
-
-<link id="clean-responsible-core-v213" rel="stylesheet" href="src/styles/legacy/54-clean-responsible-core-v213.css">
 
 <link rel="stylesheet" href="src/styles/pro-redesign.css">
 <script defer src="src/scripts/pro-redesign.js"></script>
@@ -493,106 +377,9 @@
     </main>
   </div>
 </div>
-
-<script src="src/scripts/legacy/00-app-core.js"></script>
-
-
-<script id="panel-layout-v5-js" src="src/scripts/legacy/01-panel-layout-v5-js.js"></script>
-
-
-<script id="v7-layout-fix" src="src/scripts/legacy/02-v7-layout-fix.js"></script>
-
-
-<script id="weekly-note-script-v8" src="src/scripts/legacy/03-weekly-note-script-v8.js"></script>
-
-
-<script id="note-separate-v12" src="src/scripts/legacy/04-note-separate-v12.js"></script>
-
-
-<script id="all-day-time-v52" src="src/scripts/legacy/05-all-day-time-v52.js"></script>
-
-
-<script id="repeat-events-v53" src="src/scripts/legacy/06-repeat-events-v53.js"></script>
-
-
-<script id="reload-calendar-on-week-change-v54" src="src/scripts/legacy/07-reload-calendar-on-week-change-v54.js"></script>
-
-
-<script id="clean-calendar-buttons-v55" src="src/scripts/legacy/08-clean-calendar-buttons-v55.js"></script>
-
-
-<script id="edupage-status-v55-js" src="src/scripts/legacy/09-edupage-status-v55-js.js"></script>
-
-
-<script id="empty-days-only-v83" src="src/scripts/legacy/10-empty-days-only-v83.js"></script>
-
-
-<script id="current-week-on-start-v84" src="src/scripts/legacy/11-current-week-on-start-v84.js"></script>
-
-
-<script id="edupage-badge-lock-v89-js" src="src/scripts/legacy/12-edupage-badge-lock-v89-js.js"></script>
-
-
-<script id="export-esborovna-v102-js" src="src/scripts/legacy/13-export-esborovna-v102-js.js"></script>
-
-
-<script id="hide-left-dates-v103-js" src="src/scripts/legacy/14-hide-left-dates-v103-js.js"></script>
-
-
-<script id="clean-pdf-v113-js" src="src/scripts/legacy/15-clean-pdf-v113-js.js"></script>
-
-
-<script id="pdf-button-cols-v115-js" src="src/scripts/legacy/16-pdf-button-cols-v115-js.js"></script>
-
-
-<script id="empty-days-all-day-v162-js" src="src/scripts/legacy/17-empty-days-all-day-v162-js.js"></script>
-
-
-<script id="footer-bg-allday-v164-js" src="src/scripts/legacy/18-footer-bg-allday-v164-js.js"></script>
-
-
-<script id="manual-event-real-v167-js" src="src/scripts/legacy/19-manual-event-real-v167-js.js"></script>
-
-
-<script id="manual-edit-delete-v168-js" src="src/scripts/legacy/20-manual-edit-delete-v168-js.js"></script>
-
-
-<script id="manual-week-smart-v169-js" src="src/scripts/legacy/21-manual-week-smart-v169-js.js"></script>
-
-
-<script id="note-direct-render-v174-js" src="src/scripts/legacy/22-note-direct-render-v174-js.js"></script>
-
-
-<script id="note-source-fixed-v180-js" src="src/scripts/legacy/23-note-source-fixed-v180-js.js"></script>
-
-
-<script id="note-colors-final-v181-js" src="src/scripts/legacy/24-note-colors-final-v181-js.js"></script>
-
-
-<script id="note-no-blue-left-yellow-v182-js" src="src/scripts/legacy/25-note-no-blue-left-yellow-v182-js.js"></script>
-
-
-<script id="weekend-created-v184-js" src="src/scripts/legacy/26-weekend-created-v184-js.js"></script>
-
-
-<script id="multiline-note-page-align-v186-js" src="src/scripts/legacy/27-multiline-note-page-align-v186-js.js"></script>
-
-
-<script id="final-polish-v188-js" src="src/scripts/legacy/28-final-polish-v188-js.js"></script>
-
-
-<script id="restore-controls-note-v190-js" src="src/scripts/legacy/29-restore-controls-note-v190-js.js"></script>
-
-
-<script id="note-source-final-v193-js" src="src/scripts/legacy/30-note-source-final-v193-js.js"></script>
-
-
-<script id="week-switch-pdf-v205-js" src="src/scripts/legacy/31-week-switch-pdf-v205-js.js"></script>
-
-
-<script id="clean-responsible-core-v213-js" src="src/scripts/legacy/32-clean-responsible-core-v213-js.js"></script>
-
-
+<script src="src/scripts/legacy/mutation-guard-before.js"></script>
+<script src="src/scripts/legacy/bundle.js"></script>
+<script src="src/scripts/legacy/mutation-guard-after.js"></script>
 <div class="webCopyrightV167">
         <div class="webCopyrightMainV167">© 2026 Základní škola Brno, Jana Babáka 1, příspěvková organizace</div>
         <div class="webCopyrightAuthorV167">Design &amp; development: Tomáš Nováček</div>

@@ -1,0 +1,3306 @@
+/* 00-base-styles.css */
+:root{
+  --blue:#0057A8;
+  --blue-dark:#003F7D;
+  --gold:#F2D20D;
+  --bg:#eef3f8;
+  --card:#ffffff;
+  --text:#172033;
+  --muted:#667085;
+  --line:#d7dee8;
+  --soft:#e8f2ff;
+  --danger:#b42318;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:"Open Sans", Arial, Helvetica, sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(0,87,168,.12), transparent 32%),
+    linear-gradient(135deg,#f8fbff,#edf3f8);
+}
+.page{max-width:1340px;margin:22px auto;padding:0 18px 40px}
+.top{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:18px;
+  align-items:center;
+  margin-bottom:18px;
+}
+.logo{width:95px;max-height:74px;object-fit:contain}
+.school{font-size:28px;font-weight:900;color:var(--blue-dark);letter-spacing:.3px}
+.subtitle{margin-top:5px;color:var(--muted);font-size:14px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+button{
+  border:0;border-radius:14px;padding:12px 16px;font-weight:900;
+  cursor:pointer;font-family:inherit;font-size:14px;
+}
+.primary{background:var(--blue);color:white;box-shadow:0 10px 26px rgba(0,87,168,.18)}
+.secondary{background:white;color:var(--blue);border:1px solid var(--line)}
+.danger{background:#fff1f1;color:var(--danger);border:1px solid #ffd1d1}
+.layout{display:grid;grid-template-columns:430px 1fr;gap:18px}
+.panel,.previewShell{
+  background:white;border:1px solid rgba(148,163,184,.28);
+  border-radius:24px;box-shadow:0 18px 60px rgba(15,23,42,.09);
+}
+.panel{padding:18px}
+.previewShell{padding:22px;overflow:auto}
+.section{
+  border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:14px;
+  background:#fbfdff;
+}
+.sectionTitle{
+  font-size:15px;font-weight:900;color:var(--blue-dark);margin-bottom:12px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+label{font-size:12px;font-weight:800;color:#344054}
+input,textarea,select{
+  width:100%;border:1px solid #cfd7e3;border-radius:12px;padding:10px 11px;
+  font-size:14px;font-family:inherit;outline:none;background:white;
+}
+textarea{min-height:72px;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(0,87,168,.10)}
+.notice{
+  background:var(--soft);border:1px solid #cfe5ff;border-left:5px solid var(--gold);
+  padding:11px 13px;border-radius:14px;margin-bottom:14px;color:#123b63;font-size:13px;
+}
+.rowButtons{display:flex;gap:8px;flex-wrap:wrap}
+.miniBtn{padding:9px 11px;border-radius:10px;font-size:12px}
+.list{display:grid;gap:8px;max-height:300px;overflow:auto}
+.item{border:1px solid #dfe6ef;border-radius:14px;padding:10px;background:white}
+.itemTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.itemTitle{font-weight:900;color:var(--blue-dark)}
+.itemMeta{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.35}
+.itemActions{display:flex;gap:6px;flex-shrink:0}
+.smallBtn{padding:7px 9px;border-radius:10px;font-size:12px}
+.edit{background:#eef6ff;color:var(--blue);border:1px solid #cfe5ff}
+.delete{background:#fff1f1;color:var(--danger);border:1px solid #ffd1d1}
+.filterBox{
+  display:grid;
+  gap:8px;
+  font-size:13px;
+}
+.filterBox label{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  font-size:13px;
+  font-weight:700;
+}
+.filterBox input{width:auto}
+.weekTools{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.weekTools button{
+  padding:9px 10px;
+  border-radius:10px;
+  font-size:12px;
+}
+.urlRow{
+  display:grid;
+  gap:8px;
+}
+.urlRow input{
+  font-size:12px;
+}
+.previewPage{
+  width:210mm;
+  min-height:297mm;
+  margin:0 auto;
+  background:white;
+  padding:12mm;
+  position:relative;
+  color:#172033;
+}
+.previewPage::after{
+  content:"";
+  position:absolute;
+  right:18mm;
+  bottom:28mm;
+  width:70mm;
+  height:70mm;
+  background:url("../../../src/assets/generated/image-bf0189964fa8.png") center/contain no-repeat;
+  opacity:.025;
+  pointer-events:none;
+}
+.docHeader{
+  display:grid;
+  grid-template-columns:26mm 1fr;
+  gap:8mm;
+  align-items:center;
+  border-bottom:3px solid var(--blue);
+  padding-bottom:5mm;
+  margin-bottom:5mm;
+}
+.docLogo{width:24mm;max-height:18mm;object-fit:contain}
+.docTitleRow{display:flex;justify-content:space-between;align-items:flex-end;gap:8mm}
+.docTitle{font-size:25pt;font-weight:900;color:var(--blue-dark);letter-spacing:.5px}
+.docDates{font-size:13pt;font-weight:900;color:#344054;white-space:nowrap}
+.longTerm{margin:4mm 0 5mm 34mm;font-size:10.5pt;line-height:1.35}
+.planTable{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  font-size:9.6pt;
+  overflow:hidden;
+  border:1px solid #cbd5e1;
+  border-radius:10px;
+  position:relative;
+  z-index:2;
+}
+.planTable th{
+  background:linear-gradient(135deg,var(--blue),var(--blue-dark));
+  color:white;text-align:left;padding:7px 8px;font-size:9pt;
+}
+.planTable td{
+  vertical-align:top;padding:7px 8px;
+  border-top:1px solid #d7dee8;border-right:1px solid #e4eaf1;
+}
+.planTable td:last-child,.planTable th:last-child{border-right:0}
+.dayCell{width:25mm;text-align:center;font-weight:900;color:var(--blue-dark);background:#f2f7fc}
+.dayName{font-size:10pt}
+.dayDate{font-size:9pt;color:#475467;margin-top:2px}
+.timeCell{width:31mm;white-space:pre-line;font-weight:700;color:#344054}
+.eventCell{min-width:88mm;white-space:pre-line;line-height:1.35}
+.personCell{width:40mm;white-space:pre-line;color:#344054;line-height:1.35}
+.dayBreak td{border-top:2px solid #b8c6d7}
+.signature{margin-top:15mm;text-align:right;font-family:Georgia, 'Times New Roman', serif;font-size:11pt}
+.docFooter{
+  position:absolute;left:12mm;right:12mm;bottom:8mm;
+  border-top:2px solid var(--gold);padding-top:3mm;
+  display:flex;justify-content:space-between;color:#667085;font-size:8pt;
+}
+@media(max-width:1050px){
+  .layout{grid-template-columns:1fr}
+  .top{grid-template-columns:auto 1fr}
+  .actions{grid-column:1/-1;justify-content:flex-start}
+}
+@media print{
+  body{background:white}
+  .top,.panel{display:none}
+  .page{max-width:none;margin:0;padding:0}
+  .previewShell{box-shadow:none;border:0;border-radius:0;padding:0}
+  .previewPage{width:210mm;min-height:297mm;margin:0;padding:12mm}
+  @page{size:A4 portrait;margin:0}
+}
+
+/* 01-v12-css.css */
+.logo{display:none!important}
+.subtitle{font-size:13px!important;color:#667085!important}
+#messageSection textarea{min-height:90px}
+
+.planMessageBox{
+  margin:0 0 4mm 0;
+  padding:2.6mm 3.2mm;
+  background:#eef6ff;
+  border-left:4px solid var(--blue);
+  border-radius:8px;
+  color:#123b63;
+  font-size:11px;
+  font-weight:700;
+  line-height:1.28;
+}
+
+.longTerm{display:none!important}
+.previewPage{padding:8mm 9mm!important}
+.docHeader{margin-bottom:5mm!important}
+.docTitle{font-size:24px!important}
+.docDates{font-size:13px!important}
+.docLogo{width:28mm!important}
+.planTable{font-size:10.2px!important}
+.planTable th{padding:5px 6px!important}
+.planTable td{padding:4px 6px!important;line-height:1.22!important}
+
+@media print{
+  @page{size:A4 landscape;margin:0}
+  .page{max-width:none;margin:0;padding:0}
+  .top,.layout>.panel,.actions{display:none!important}
+  .layout{display:block!important}
+  .previewShell{box-shadow:none!important;border:0!important;padding:0!important}
+  .previewPage{width:297mm!important;min-height:210mm!important;padding:7mm 8mm!important}
+}
+
+/* 02-panel-layout-v5.css */
+.panel{
+  border-top:6px solid var(--gold)!important;
+}
+.panel .section{
+  border-left:4px solid rgba(242,210,13,.65)!important;
+}
+.panel .sectionTitle{
+  justify-content:flex-start!important;
+  text-align:left!important;
+  color:var(--blue-dark)!important;
+  gap:0!important;
+}
+.panel .sectionTitle::before{
+  content:none!important;
+}
+
+/* tlačítka ve výběru týdne */
+.weekButtonGridV5{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:8px;
+}
+.weekButtonGridV5 .full{
+  grid-column:1 / -1;
+}
+.weekDatesV5{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:10px;
+}
+.weekDatesV5 .field{
+  margin-bottom:0!important;
+}
+.weekDatesV5 input{
+  background:#fff!important;
+}
+
+/* případné původní schování rušíme */
+#weekFrom,#weekTo{
+  position:static!important;
+  left:auto!important;
+  width:100%!important;
+  height:auto!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+  display:block!important;
+}
+
+/* 03-finalstyle-v12.css */
+/* Poznámka úplně samostatně */
+.weeklyNotePanel{
+  margin:16px 0 18px 0!important;
+  padding:14px!important;
+  border-radius:18px!important;
+  background:#fff!important;
+  border-left:4px solid rgba(242,210,13,.65)!important;
+  box-shadow:0 2px 10px rgba(0,0,0,.04)!important;
+}
+.weeklyNotePanelTitle{
+  font-size:15px;
+  font-weight:900;
+  color:var(--blue-dark);
+  margin-bottom:8px;
+}
+#weeklyNoteInput{
+  width:100%;
+  min-height:105px;
+  font-size:15px!important;
+  font-weight:700!important;
+  line-height:1.35;
+  border:2px solid #f3e3a0!important;
+  border-left:6px solid var(--gold)!important;
+  background:#fff8dd!important;
+  border-radius:14px!important;
+  color:#9b1c1c!important;
+}
+
+/* Náhled poznámky */
+.weeklyNotePreviewV8{
+  margin:0 0 5mm 0;
+  padding:3.5mm 4mm;
+  border-radius:12px;
+  background:linear-gradient(135deg,#fff8dd,#fffdf3);
+  border-left:6px solid var(--gold);
+  color:#9b1c1c;
+  font-size:15px;
+  font-weight:900;
+  line-height:1.4;
+  box-shadow:0 3px 12px rgba(0,0,0,.05);
+}
+
+/* Opakované akce: jemné barvy jen ve sloupcích akce/osoba, ne ve sloupci den */
+.repeatedEventV9 td{
+  border-left:inherit!important;
+}
+.repeatedEventV9 .dayCell{
+  background:inherit!important;
+}
+.repeatedEventV9 .eventCell,
+.repeatedEventV9 .personCell{
+  border-left:0!important;
+}
+.repeatEventBadgeV9{
+  display:none!important;
+}
+
+@media screen{
+  .repeatColorV9-1 .eventCell,.repeatColorV9-1 .personCell{background:#fff8dd!important}
+  .repeatColorV9-2 .eventCell,.repeatColorV9-2 .personCell{background:#eef6ff!important}
+  .repeatColorV9-3 .eventCell,.repeatColorV9-3 .personCell{background:#eefbf3!important}
+  .repeatColorV9-4 .eventCell,.repeatColorV9-4 .personCell{background:#f4f3ff!important}
+  .repeatColorV9-5 .eventCell,.repeatColorV9-5 .personCell{background:#fff1f1!important}
+  .repeatColorV9-6 .eventCell,.repeatColorV9-6 .personCell{background:#fdf2fa!important}
+}
+
+/* Tisk černobíle: bez barevných ploch a bez silných okrajů */
+@media print{
+  .repeatedEventV9 td,
+  .repeatedEventV9 .eventCell,
+  .repeatedEventV9 .personCell{
+    background:#fff!important;
+    border-left:inherit!important;
+  }
+}
+
+/* 04-font-style-v14.css */
+html,body,input,textarea,button,select{
+  font-family:'Open Sans',sans-serif!important;
+}
+
+/* tlačítko znovu načíst stejná velikost */
+button{
+  font-size:12.5px!important;
+  font-weight:700!important;
+}
+
+/* profesionální podpis */
+#signature{
+  min-height:74px!important;
+  line-height:1.45!important;
+  font-size:12.5px!important;
+}
+
+/* menší elegantní text funkce pod jménem */
+.signatureHint{
+  display:block;
+  margin-top:4px;
+  font-size:12px;
+  font-weight:700;
+  color:#667085;
+}
+
+/* 05-headline-v15.css */
+.sectionTitle{
+  font-weight:800!important;
+}
+.docTitle{
+  font-weight:800!important;
+}
+
+/* 06-event-marker-fix-v25.css */
+.eventCell{
+  position:relative!important;
+  padding-left:18px!important;
+}
+
+@media screen{
+  /* EVENT CELL */
+  .repeatColorV9-1 .eventCell{background:#fff8dd!important;}
+  .repeatColorV9-2 .eventCell{background:#eef6ff!important;}
+  .repeatColorV9-3 .eventCell{background:#eefbf3!important;}
+  .repeatColorV9-4 .eventCell{background:#f4f3ff!important;}
+  .repeatColorV9-5 .eventCell{background:#fff1f1!important;}
+  .repeatColorV9-6 .eventCell{background:#fdf2fa!important;}
+
+  .repeatColorV9-1 .eventCell{border-left:6px solid #c9a400!important;}
+  .repeatColorV9-2 .eventCell{border-left:6px solid #3b82f6!important;}
+  .repeatColorV9-3 .eventCell{border-left:6px solid #22a06b!important;}
+  .repeatColorV9-4 .eventCell{border-left:6px solid #7c6cf2!important;}
+  .repeatColorV9-5 .eventCell{border-left:6px solid #d14343!important;}
+  .repeatColorV9-6 .eventCell{border-left:6px solid #c241a0!important;}
+
+  /* PERSON CELL */
+  .repeatColorV9-1 .personCell{background:#fff8dd!important;}
+  .repeatColorV9-2 .personCell{background:#eef6ff!important;}
+  .repeatColorV9-3 .personCell{background:#eefbf3!important;}
+  .repeatColorV9-4 .personCell{background:#f4f3ff!important;}
+  .repeatColorV9-5 .personCell{background:#fff1f1!important;}
+  .repeatColorV9-6 .personCell{background:#fdf2fa!important;}
+}
+
+@media print{
+  .eventCell{
+    padding-left:18px!important;
+  }
+
+  .repeatColorV9-1 .eventCell,
+  .repeatColorV9-2 .eventCell,
+  .repeatColorV9-3 .eventCell,
+  .repeatColorV9-4 .eventCell,
+  .repeatColorV9-5 .eventCell,
+  .repeatColorV9-6 .eventCell{
+    background:#fff!important;
+    border-left:4px solid #777!important;
+  }
+
+  .repeatColorV9-1 .personCell,
+  .repeatColorV9-2 .personCell,
+  .repeatColorV9-3 .personCell,
+  .repeatColorV9-4 .personCell,
+  .repeatColorV9-5 .personCell,
+  .repeatColorV9-6 .personCell{
+    background:#fff!important;
+  }
+}
+
+/* 07-clean-border-marker-v28.css */
+/* Zruší všechny staré pseudo-prvky, které překrývaly text */
+.eventCell::before,
+.repeatColorV9-1 .eventCell::before,
+.repeatColorV9-2 .eventCell::before,
+.repeatColorV9-3 .eventCell::before,
+.repeatColorV9-4 .eventCell::before,
+.repeatColorV9-5 .eventCell::before,
+.repeatColorV9-6 .eventCell::before{
+  content:none!important;
+  display:none!important;
+}
+
+/* Všechny názvy začínají stejně díky průhlednému levému okraji */
+.eventCell{
+  border-left:6px solid transparent!important;
+  padding-left:12px!important;
+  position:static!important;
+}
+
+/* Opakované akce: jen jeden elegantní levý barevný okraj */
+@media screen{
+  .repeatColorV9-1 .eventCell{background:#fff8dd!important;border-left-color:#c9a400!important;}
+  .repeatColorV9-2 .eventCell{background:#eef6ff!important;border-left-color:#3b82f6!important;}
+  .repeatColorV9-3 .eventCell{background:#eefbf3!important;border-left-color:#22a06b!important;}
+  .repeatColorV9-4 .eventCell{background:#f4f3ff!important;border-left-color:#7c6cf2!important;}
+  .repeatColorV9-5 .eventCell{background:#fff1f1!important;border-left-color:#d14343!important;}
+  .repeatColorV9-6 .eventCell{background:#fdf2fa!important;border-left-color:#c241a0!important;}
+
+  .repeatColorV9-1 .personCell{background:#fff8dd!important;}
+  .repeatColorV9-2 .personCell{background:#eef6ff!important;}
+  .repeatColorV9-3 .personCell{background:#eefbf3!important;}
+  .repeatColorV9-4 .personCell{background:#f4f3ff!important;}
+  .repeatColorV9-5 .personCell{background:#fff1f1!important;}
+  .repeatColorV9-6 .personCell{background:#fdf2fa!important;}
+}
+
+@media print{
+  .repeatColorV9-1 .eventCell,
+  .repeatColorV9-2 .eventCell,
+  .repeatColorV9-3 .eventCell,
+  .repeatColorV9-4 .eventCell,
+  .repeatColorV9-5 .eventCell,
+  .repeatColorV9-6 .eventCell{
+    background:#fff!important;
+    border-left-color:#777!important;
+  }
+
+  .repeatColorV9-1 .personCell,
+  .repeatColorV9-2 .personCell,
+  .repeatColorV9-3 .personCell,
+  .repeatColorV9-4 .personCell,
+  .repeatColorV9-5 .personCell,
+  .repeatColorV9-6 .personCell{
+    background:#fff!important;
+  }
+}
+
+/* 08-uniform-day-column-v29.css */
+/* všechny dny stejné */
+.dayCell{
+  background:#eef5fb!important;
+}
+
+/* zrušit zebra/alternating efekty */
+tr:nth-child(even) .dayCell,
+tr:nth-child(odd) .dayCell,
+tbody tr:nth-child(even) .dayCell,
+tbody tr:nth-child(odd) .dayCell{
+  background:#eef5fb!important;
+}
+
+/* 09-podpis-final-clean-41.css */
+.signatureWrapV16,
+.signatureWrapV17,
+.signatureWrap35,
+.signatureWrap36,
+.signatureWrap40,
+.signatureBlock,
+.docSignature,
+.footerSignature{
+  display:none!important;
+}
+
+.podpisFinal41{
+  width:100%;
+  margin-top:10mm;
+  display:flex;
+  justify-content:flex-end;
+}
+
+.podpisFinal41Box{
+  font-family:'Open Sans', Arial, sans-serif;
+  font-size:14px;
+  line-height:1.35;
+  text-align:right;
+  color:#111827;
+}
+
+.podpisFinal41Name{
+  font-weight:800;
+}
+
+.podpisFinal41Role{
+  font-weight:400;
+}
+
+/* 10-repeat-stable-style-v50.css */
+.eventCell{
+  border-left:6px solid transparent!important;
+  padding-left:12px!important;
+}
+
+/* clear any pseudo markers from previous versions */
+.eventCell::before,
+.personCell::before{
+  content:none!important;
+  display:none!important;
+}
+
+@media screen{
+  .repeatColorV50-1 .eventCell{background:#fff8dd!important;border-left-color:#c9a400!important;}
+  .repeatColorV50-2 .eventCell{background:#eef6ff!important;border-left-color:#3b82f6!important;}
+  .repeatColorV50-3 .eventCell{background:#eefbf3!important;border-left-color:#22a06b!important;}
+  .repeatColorV50-4 .eventCell{background:#f4f3ff!important;border-left-color:#7c6cf2!important;}
+  .repeatColorV50-5 .eventCell{background:#fff1f1!important;border-left-color:#d14343!important;}
+  .repeatColorV50-6 .eventCell{background:#fdf2fa!important;border-left-color:#c241a0!important;}
+
+  .repeatColorV50-1 .personCell{background:#fff8dd!important;}
+  .repeatColorV50-2 .personCell{background:#eef6ff!important;}
+  .repeatColorV50-3 .personCell{background:#eefbf3!important;}
+  .repeatColorV50-4 .personCell{background:#f4f3ff!important;}
+  .repeatColorV50-5 .personCell{background:#fff1f1!important;}
+  .repeatColorV50-6 .personCell{background:#fdf2fa!important;}
+}
+
+@media print{
+  .repeatColorV50-1 .eventCell,
+  .repeatColorV50-2 .eventCell,
+  .repeatColorV50-3 .eventCell,
+  .repeatColorV50-4 .eventCell,
+  .repeatColorV50-5 .eventCell,
+  .repeatColorV50-6 .eventCell{
+    background:#fff!important;
+    border-left-color:#777!important;
+  }
+
+  .repeatColorV50-1 .personCell,
+  .repeatColorV50-2 .personCell,
+  .repeatColorV50-3 .personCell,
+  .repeatColorV50-4 .personCell,
+  .repeatColorV50-5 .personCell,
+  .repeatColorV50-6 .personCell{
+    background:#fff!important;
+  }
+}
+
+/* 11-signature-field-compact-v51.css */
+#signature{
+  min-height:42px!important;
+  height:42px!important;
+  max-height:60px!important;
+  padding:9px 12px!important;
+  resize:vertical!important;
+  line-height:1.35!important;
+}
+
+/* 12-edupage-status-v55.css */
+.edupageStatusV55{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:800;
+  line-height:1;
+  width:max-content;
+  margin-top:8px;
+  border:1px solid rgba(0,0,0,.08);
+}
+.edupageStatusDotV55{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+.edupageStatusV55.loading{
+  background:#fff7e6;
+  color:#8a5300;
+}
+.edupageStatusV55.loading .edupageStatusDotV55{
+  background:#f59e0b;
+  box-shadow:0 0 0 4px rgba(245,158,11,.16);
+  animation:pulseV55 1s infinite;
+}
+.edupageStatusV55.connected{
+  background:#ecfdf3;
+  color:#067647;
+}
+.edupageStatusV55.connected .edupageStatusDotV55{
+  background:#12b76a;
+  box-shadow:0 0 0 4px rgba(18,183,106,.14);
+}
+.edupageStatusV55.error{
+  background:#fff1f1;
+  color:#b42318;
+}
+.edupageStatusV55.error .edupageStatusDotV55{
+  background:#f04438;
+  box-shadow:0 0 0 4px rgba(240,68,56,.14);
+}
+@keyframes pulseV55{
+  0%{opacity:.45}
+  50%{opacity:1}
+  100%{opacity:.45}
+}
+
+/* 13-screen-layout-v86.css */
+/* Poznámka v levém zadávání: bílá, jako běžný formulář */
+#weeklyNoteInput{
+  background:#fff!important;
+  border:1px solid #d0d5dd!important;
+  border-radius:14px!important;
+  border-left:4px solid var(--gold)!important;
+  min-height:125px!important;
+  font-size:14px!important;
+  font-weight:700!important;
+  color:#344054!important;
+}
+
+/* V náhledu poznámka zůstává zvýrazněná */
+.weeklyNotePreviewV8{
+  background:linear-gradient(135deg,#fff8dd,#fffdf3)!important;
+  border-left:6px solid var(--gold)!important;
+  color:#9b1c1c!important;
+}
+
+/* Hlavička podle skutečného vzhledu ze screenshotu */
+.compactHeaderV62{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 150px!important;
+  align-items:start!important;
+  gap:18px!important;
+  padding:0 0 7px 0!important;
+  margin:0 0 6px 0!important;
+  border-bottom:3px solid #0f4c81!important;
+}
+
+.compactHeaderLeftV62{
+  display:grid!important;
+  grid-template-rows:auto auto auto!important;
+  align-content:start!important;
+  text-align:left!important;
+  min-height:94px!important;
+}
+
+.compactHeaderSchoolV62{
+  grid-row:1!important;
+  font-size:15px!important;
+  line-height:1.15!important;
+  font-weight:800!important;
+  color:#475467!important;
+  margin:0!important;
+  padding:0!important;
+}
+
+.compactHeaderTitleV62{
+  grid-row:2!important;
+  font-size:38px!important;
+  line-height:.95!important;
+  font-weight:900!important;
+  letter-spacing:.2px!important;
+  color:#0f4c81!important;
+  text-transform:uppercase!important;
+  margin:16px 0 0 0!important;
+  padding:0!important;
+}
+
+.compactHeaderDatesV62{
+  grid-row:3!important;
+  position:static!important;
+  font-size:16px!important;
+  line-height:1.1!important;
+  font-weight:900!important;
+  color:#334155!important;
+  margin:2px 0 0 0!important;
+  text-align:left!important;
+  white-space:nowrap!important;
+}
+
+.compactHeaderLogoV62{
+  width:148px!important;
+  height:104px!important;
+  object-fit:contain!important;
+  justify-self:end!important;
+  align-self:start!important;
+  margin:0!important;
+}
+
+/* Záloha, kdyby se v některé verzi použila původní hlavička */
+.docHeader,.planHeader{
+  padding:0 0 7px 0!important;
+  margin:0 0 6px 0!important;
+  border-bottom:3px solid #0f4c81!important;
+}
+
+.docSchool,.planSchool,.schoolName,.schoolTitle{
+  font-size:15px!important;
+  font-weight:800!important;
+  color:#475467!important;
+}
+
+.docTitle,.planTitle{
+  font-size:38px!important;
+  font-weight:900!important;
+  color:#0f4c81!important;
+}
+
+.docDates,.planDates,.weekDates,.dateRange{
+  font-size:16px!important;
+  font-weight:900!important;
+  color:#334155!important;
+}
+
+/* Badge EduPage: zachovat jako pill při všech stavech */
+.edupageStatusV55,
+.edupageBadgeV80,
+.edupageBadgeV81{
+  font-family:inherit!important;
+}
+
+/* tisk */
+@page{
+  size:A4 landscape;
+  margin:7mm;
+}
+
+@media print{
+  .compactHeaderV62{
+    grid-template-columns:minmax(0,1fr) 126px!important;
+    gap:10px!important;
+    padding-bottom:4px!important;
+    margin-bottom:4px!important;
+  }
+
+  .compactHeaderLeftV62{
+    min-height:80px!important;
+  }
+
+  .compactHeaderSchoolV62{
+    font-size:12px!important;
+  }
+
+  .compactHeaderTitleV62{
+    font-size:30px!important;
+    margin-top:10px!important;
+  }
+
+  .compactHeaderDatesV62{
+    font-size:13px!important;
+  }
+
+  .compactHeaderLogoV62{
+    width:124px!important;
+    height:86px!important;
+  }
+}
+
+/* 14-left-panel-unified-v88.css */
+/* LEVÝ PANEL – jednotný moderní vzhled */
+.panel{
+  background:#f6f9fc!important;
+  border-radius:22px!important;
+  padding:16px!important;
+  border:1px solid #dbe7f3!important;
+  box-shadow:0 14px 34px rgba(15,76,129,.08)!important;
+}
+
+/* všechny moduly vlevo stejně */
+.panel .section,
+.weeklyNotePanel,
+#weeklyNoteSection{
+  background:#ffffff!important;
+  border:1px solid #d9e4f2!important;
+  border-left:5px solid var(--gold)!important;
+  border-radius:18px!important;
+  padding:14px!important;
+  margin-bottom:14px!important;
+  box-shadow:0 8px 22px rgba(15,76,129,.055)!important;
+}
+
+/* nadpisy modulů */
+.panel .sectionTitle,
+.weeklyNotePanelTitle{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:8px!important;
+  margin:0 0 10px 0!important;
+  color:var(--blue-dark)!important;
+  font-size:14px!important;
+  font-weight:900!important;
+  letter-spacing:.1px!important;
+  text-align:left!important;
+}
+
+.panel .sectionTitle::before,
+.weeklyNotePanelTitle::before{
+  content:"";
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:var(--gold);
+  flex:0 0 auto;
+}
+
+/* popisky polí */
+.panel label{
+  display:block!important;
+  margin:0 0 6px 0!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  color:#667085!important;
+}
+
+/* vstupní pole jednotně */
+.panel input,
+.panel textarea,
+.panel select,
+#weeklyNoteInput,
+#signature{
+  width:100%!important;
+  background:#ffffff!important;
+  border:1px solid #d0d5dd!important;
+  border-radius:13px!important;
+  color:#344054!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:14px!important;
+  font-weight:600!important;
+  line-height:1.35!important;
+  padding:9px 12px!important;
+  box-shadow:none!important;
+  outline:none!important;
+}
+
+.panel input:focus,
+.panel textarea:focus,
+.panel select:focus,
+#weeklyNoteInput:focus,
+#signature:focus{
+  border-color:#0f4c81!important;
+  box-shadow:0 0 0 4px rgba(15,76,129,.10)!important;
+}
+
+/* poznámka má být větší, ale stále stejný styl */
+#weeklyNoteInput{
+  min-height:98px!important;
+  resize:vertical!important;
+}
+
+/* podpis menší */
+#signature{
+  min-height:42px!important;
+  height:42px!important;
+  resize:vertical!important;
+}
+
+/* tlačítka sjednoceně */
+.panel button{
+  border-radius:13px!important;
+  border:1px solid #cbd5e1!important;
+  background:#ffffff!important;
+  color:#0f172a!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:12.5px!important;
+  font-weight:850!important;
+  padding:9px 11px!important;
+  box-shadow:0 4px 12px rgba(15,76,129,.06)!important;
+}
+
+.panel button:hover{
+  background:#eef6ff!important;
+  border-color:#9cc5e8!important;
+}
+
+/* předchozí/další týden více jako ovládání aplikace */
+#weekButtonsWrapperV7{
+  gap:9px!important;
+}
+
+#weekButtonsWrapperV7 > div{
+  gap:9px!important;
+}
+
+/* status EduPage sladit s kartami */
+.edupageStatusV55,
+.edupageBadgeV80,
+.edupageBadgeV81,
+.edupageBadgeV80,
+.edupageBadgeV81{
+  font-family:'Open Sans',sans-serif!important;
+  border-radius:999px!important;
+  box-shadow:none!important;
+}
+
+/* grafika dole čistě bez další karty */
+.brainGraphicWrapV60,
+.brainGraphicWrapV61,
+.brainGraphicWrapV62{
+  background:#ffffff!important;
+  border:1px solid #d9e4f2!important;
+  border-radius:18px!important;
+  padding:12px!important;
+  margin-top:14px!important;
+  box-shadow:0 8px 22px rgba(15,76,129,.05)!important;
+}
+
+/* Náhled poznámky zůstává zvýrazněný v pravé části */
+.weeklyNotePreviewV8{
+  background:linear-gradient(135deg,#fff8dd,#fffdf3)!important;
+  border-left:6px solid var(--gold)!important;
+  color:#9b1c1c!important;
+}
+
+/* 15-note-title-no-dot-v89.css */
+.weeklyNotePanelTitle::before{
+  content:none!important;
+  display:none!important;
+}
+.weeklyNotePanelTitle{
+  gap:0!important;
+}
+
+/* 16-edupage-badge-lock-v89.css */
+#calendarInfo{
+  min-height:34px!important;
+}
+.eduBadgeLockV89{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  padding:6px 10px!important;
+  border-radius:999px!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  line-height:1!important;
+  border:1px solid rgba(0,0,0,.08)!important;
+}
+.eduBadgeLockV89 .dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+}
+.eduBadgeLockV89.loading{
+  background:#fff7e6!important;
+  color:#8a5300!important;
+  border-color:#fedf89!important;
+}
+.eduBadgeLockV89.loading .dot{
+  background:#f59e0b!important;
+  animation:eduPulseV89 .85s infinite;
+}
+.eduBadgeLockV89.connected{
+  background:#ecfdf3!important;
+  color:#067647!important;
+  border-color:#abefc6!important;
+}
+.eduBadgeLockV89.connected .dot{
+  background:#12b76a!important;
+}
+.eduBadgeLockV89.error{
+  background:#fff1f1!important;
+  color:#b42318!important;
+  border-color:#fecdca!important;
+}
+.eduBadgeLockV89.error .dot{
+  background:#f04438!important;
+}
+@keyframes eduPulseV89{
+  0%{opacity:.45}
+  50%{opacity:1}
+  100%{opacity:.45}
+}
+
+/* 17-header-direct-v93.css */
+/* Přímá úprava skutečné hlavičky v renderPreview – bez zásahu do funkcí */
+.previewPage .docHeader.headerV93{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 165px!important;
+  align-items:start!important;
+  gap:18px!important;
+  padding:0 0 7px 0!important;
+  margin:0 0 6px 0!important;
+  border-bottom:3px solid #0f4c81!important;
+}
+
+.previewPage .docHeaderTextV93{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  text-align:left!important;
+  min-height:112px!important;
+}
+
+.previewPage .docSchoolFullV93{
+  font-size:15px!important;
+  line-height:1.15!important;
+  font-weight:800!important;
+  color:#475467!important;
+  margin:0!important;
+  padding:0!important;
+}
+
+.previewPage .docHeader.headerV93 .docTitle{
+  font-size:39px!important;
+  line-height:.92!important;
+  font-weight:900!important;
+  letter-spacing:.2px!important;
+  text-transform:uppercase!important;
+  color:#0f4c81!important;
+  margin:17px 0 0 0!important;
+  padding:0!important;
+  text-align:left!important;
+}
+
+.previewPage .docHeader.headerV93 .docDates{
+  font-size:16px!important;
+  line-height:1.08!important;
+  font-weight:900!important;
+  color:#334155!important;
+  margin:3px 0 0 0!important;
+  padding:0!important;
+  text-align:left!important;
+  white-space:nowrap!important;
+}
+
+.previewPage .docHeader.headerV93 .docLogo{
+  width:162px!important;
+  height:112px!important;
+  max-width:162px!important;
+  max-height:112px!important;
+  object-fit:contain!important;
+  justify-self:end!important;
+  align-self:start!important;
+  margin:0!important;
+}
+
+@media print{
+  .previewPage .docHeader.headerV93{
+    grid-template-columns:minmax(0,1fr) 132px!important;
+    gap:10px!important;
+    padding-bottom:4px!important;
+    margin-bottom:4px!important;
+  }
+
+  .previewPage .docHeaderTextV93{
+    min-height:90px!important;
+  }
+
+  .previewPage .docSchoolFullV93{
+    font-size:12px!important;
+  }
+
+  .previewPage .docHeader.headerV93 .docTitle{
+    font-size:31px!important;
+    margin-top:11px!important;
+  }
+
+  .previewPage .docHeader.headerV93 .docDates{
+    font-size:13px!important;
+  }
+
+  .previewPage .docHeader.headerV93 .docLogo{
+    width:130px!important;
+    height:90px!important;
+  }
+}
+
+/* 18-header-align-v94.css */
+/* název školy výš – zarovnání k horní hraně loga */
+.previewPage .docSchoolFullV93{
+  transform:translateY(-4px)!important;
+}
+
+/* textový blok roztáhnout na výšku loga */
+.previewPage .docHeaderTextV93{
+  min-height:112px!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+
+/* TÝDENNÍ PLÁN + datum dolů */
+.previewPage .docHeader.headerV93 .docTitle{
+  margin-top:auto!important;
+  margin-bottom:2px!important;
+}
+
+.previewPage .docHeader.headerV93 .docDates{
+  margin-top:0!important;
+}
+
+/* tisková varianta */
+@media print{
+  .previewPage .docSchoolFullV93{
+    transform:translateY(-2px)!important;
+  }
+
+  .previewPage .docHeaderTextV93{
+    min-height:90px!important;
+  }
+}
+
+/* 19-move-header-up-v95.css */
+/* posun celé stránky výš */
+.previewPage{
+  margin-top:-10px!important;
+  padding-top:0!important;
+}
+
+/* menší mezera nad hlavičkou */
+.previewPage .docHeader.headerV93{
+  margin-top:-6px!important;
+  padding-top:0!important;
+}
+
+/* tisk */
+@media print{
+  .previewPage{
+    margin-top:-6px!important;
+  }
+
+  .previewPage .docHeader.headerV93{
+    margin-top:-3px!important;
+  }
+}
+
+/* 20-export-esborovna-v102.css */
+button.hiddenTopButtonV102{
+  display:none!important;
+}
+
+button.esborovnaTopButtonV102{
+  border-radius:13px!important;
+  border:1px solid #0f4c81!important;
+  background:#0f4c81!important;
+  color:#fff!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  font-weight:850!important;
+  padding:9px 13px!important;
+  cursor:pointer!important;
+  box-shadow:0 4px 12px rgba(15,76,129,.08)!important;
+}
+
+/* 21-hide-left-dates-v103.css */
+/* Skrýt datum Od/Do jen v levém ovládacím panelu */
+#weekFrom,
+#weekTo{
+  position:absolute!important;
+  left:-9999px!important;
+  width:1px!important;
+  height:1px!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+
+#weekFrom.closest-hide,
+#weekTo.closest-hide{
+  display:none!important;
+}
+
+/* schovat celé řádky/fieldy obsahující weekFrom/weekTo pomocí JS třídy */
+.hideWeekDateFieldV103{
+  display:none!important;
+}
+
+/* 22-reset-print-preview-v110.css */
+@page{
+  size:A4 portrait;
+  margin:5mm;
+}
+
+@media print{
+  html,body{
+    margin:0!important;
+    padding:0!important;
+    background:#fff!important;
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+  }
+
+  .panel,
+  .toolbar,
+  .topbar,
+  .appToolbar{
+    display:none!important;
+  }
+
+  .layout,
+  .previewWrap,
+  .preview,
+  .previewPage{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    box-shadow:none!important;
+    background:#fff!important;
+  }
+}
+
+/* 23-clean-pdf-v113.css */
+/* =====================================================
+   NOVÝ ČISTÝ PDF/TISK REŽIM
+   PDF používá stejný layout jako tisk
+   bez html2pdf deformací a prázdné stránky
+   ===================================================== */
+
+@page{
+  size:A4 portrait;
+  margin:8mm 6mm 6mm 6mm;
+}
+
+@media print{
+
+  html,
+  body{
+    margin:0!important;
+    padding:0!important;
+    background:#ffffff!important;
+
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+    color-adjust:exact!important;
+  }
+
+  *{
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+    color-adjust:exact!important;
+  }
+
+  /* skrýt UI */
+  .panel,
+  .toolbar,
+  .topbar,
+  .appToolbar{
+    display:none!important;
+  }
+
+  /* žádná prázdná stránka */
+  .layout,
+  .previewWrap,
+  .preview,
+  .previewPage{
+    page-break-before:auto!important;
+    break-before:auto!important;
+    page-break-after:auto!important;
+    break-after:auto!important;
+  }
+
+  .layout,
+  .previewWrap,
+  .preview{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    box-shadow:none!important;
+    background:#fff!important;
+  }
+
+  /* HLAVNÍ STRÁNKA */
+  .previewPage{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding-top:4mm!important;
+    padding-left:0!important;
+    padding-right:0!important;
+    padding-bottom:0!important;
+
+    border:0!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    background:#fff!important;
+    overflow:visible!important;
+  }
+
+  /* HLAVIČKA */
+  .docHeader.headerV93{
+    margin-top:0!important;
+    padding-top:0!important;
+
+    grid-template-columns:minmax(0,1fr) 120px!important;
+    align-items:start!important;
+  }
+
+  .docSchoolFullV93{
+    font-size:11pt!important;
+    line-height:1.1!important;
+  }
+
+  .docHeader.headerV93 .docTitle{
+    font-size:30pt!important;
+    line-height:.95!important;
+  }
+
+  .docHeader.headerV93 .docDates{
+    font-size:12pt!important;
+  }
+
+  /* LOGO - bez deformace */
+  .docHeader.headerV93 .docLogo{
+    width:118px!important;
+    height:auto!important;
+    max-width:118px!important;
+    max-height:none!important;
+    object-fit:contain!important;
+    aspect-ratio:auto!important;
+  }
+
+  /* TABULKA */
+  table{
+    width:100%!important;
+    table-layout:fixed!important;
+    border-collapse:separate!important;
+    border-spacing:0!important;
+  }
+
+  th{
+    background:#0f4c81!important;
+    color:#ffffff!important;
+  }
+
+  /* zachovat barvy */
+  .dayCell{
+    background:#eef5fb!important;
+    color:#0f4c81!important;
+  }
+
+  .repeatColorV50-1 .eventCell{border-left-color:#c9a400!important}
+  .repeatColorV50-2 .eventCell{border-left-color:#3b82f6!important}
+  .repeatColorV50-3 .eventCell{border-left-color:#22a06b!important}
+  .repeatColorV50-4 .eventCell{border-left-color:#7c6cf2!important}
+  .repeatColorV50-5 .eventCell{border-left-color:#d14343!important}
+  .repeatColorV50-6 .eventCell{border-left-color:#c241a0!important}
+
+  /* podpis držet pohromadě */
+  .podpisFinal41,
+  .signatureWrapFinal34,
+  .signatureWrap40,
+  .signatureWrap36{
+    break-inside:avoid!important;
+    page-break-inside:avoid!important;
+  }
+}
+
+/* 24-restore-cols-v114.css */
+@media print{
+
+  /* vrátit původní proporce */
+  .dayCell{
+    width:auto!important;
+    min-width:unset!important;
+    max-width:none!important;
+    font-size:inherit!important;
+    line-height:inherit!important;
+    padding-left:inherit!important;
+    padding-right:inherit!important;
+  }
+
+  .timeCell{
+    width:auto!important;
+    min-width:unset!important;
+    max-width:none!important;
+    font-size:inherit!important;
+    line-height:inherit!important;
+    padding-left:inherit!important;
+    padding-right:inherit!important;
+  }
+
+  .personCell{
+    width:auto!important;
+    min-width:unset!important;
+    max-width:none!important;
+    font-size:inherit!important;
+    line-height:inherit!important;
+  }
+
+  .eventCell{
+    width:auto!important;
+    font-size:inherit!important;
+    line-height:inherit!important;
+  }
+
+  table{
+    table-layout:auto!important;
+  }
+}
+
+/* 25-pdf-button-cols-v115.css */
+/* =====================================================
+   Jemné doladění sloupců pro tisk/PDF
+   ===================================================== */
+
+@media print{
+
+  /* datum trochu širší */
+  .dayCell{
+    width:21mm!important;
+    min-width:21mm!important;
+    max-width:21mm!important;
+  }
+
+  /* čas tak, aby byl vždy na jednom řádku */
+  .timeCell{
+    width:27mm!important;
+    min-width:27mm!important;
+    max-width:27mm!important;
+
+    white-space:nowrap!important;
+    word-break:keep-all!important;
+    overflow-wrap:normal!important;
+    text-align:center!important;
+  }
+}
+
+/* stejné i pro PDF režim */
+body.printingV113 .dayCell{
+  width:21mm!important;
+  min-width:21mm!important;
+  max-width:21mm!important;
+}
+
+body.printingV113 .timeCell{
+  width:27mm!important;
+  min-width:27mm!important;
+  max-width:27mm!important;
+
+  white-space:nowrap!important;
+  word-break:keep-all!important;
+  overflow-wrap:normal!important;
+  text-align:center!important;
+}
+
+/* 26-narrow-day-v133.css */
+/* Jen lehce užší den/datum => více místa pro Akce */
+
+.previewPage .dayCell{
+  width:13mm!important;
+  min-width:13mm!important;
+  max-width:13mm!important;
+
+  padding-left:1mm!important;
+  padding-right:1mm!important;
+
+  text-align:center!important;
+}
+
+@media print{
+  .dayCell{
+    width:13mm!important;
+    min-width:13mm!important;
+    max-width:13mm!important;
+
+    padding-left:1mm!important;
+    padding-right:1mm!important;
+  }
+}
+
+/* 27-day-padding-v134.css */
+/* Den/Datum trochu širší + stejné okraje jako Čas */
+
+.previewPage .dayCell{
+  width:15mm!important;
+  min-width:15mm!important;
+  max-width:15mm!important;
+
+  padding-left:2mm!important;
+  padding-right:1mm!important;
+
+  text-align:center!important;
+  vertical-align:middle!important;
+}
+
+@media print{
+  .dayCell{
+    width:15mm!important;
+    min-width:15mm!important;
+    max-width:15mm!important;
+
+    padding-left:2mm!important;
+    padding-right:1mm!important;
+
+    text-align:center!important;
+    vertical-align:middle!important;
+  }
+}
+
+/* 28-day-equal-padding-v135.css */
+/* Stejné okraje z obou stran ve sloupci Den/Datum */
+
+.previewPage .dayCell{
+  width:15mm!important;
+  min-width:15mm!important;
+  max-width:15mm!important;
+
+  padding-left:2mm!important;
+  padding-right:2mm!important;
+
+  text-align:center!important;
+  vertical-align:middle!important;
+}
+
+@media print{
+  .dayCell{
+    width:15mm!important;
+    min-width:15mm!important;
+    max-width:15mm!important;
+
+    padding-left:2mm!important;
+    padding-right:2mm!important;
+
+    text-align:center!important;
+    vertical-align:middle!important;
+  }
+}
+
+/* 29-day-slightly-wider-v136.css */
+/* Den/Datum jen trochu širší */
+
+.previewPage .dayCell{
+  width:16.5mm!important;
+  min-width:16.5mm!important;
+  max-width:16.5mm!important;
+
+  padding-left:2mm!important;
+  padding-right:2mm!important;
+
+  text-align:center!important;
+  vertical-align:middle!important;
+}
+
+@media print{
+  .dayCell{
+    width:16.5mm!important;
+    min-width:16.5mm!important;
+    max-width:16.5mm!important;
+
+    padding-left:2mm!important;
+    padding-right:2mm!important;
+
+    text-align:center!important;
+    vertical-align:middle!important;
+  }
+}
+
+/* 30-day-bit-more-v137.css */
+/* Den/Datum ještě trochu širší */
+
+.previewPage .dayCell{
+  width:18mm!important;
+  min-width:18mm!important;
+  max-width:18mm!important;
+
+  padding-left:2mm!important;
+  padding-right:2mm!important;
+
+  text-align:center!important;
+  vertical-align:middle!important;
+}
+
+@media print{
+  .dayCell{
+    width:18mm!important;
+    min-width:18mm!important;
+    max-width:18mm!important;
+
+    padding-left:2mm!important;
+    padding-right:2mm!important;
+
+    text-align:center!important;
+    vertical-align:middle!important;
+  }
+}
+
+/* 31-top-align-only-v139.css */
+/* Jen vrátit vertikální zarovnání nahoru */
+/* NIC jiného neměníme */
+
+.previewPage .eventCell,
+.previewPage .personCell,
+.previewPage .timeCell,
+.previewPage .dayCell{
+  vertical-align:top!important;
+}
+
+@media print{
+  .eventCell,
+  .personCell,
+  .timeCell,
+  .dayCell{
+    vertical-align:top!important;
+  }
+}
+
+/* 32-direct-time-footer-v161.css */
+/* Čas se nyní generuje přímo v renderPreview – bez blikání a bez dodatečného přepisování */
+.previewPage .timeCell{
+  width:30mm!important;
+  min-width:30mm!important;
+  max-width:30mm!important;
+  padding-left:2mm!important;
+  padding-right:2mm!important;
+  text-align:left!important;
+  vertical-align:top!important;
+  white-space:nowrap!important;
+  font-variant-numeric:tabular-nums!important;
+}
+
+.timeCleanV161{
+  display:inline-flex!important;
+  align-items:baseline!important;
+  justify-content:flex-start!important;
+  white-space:nowrap!important;
+  font-variant-numeric:tabular-nums!important;
+}
+
+.timeRangeV161{
+  display:inline-block!important;
+  font-size:10px!important;
+  font-weight:600!important;
+  color:#64748b!important;
+  white-space:nowrap!important;
+}
+
+.lessonV161{
+  display:inline-block!important;
+  margin-left:8px!important;
+  font-size:7.5px!important;
+  font-weight:500!important;
+  color:#9ea8b5!important;
+  white-space:nowrap!important;
+}
+
+/* Zkrácení zbytečné bílé plochy */
+.previewPage{
+  min-height:auto!important;
+  height:auto!important;
+  padding-bottom:8px!important;
+}
+
+/* podpis o řádek níž pod tabulkou */
+.podpisFinal41{
+  width:100%!important;
+  margin-top:18px!important;
+  margin-bottom:0!important;
+  display:flex!important;
+  justify-content:flex-end!important;
+}
+
+.podpisFinal41Box{
+  font-family:'Open Sans', Arial, sans-serif!important;
+  font-size:14px!important;
+  line-height:1.35!important;
+  text-align:right!important;
+  color:#111827!important;
+}
+
+.podpisFinal41Name{
+  font-weight:800!important;
+}
+
+.podpisFinal41Role{
+  font-weight:400!important;
+}
+
+/* patička přímo pod obsahem stránky, ne v šedém okraji */
+.schoolFooterV161{
+  width:100%;
+  text-align:center;
+  margin:14px auto 0 auto;
+  line-height:1.15;
+  user-select:none;
+}
+
+.schoolFooterMainV161{
+  font-size:10px;
+  font-weight:600;
+  color:#64748b;
+  letter-spacing:.1px;
+}
+
+.schoolFooterAuthorV161{
+  margin-top:2px;
+  font-size:8px;
+  color:#a1a1aa;
+}
+
+@media print{
+  .timeCell{
+    width:30mm!important;
+    min-width:30mm!important;
+    max-width:30mm!important;
+    padding-left:2mm!important;
+    padding-right:2mm!important;
+  }
+
+  .timeRangeV161{
+    font-size:8pt!important;
+  }
+
+  .lessonV161{
+    font-size:6.4pt!important;
+  }
+
+  .previewPage{
+    min-height:auto!important;
+    height:auto!important;
+    padding-bottom:2mm!important;
+  }
+
+  .podpisFinal41{
+    margin-top:5mm!important;
+  }
+
+  .schoolFooterV161{
+    margin-top:4mm!important;
+  }
+
+  .schoolFooterMainV161{
+    font-size:8pt!important;
+  }
+
+  .schoolFooterAuthorV161{
+    font-size:6.5pt!important;
+  }
+}
+
+/* 33-empty-days-all-day-v162.css */
+.timeRangeV161{
+  font-size:10px!important;
+  font-weight:600!important;
+  color:#64748b!important;
+}
+.previewPage tr.emptyDayV162 .timeCell{
+  color:transparent!important;
+}
+
+/* 34-footer-bg-allday-v164.css */
+/* Ověřené: celý den používá stejnou třídu jako běžný čas */
+.timeCleanV161,
+.timeRangeV161{
+  color:#64748b!important;
+  font-weight:600!important;
+}
+
+/* Zkrácení bílé stránky */
+.previewPage{
+  min-height:auto!important;
+  height:auto!important;
+  padding-bottom:6px!important;
+}
+
+/* Footer mimo bílou stránku – na světle modrém pozadí */
+.schoolFooterOutsideV164{
+  width:100%;
+  text-align:center;
+  margin:10px auto 8px auto;
+  line-height:1.15;
+  user-select:none;
+}
+
+.schoolFooterOutsideMainV164{
+  font-size:10px;
+  font-weight:600;
+  color:#64748b;
+  letter-spacing:.1px;
+}
+
+.schoolFooterOutsideAuthorV164{
+  margin-top:2px;
+  font-size:8px;
+  color:#a1a1aa;
+}
+
+@media print{
+  .schoolFooterOutsideV164{
+    display:none!important;
+  }
+}
+
+/* 35-manual-event-real-v167.css */
+/* Footer patří na konec webové stránky, ne do bílé stránky/náhledu */
+.schoolFooterOutsideV164,
+.schoolFooterInsideV165,
+.schoolFooterInsideV166,
+.schoolFooterV161,
+.schoolFooterV160,
+.schoolFooterV157{
+  display:none!important;
+}
+
+.webCopyrightV167{
+  width:100%;
+  text-align:center;
+  margin:18px auto 16px auto;
+  line-height:1.15;
+  user-select:none;
+}
+
+.webCopyrightMainV167{
+  font-size:10px;
+  font-weight:600;
+  color:#64748b;
+  letter-spacing:.1px;
+}
+
+.webCopyrightAuthorV167{
+  margin-top:2px;
+  font-size:8px;
+  color:#a1a1aa;
+}
+
+/* Modul vlastního záznamu */
+.manualEventV167{
+  background:#fff;
+  border:1px solid #d9e4f2;
+  border-left:5px solid var(--gold);
+  border-radius:18px;
+  padding:14px;
+  margin-bottom:14px;
+  box-shadow:0 8px 22px rgba(15,76,129,.055);
+}
+
+.manualEventTitleV167{
+  margin:0 0 10px 0;
+  color:var(--blue-dark);
+  font-size:14px;
+  font-weight:900;
+}
+
+/* bez odrážky / puntíku */
+.manualEventTitleV167::before{
+  display:none!important;
+  content:none!important;
+}
+
+.manualEventGridV167{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.manualEventV167 label{
+  font-size:12px!important;
+  font-weight:800!important;
+  color:#667085!important;
+}
+
+.manualEventV167 input,
+.manualEventV167 select{
+  width:100%!important;
+  background:#fff!important;
+  border:1px solid #d0d5dd!important;
+  border-radius:13px!important;
+  color:#344054!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  font-weight:600!important;
+  padding:8px 10px!important;
+  box-shadow:none!important;
+}
+
+.manualEventWideV167{
+  grid-column:1 / -1;
+}
+
+.manualEventTimeRowV167{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  grid-column:1 / -1;
+}
+
+.manualAllDayV167{
+  grid-column:1 / -1;
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  font-size:12px!important;
+  color:#475467!important;
+  font-weight:800!important;
+  margin-top:2px;
+}
+
+.manualAllDayV167 input{
+  width:15px!important;
+  height:15px!important;
+  padding:0!important;
+}
+
+.manualEventBtnV167{
+  grid-column:1 / -1;
+  border-radius:13px!important;
+  border:1px solid #0f4c81!important;
+  background:#0f4c81!important;
+  color:#fff!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  font-weight:850!important;
+  padding:10px 12px!important;
+  cursor:pointer!important;
+}
+
+@media print{
+  .webCopyrightV167{
+    display:none!important;
+  }
+}
+
+/* 36-manual-edit-delete-v168.css */
+.manualListV168{
+  grid-column:1 / -1;
+  margin-top:8px;
+  display:grid;
+  gap:6px;
+}
+
+.manualListTitleV168{
+  font-size:12px;
+  font-weight:900;
+  color:#475467;
+  margin-top:4px;
+}
+
+.manualItemV168{
+  border:1px solid #e2e8f0;
+  background:#f8fafc;
+  border-radius:12px;
+  padding:8px;
+  display:grid;
+  grid-template-columns:1fr auto auto;
+  gap:6px;
+  align-items:center;
+}
+
+.manualItemTextV168{
+  font-size:11px;
+  line-height:1.25;
+  color:#334155;
+}
+
+.manualItemTextV168 strong{
+  color:#0f4c81;
+}
+
+.manualMiniBtnV168{
+  border-radius:9px!important;
+  padding:6px 8px!important;
+  font-size:11px!important;
+  font-weight:850!important;
+  cursor:pointer!important;
+  border:1px solid #d0d5dd!important;
+  background:#fff!important;
+  color:#0f4c81!important;
+}
+
+.manualDeleteBtnV168{
+  color:#b42318!important;
+  border-color:#fecaca!important;
+  background:#fff5f5!important;
+}
+
+.manualEditNoticeV168{
+  grid-column:1 / -1;
+  display:none;
+  padding:7px 8px;
+  border-radius:10px;
+  background:#fff7e6;
+  border:1px solid #ffd891;
+  color:#7a4b00;
+  font-size:11px;
+  font-weight:800;
+}
+
+.manualEditNoticeV168.show{
+  display:block;
+}
+
+.manualCancelBtnV168{
+  grid-column:1 / -1;
+  display:none;
+  border-radius:13px!important;
+  border:1px solid #d0d5dd!important;
+  background:#fff!important;
+  color:#475467!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  font-weight:850!important;
+  padding:9px 12px!important;
+  cursor:pointer!important;
+}
+
+.manualCancelBtnV168.show{
+  display:block;
+}
+
+/* 37-manual-week-smart-v169.css */
+.manualQuickV169{grid-column:1 / -1}
+.manualQuickGridV169{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px}
+.manualQuickBtnV169{border:1px solid #d0d5dd!important;background:#f8fafc!important;color:#344054!important;border-radius:10px!important;padding:7px 8px!important;font-size:11px!important;font-weight:850!important;cursor:pointer!important}
+.manualQuickBtnV169:hover{background:#eef5fb!important;border-color:#b8c7d9!important}
+.manualListWeekInfoV169{font-size:10.5px;color:#94a3b8;font-weight:700;margin-top:-2px}
+.manualHiddenCountV169{font-size:10.5px;color:#94a3b8;font-weight:700;padding:4px 2px 0}
+.manualTimeHintV169{grid-column:1 / -1;font-size:10.5px;color:#94a3b8;font-weight:700;margin-top:-2px}
+
+/* 38-time-note-week-v170.css */
+/* Rychlé rozsahy pryč, necháme čisté od/do */
+.manualQuickV169,
+.manualTimeHintV169{
+  display:none!important;
+}
+
+/* Kompaktnější výběr času */
+#manualFromV167,
+#manualToV167{
+  max-height:34px!important;
+  padding-top:6px!important;
+  padding-bottom:6px!important;
+  font-size:12px!important;
+}
+
+/* Sloupec Hodina malinko širší */
+.previewPage .timeCell{
+  width:32mm!important;
+  min-width:32mm!important;
+  max-width:32mm!important;
+}
+
+/* Poznámka k týdnu */
+.weekNoteManagerV170{
+  background:#fff;
+  border:1px solid #d9e4f2;
+  border-left:5px solid #0f4c81;
+  border-radius:18px;
+  padding:14px;
+  margin-bottom:14px;
+  box-shadow:0 8px 22px rgba(15,76,129,.055);
+}
+
+.weekNoteTitleV170{
+  margin:0 0 8px 0;
+  color:var(--blue-dark);
+  font-size:14px;
+  font-weight:900;
+}
+
+.weekNoteInfoV170{
+  font-size:10.5px;
+  color:#94a3b8;
+  font-weight:700;
+  margin-bottom:8px;
+}
+
+.weekNoteActionsV170{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:8px;
+}
+
+.weekNoteActionsV170 button{
+  border-radius:13px!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:12px!important;
+  font-weight:850!important;
+  padding:9px 10px!important;
+  cursor:pointer!important;
+}
+
+.weekNoteSaveV170{
+  border:1px solid #0f4c81!important;
+  background:#0f4c81!important;
+  color:#fff!important;
+}
+
+.weekNoteDeleteV170{
+  border:1px solid #fecaca!important;
+  background:#fff5f5!important;
+  color:#b42318!important;
+}
+
+.weekNoteStoredV170{
+  margin-top:8px;
+  padding:8px;
+  border-radius:12px;
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  color:#475467;
+  font-size:11px;
+  line-height:1.3;
+  display:none;
+}
+
+.weekNoteStoredV170.show{
+  display:block;
+}
+
+/* 39-unified-week-note-v171.css */
+/* Sjednocení Poznámky do plánu do jednoho modulu */
+
+/* schovat samostatný novější box, ale ponechat funkce */
+.weekNoteManagerV170{
+  display:none!important;
+}
+
+/* původní modul s textovým polem přestylovat jako ostatní moduly */
+#weeklyNoteInput,
+textarea[name='weeklyNote']{
+  width:100%!important;
+}
+
+/* obal sekce poznámky */
+.unifiedWeekNoteV171{
+  background:#ffffff!important;
+  border:1px solid #d9e4f2!important;
+  border-left:5px solid #0f4c81!important;
+  border-radius:18px!important;
+  padding:14px!important;
+  margin-bottom:14px!important;
+  box-shadow:0 8px 22px rgba(15,76,129,.055)!important;
+}
+
+/* nadpis modulu */
+.unifiedWeekNoteTitleV171{
+  margin:0 0 8px 0;
+  color:var(--blue-dark);
+  font-size:14px;
+  font-weight:900;
+}
+
+.unifiedWeekNoteInfoV171{
+  font-size:10.5px;
+  color:#94a3b8;
+  font-weight:700;
+  margin-bottom:8px;
+}
+
+/* tlačítko */
+.weekNoteAddBtnV171{
+  width:100%!important;
+  margin-top:8px!important;
+  border-radius:13px!important;
+  border:1px solid #0f4c81!important;
+  background:#0f4c81!important;
+  color:#fff!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  font-weight:850!important;
+  padding:10px 12px!important;
+  cursor:pointer!important;
+}
+
+/* informace o uložení */
+.weekNoteStoredInlineV171{
+  display:none;
+  margin-top:8px;
+  padding:8px;
+  border-radius:12px;
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  color:#475467;
+  font-size:11px;
+  line-height:1.3;
+}
+
+.weekNoteStoredInlineV171.show{
+  display:block;
+}
+
+/* 40-note-autosave-v172.css */
+/* Automatické ukládání poznámky – bez tlačítka */
+#weekNoteAddBtnV171{
+  display:none!important;
+}
+
+/* pryč duplicitní nadpisy uvnitř původní sekce */
+.unifiedWeekNoteV171 > .sectionTitle,
+.unifiedWeekNoteV171 > h3,
+.unifiedWeekNoteV171 > h2{
+  display:none!important;
+}
+
+.unifiedWeekNoteTitleV171{
+  margin-bottom:6px!important;
+}
+
+.unifiedWeekNoteInfoV171{
+  margin-bottom:8px!important;
+}
+
+.weekNoteStoredInlineV171{
+  display:none!important;
+}
+
+.weekNoteAutoStatusV172{
+  margin-top:7px;
+  padding:7px 8px;
+  border-radius:11px;
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  color:#64748b;
+  font-size:10.5px;
+  font-weight:800;
+  line-height:1.25;
+}
+
+.weekNoteAutoStatusV172.saving{
+  background:#fff7e6;
+  border-color:#ffd891;
+  color:#7a4b00;
+}
+
+.weekNoteAutoStatusV172.saved{
+  background:#f0fdf4;
+  border-color:#bbf7d0;
+  color:#166534;
+}
+
+/* 41-note-persistent-v173.css */
+/* odstranit duplicitní původní nadpis uvnitř sjednoceného modulu */
+.unifiedWeekNoteV171 .sectionTitle,
+.unifiedWeekNoteV171 h2,
+.unifiedWeekNoteV171 h3,
+.unifiedWeekNoteV171 .manualEventTitleV166,
+.unifiedWeekNoteV171 .manualEventTitleV167{
+  display:none!important;
+}
+
+/* ponechat jen náš jeden nadpis */
+.unifiedWeekNoteV171 .unifiedWeekNoteTitleV171{
+  display:block!important;
+}
+
+/* 42-note-direct-render-v174.css */
+/* Modul Poznámka do plánu – jeden nadpis, automatické ukládání */
+.weekNoteManagerV170,
+#weekNoteAddBtnV171,
+.weekNoteStoredInlineV171{
+  display:none!important;
+}
+
+/* schovat duplicitní vložený nadpis z předchozích verzí */
+.unifiedWeekNoteTitleV171,
+.unifiedWeekNoteInfoV171,
+.unifiedWeekNoteV171 > .sectionTitle{
+  display:none!important;
+}
+
+/* použít původní nadpis jen jednou */
+.weeklyNotePanelTitle{
+  display:block!important;
+  font-size:14px!important;
+  font-weight:900!important;
+  color:var(--blue-dark)!important;
+  margin-bottom:8px!important;
+}
+
+/* celý modul sladit s ostatními */
+#weeklyNoteSection,
+.unifiedWeekNoteV171{
+  background:#ffffff!important;
+  border:1px solid #d9e4f2!important;
+  border-left:5px solid #0f4c81!important;
+  border-radius:18px!important;
+  padding:14px!important;
+  margin-bottom:14px!important;
+  box-shadow:0 8px 22px rgba(15,76,129,.055)!important;
+}
+
+#weeklyNoteInput{
+  background:#fff!important;
+  border:1px solid #d0d5dd!important;
+  border-radius:13px!important;
+  color:#344054!important;
+  font-size:13px!important;
+  font-weight:600!important;
+  min-height:82px!important;
+}
+
+.noteAutoStatusV174{
+  margin-top:7px;
+  padding:7px 8px;
+  border-radius:11px;
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  color:#64748b;
+  font-size:10.5px;
+  font-weight:800;
+  line-height:1.25;
+}
+
+.noteAutoStatusV174.saving{
+  background:#fff7e6;
+  border-color:#ffd891;
+  color:#7a4b00;
+}
+
+.noteAutoStatusV174.saved{
+  background:#f0fdf4;
+  border-color:#bbf7d0;
+  color:#166534;
+}
+
+/* 43-note-source-fixed-v180.css */
+/* =====================================================
+   FINÁLNÍ OPRAVA POZNÁMKY – zdrojový styl, ne jen blikající přepis
+   ===================================================== */
+
+/* Levý modul poznámky: stejná grafika jako ostatní bílé moduly */
+.noteModuleFixedV180{
+  background:#ffffff!important;
+  border:1px solid #d9e4f2!important;
+  border-left:5px solid #0f4c81!important;
+  border-radius:18px!important;
+  padding:14px!important;
+  margin-bottom:14px!important;
+  box-shadow:0 8px 22px rgba(15,76,129,.055)!important;
+}
+
+.noteModuleFixedV180 .sectionTitle,
+.noteModuleFixedV180 .weeklyNotePanelTitle,
+.noteModuleFixedV180 .unifiedWeekNoteInfoV171,
+.noteModuleFixedV180 .weekNoteManagerV170{
+  display:none!important;
+}
+
+.noteModuleTitleFixedV180{
+  display:block!important;
+  margin:0 0 8px 0!important;
+  padding:0!important;
+  color:var(--blue-dark)!important;
+  font-size:14px!important;
+  line-height:1.25!important;
+  font-weight:900!important;
+}
+
+.noteModuleFixedV180 textarea,
+.noteModuleFixedV180 #weeklyNoteInput{
+  width:100%!important;
+  min-height:82px!important;
+  background:#ffffff!important;
+  border:1px solid #d0d5dd!important;
+  border-radius:13px!important;
+  color:#344054!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  font-weight:600!important;
+  line-height:1.35!important;
+  padding:9px 10px!important;
+  box-shadow:none!important;
+  resize:vertical!important;
+}
+
+.noteModuleFixedV180 .noteAutoStatusV174{
+  margin-top:8px!important;
+  padding:7px 8px!important;
+  border-radius:11px!important;
+  background:#f8fafc!important;
+  border:1px solid #e2e8f0!important;
+  color:#64748b!important;
+  font-size:10.5px!important;
+  font-weight:800!important;
+}
+
+/* Náhled poznámky: výrazně tmavě červený styl, trvalý */
+.previewPage .planMessageFixedV180,
+.previewPage .planMessage,
+.previewPage .notice.planNoteMessageV180{
+  background:#fff1f2!important;
+  border:1px solid #fecdd3!important;
+  border-left:6px solid #9f1239!important;
+  border-radius:16px!important;
+  color:#7f1d1d!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  line-height:1.45!important;
+  font-weight:850!important;
+  padding:10px 12px!important;
+  margin:10px 0 12px 0!important;
+  box-shadow:0 6px 16px rgba(159,18,57,.08)!important;
+}
+
+/* Přepsat případné modré notice styly jen u poznámky, ne globálně */
+.previewPage .planMessageFixedV180 *{
+  color:inherit!important;
+}
+
+/* 44-note-colors-final-v181.css */
+/* =====================================================
+   FINÁLNÍ SJEDNOCENÍ POZNÁMKY
+   - levý modul: stejný bílý modul jako ostatní
+   - náhled: jemně žlutý box, tmavě červený větší text
+   ===================================================== */
+
+/* LEVÝ MODUL – nesmí být modrý ani žlutý */
+#weeklyNoteSection,
+.unifiedWeekNoteV171,
+.noteModuleFixedV180,
+.noteModuleRedV179,
+.noteFinalBoxV178{
+  background:#ffffff!important;
+  border:1px solid #d9e4f2!important;
+  border-left:5px solid #0f4c81!important;
+  border-radius:18px!important;
+  padding:14px!important;
+  margin-bottom:14px!important;
+  box-shadow:0 8px 22px rgba(15,76,129,.055)!important;
+}
+
+/* Nadpis modulu stejný jako ostatní moduly */
+#weeklyNoteSection .noteModuleTitleFixedV180,
+#weeklyNoteSection .unifiedWeekNoteTitleV171,
+.unifiedWeekNoteV171 .noteModuleTitleFixedV180,
+.unifiedWeekNoteV171 .unifiedWeekNoteTitleV171{
+  display:block!important;
+  margin:0 0 8px 0!important;
+  padding:0!important;
+  color:var(--blue-dark)!important;
+  background:transparent!important;
+  border:0!important;
+  font-size:14px!important;
+  line-height:1.25!important;
+  font-weight:900!important;
+}
+
+/* Staré modré/žluté podnadpisy pryč */
+#weeklyNoteSection .sectionTitle,
+#weeklyNoteSection .weeklyNotePanelTitle,
+#weeklyNoteSection .unifiedWeekNoteInfoV171,
+#weeklyNoteSection .weekNoteManagerV170,
+.unifiedWeekNoteV171 .sectionTitle,
+.unifiedWeekNoteV171 .weeklyNotePanelTitle,
+.unifiedWeekNoteV171 .unifiedWeekNoteInfoV171,
+.unifiedWeekNoteV171 .weekNoteManagerV170{
+  display:none!important;
+}
+
+/* Vstupní pole v levém modulu */
+#weeklyNoteInput,
+#weeklyNoteSection textarea,
+.unifiedWeekNoteV171 textarea{
+  width:100%!important;
+  min-height:82px!important;
+  background:#ffffff!important;
+  border:1px solid #d0d5dd!important;
+  border-radius:13px!important;
+  color:#344054!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  font-weight:600!important;
+  line-height:1.35!important;
+  padding:9px 10px!important;
+  box-shadow:none!important;
+  resize:vertical!important;
+}
+
+/* Stav automatického uložení – neutrální, ne modrý */
+.noteAutoStatusV174,
+#noteAutoStatusV174{
+  margin-top:8px!important;
+  padding:7px 8px!important;
+  border-radius:11px!important;
+  background:#f8fafc!important;
+  border:1px solid #e2e8f0!important;
+  color:#64748b!important;
+  font-size:10.5px!important;
+  font-weight:800!important;
+  line-height:1.25!important;
+}
+
+/* NÁHLED – všechny možné třídy poznámky přebít na stejný styl */
+.previewPage .planMessageFixedV180,
+.previewPage .planNoteRedV179,
+.previewPage .notePreviewFinalV178,
+.previewPage .planPreviewNoteV177,
+.previewPage .planPreviewNoteV176,
+.previewPage .planNoteV174,
+.previewPage .planMessage,
+.previewPage .notice.planMessageFixedV180,
+.previewPage .notice.planNoteMessageV180{
+  background:#fff7e6!important;
+  border:1px solid #f6d58d!important;
+  border-left:6px solid #9f1239!important;
+  border-radius:16px!important;
+  color:#7f1d1d!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  line-height:1.45!important;
+  font-weight:850!important;
+  padding:10px 12px!important;
+  margin:10px 0 12px 0!important;
+  box-shadow:0 6px 16px rgba(159,18,57,.06)!important;
+}
+
+/* Důležité: kdyby si poznámka nesla modrou třídu notice, zrušit modré dědění */
+.previewPage .planMessageFixedV180 *,
+.previewPage .planMessage *,
+.previewPage .planNoteRedV179 *,
+.previewPage .notePreviewFinalV178 *{
+  color:#7f1d1d!important;
+  font-weight:850!important;
+}
+
+/* 45-note-no-blue-left-yellow-v182.css */
+/* ==========================================
+   Poznámka v náhledu: bez modrého probliknutí
+   + menší mezera před tabulkou
+   ========================================== */
+
+.previewPage .planMessageFixedV180,
+.previewPage .planNoteRedV179,
+.previewPage .notePreviewFinalV178,
+.previewPage .planPreviewNoteV177,
+.previewPage .planPreviewNoteV176,
+.previewPage .planNoteV174,
+.previewPage .planMessage,
+.previewPage .notice.planMessageFixedV180,
+.previewPage .notice.planNoteMessageV180,
+.previewPage .notePreviewNoBlueV182{
+  background:#fff7e6!important;
+  border:1px solid #f6d58d!important;
+  border-left:6px solid #9f1239!important;
+  border-radius:16px!important;
+  color:#7f1d1d!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  line-height:1.45!important;
+  font-weight:850!important;
+  padding:10px 12px!important;
+  margin:8px 0 4px 0!important;
+  box-shadow:0 6px 16px rgba(159,18,57,.06)!important;
+}
+
+/* tabulka hned pod poznámkou */
+.previewPage .notePreviewNoBlueV182 + table,
+.previewPage .planMessageFixedV180 + table,
+.previewPage .planMessage + table{
+  margin-top:2px!important;
+}
+
+/* ==========================================
+   Levá část: sjednocení modulů
+   Poznámka do plánu = žluté zvýraznění jako ostatní
+   ========================================== */
+
+#weeklyNoteSection,
+.unifiedWeekNoteV171,
+.noteModuleFixedV180,
+.noteModuleRedV179,
+.noteFinalBoxV178{
+  background:#ffffff!important;
+  border:1px solid #d9e4f2!important;
+  border-left:5px solid var(--gold)!important;
+  border-radius:18px!important;
+  padding:14px!important;
+  margin-bottom:14px!important;
+  box-shadow:0 8px 22px rgba(15,76,129,.055)!important;
+}
+
+/* nadpis v poznámkovém modulu žlutě jako ostatní moduly */
+#weeklyNoteSection .noteModuleTitleFixedV180,
+#weeklyNoteSection .unifiedWeekNoteTitleV171,
+.unifiedWeekNoteV171 .noteModuleTitleFixedV180,
+.unifiedWeekNoteV171 .unifiedWeekNoteTitleV171{
+  display:block!important;
+  margin:0 0 8px 0!important;
+  padding:0!important;
+  color:var(--blue-dark)!important;
+  background:transparent!important;
+  border:0!important;
+  font-size:14px!important;
+  line-height:1.25!important;
+  font-weight:900!important;
+}
+
+#weeklyNoteSection .noteModuleTitleFixedV180::before,
+#weeklyNoteSection .unifiedWeekNoteTitleV171::before,
+.unifiedWeekNoteV171 .noteModuleTitleFixedV180::before,
+.unifiedWeekNoteV171 .unifiedWeekNoteTitleV171::before{
+  content:"";
+  display:inline-block;
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:var(--gold);
+  margin-right:8px;
+  vertical-align:1px;
+}
+
+/* staré modré/duplicitní části pryč */
+#weeklyNoteSection .sectionTitle,
+#weeklyNoteSection .weeklyNotePanelTitle,
+#weeklyNoteSection .unifiedWeekNoteInfoV171,
+#weeklyNoteSection .weekNoteManagerV170,
+.unifiedWeekNoteV171 .sectionTitle,
+.unifiedWeekNoteV171 .weeklyNotePanelTitle,
+.unifiedWeekNoteV171 .unifiedWeekNoteInfoV171,
+.unifiedWeekNoteV171 .weekNoteManagerV170{
+  display:none!important;
+}
+
+/* textarea v modulu */
+#weeklyNoteInput,
+#weeklyNoteSection textarea,
+.unifiedWeekNoteV171 textarea{
+  width:100%!important;
+  min-height:82px!important;
+  background:#ffffff!important;
+  border:1px solid #d0d5dd!important;
+  border-radius:13px!important;
+  color:#344054!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  font-weight:600!important;
+  line-height:1.35!important;
+  padding:9px 10px!important;
+  box-shadow:none!important;
+  resize:vertical!important;
+}
+
+/* automatické uložení neutrálně */
+.noteAutoStatusV174,
+#noteAutoStatusV174{
+  margin-top:8px!important;
+  padding:7px 8px!important;
+  border-radius:11px!important;
+  background:#f8fafc!important;
+  border:1px solid #e2e8f0!important;
+  color:#64748b!important;
+  font-size:10.5px!important;
+  font-weight:800!important;
+  line-height:1.25!important;
+}
+
+/* 46-note-spacing-footer-v183.css */
+/* Odstranit odrážku před nadpisem Poznámka do plánu */
+#weeklyNoteSection .noteModuleTitleFixedV180::before,
+#weeklyNoteSection .unifiedWeekNoteTitleV171::before,
+.unifiedWeekNoteV171 .noteModuleTitleFixedV180::before,
+.unifiedWeekNoteV171 .unifiedWeekNoteTitleV171::before{
+  display:none!important;
+  content:none!important;
+}
+
+/* V náhledu: podobná mezera nahoře i dole kolem poznámky */
+.previewPage .notePreviewNoBlueV182,
+.previewPage .planMessageFixedV180,
+.previewPage .planNoteRedV179,
+.previewPage .notePreviewFinalV178,
+.previewPage .planPreviewNoteV177,
+.previewPage .planPreviewNoteV176,
+.previewPage .planNoteV174,
+.previewPage .planMessage{
+  margin:8px 0 8px 0!important;
+}
+
+/* Patička blíž k bílé stránce */
+.webCopyrightV167,
+.schoolFooterOutsideV164,
+.schoolFooterInsideV166,
+.schoolFooterInsideV165{
+  margin-top:8px!important;
+}
+
+/* 47-weekend-created-v184.css */
+/* Přepínače v levém panelu */
+.displayOptionsV184{
+  background:#ffffff;
+  border:1px solid #d9e4f2;
+  border-left:5px solid var(--gold);
+  border-radius:18px;
+  padding:14px;
+  margin-bottom:14px;
+  box-shadow:0 8px 22px rgba(15,76,129,.055);
+}
+
+.displayOptionsTitleV184{
+  margin:0 0 10px 0;
+  color:var(--blue-dark);
+  font-size:14px;
+  font-weight:900;
+}
+
+.displayOptionV184{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:8px 0;
+  color:#475467;
+  font-size:12px;
+  font-weight:800;
+}
+
+.displayOptionV184 input{
+  width:16px!important;
+  height:16px!important;
+  margin:0!important;
+}
+
+/* Datum vytvoření */
+.createdDateV184{
+  width:100%;
+  margin-top:8px;
+  padding-top:7px;
+  border-top:1px solid #e2e8f0;
+  text-align:right;
+  font-size:10px;
+  color:#94a3b8;
+  font-weight:700;
+}
+
+.hideCreatedDateV184 .createdDateV184{
+  display:none!important;
+}
+
+/* Skrytý víkend */
+.hideWeekendV184 tr.weekendRowV184{
+  display:none!important;
+}
+
+@media print{
+  .displayOptionsV184{
+    display:none!important;
+  }
+
+  .createdDateV184{
+    font-size:7.5pt!important;
+    margin-top:5mm!important;
+  }
+}
+
+/* 48-footer-spacing-v185.css */
+/* Menší mezera mezi podpisem a "Vytvořeno" */
+.createdDateV184{
+  margin-top:2px!important;
+  padding-top:3px!important;
+  border-top:0!important;
+}
+
+/* Patička úplně ke světlému okraji stránky */
+.webCopyrightV167,
+.schoolFooterOutsideV164,
+.schoolFooterInsideV166,
+.schoolFooterInsideV165,
+.schoolFooterV161,
+.schoolFooterV160,
+.schoolFooterV157{
+  margin-top:2px!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+}
+
+/* Zkrácení spodní části stránky */
+.previewPage{
+  padding-bottom:8mm!important;
+}
+
+/* Menší mezera pod podpisem */
+.signatureBlock,
+.signatureSection,
+.directorSignature,
+[class*="signature"]{
+  margin-bottom:2mm!important;
+  padding-bottom:0!important;
+}
+
+/* Patička opravdu dole */
+.createdDateV184 + .webCopyrightV167,
+.createdDateV184 + .schoolFooterOutsideV164,
+.createdDateV184 + .schoolFooterInsideV166,
+.createdDateV184 + .schoolFooterInsideV165{
+  margin-top:0!important;
+}
+
+/* 49-multiline-note-page-align-v186.css */
+/* Víceřádková poznámka v náhledu – stále stejný žluto/červený styl */
+.previewPage .notePreviewNoBlueV182,
+.previewPage .planMessageFixedV180,
+.previewPage .planNoteRedV179,
+.previewPage .notePreviewFinalV178,
+.previewPage .planPreviewNoteV177,
+.previewPage .planPreviewNoteV176,
+.previewPage .planNoteV174,
+.previewPage .planMessage,
+.previewPage .multilineNoteFinalV186{
+  background:#fff7e6!important;
+  border:1px solid #f6d58d!important;
+  border-left:6px solid #9f1239!important;
+  border-radius:16px!important;
+  color:#7f1d1d!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  line-height:1.45!important;
+  font-weight:850!important;
+  padding:10px 12px!important;
+  margin:8px 0 8px 0!important;
+  box-shadow:0 6px 16px rgba(159,18,57,.06)!important;
+  white-space:pre-line!important;
+}
+
+/* posun celé bílé stránky v náhledu mírně dolů */
+.previewPage{
+  margin-top:5mm!important;
+}
+
+/* patička o kousek výš / blíž k bílé stránce */
+.webCopyrightV167,
+.schoolFooterOutsideV164,
+.schoolFooterInsideV166,
+.schoolFooterInsideV165,
+.schoolFooterV161,
+.schoolFooterV160,
+.schoolFooterV157{
+  margin-top:-1mm!important;
+}
+
+/* datum vytvoření držet blíž podpisu */
+.createdDateV184{
+  margin-top:1px!important;
+  padding-top:2px!important;
+}
+
+/* 50-final-polish-v188.css */
+/* =====================================================
+   1) VÍCEŘÁDKOVÁ POZNÁMKA – stejný styl jako jednořádková
+   ===================================================== */
+.previewPage .notePreviewNoBlueV182,
+.previewPage .multilineNoteFinalV186,
+.previewPage .planMessageFixedV180,
+.previewPage .planNoteRedV179,
+.previewPage .notePreviewFinalV178,
+.previewPage .planPreviewNoteV177,
+.previewPage .planPreviewNoteV176,
+.previewPage .planNoteV174,
+.previewPage .planMessage{
+  background:#fff7e6!important;
+  border:1px solid #f6d58d!important;
+  border-left:6px solid #9f1239!important;
+  border-radius:16px!important;
+  color:#7f1d1d!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  line-height:1.45!important;
+  font-weight:850!important;
+  padding:10px 12px!important;
+  margin:8px 0 8px 0!important;
+  box-shadow:0 6px 16px rgba(159,18,57,.06)!important;
+  white-space:pre-line!important;
+}
+
+/* Kdyby se poznámka rozdělila na více vnitřních řádků */
+.previewPage .notePreviewNoBlueV182 *,
+.previewPage .multilineNoteFinalV186 *,
+.previewPage .planMessageFixedV180 *,
+.previewPage .planMessage *{
+  color:#7f1d1d!important;
+  font-weight:850!important;
+}
+
+/* =====================================================
+   2) PATIČKA JEŠTĚ VÝŠ
+   ===================================================== */
+.webCopyrightV167,
+.schoolFooterOutsideV164,
+.schoolFooterInsideV166,
+.schoolFooterInsideV165,
+.schoolFooterV161,
+.schoolFooterV160,
+.schoolFooterV157{
+  margin-top:-7mm!important;
+}
+
+/* =====================================================
+   3) HEZČÍ MODUL ZOBRAZENÍ
+   ===================================================== */
+.displayOptionsV184{
+  background:#ffffff!important;
+  border:1px solid #d9e4f2!important;
+  border-left:5px solid var(--gold)!important;
+  border-radius:18px!important;
+  padding:14px!important;
+  margin-bottom:14px!important;
+  box-shadow:0 8px 22px rgba(15,76,129,.055)!important;
+}
+
+.displayOptionsTitleV184{
+  margin:0 0 10px 0!important;
+  color:var(--blue-dark)!important;
+  font-size:14px!important;
+  font-weight:900!important;
+}
+
+.displayOptionV184{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:9px 10px!important;
+  margin-top:7px!important;
+  border:1px solid #e2e8f0!important;
+  background:#f8fafc!important;
+  border-radius:13px!important;
+  color:#475467!important;
+  font-size:12px!important;
+  font-weight:850!important;
+  cursor:pointer!important;
+}
+
+.displayOptionV184:hover{
+  background:#eef5fb!important;
+  border-color:#c9d8e8!important;
+}
+
+.displayOptionV184 input{
+  appearance:none!important;
+  -webkit-appearance:none!important;
+  width:34px!important;
+  height:19px!important;
+  border-radius:999px!important;
+  border:1px solid #cbd5e1!important;
+  background:#e5e7eb!important;
+  position:relative!important;
+  margin:0!important;
+  flex:0 0 auto!important;
+  cursor:pointer!important;
+  transition:none!important;
+}
+
+.displayOptionV184 input::after{
+  content:""!important;
+  position:absolute!important;
+  top:2px!important;
+  left:2px!important;
+  width:13px!important;
+  height:13px!important;
+  border-radius:50%!important;
+  background:#ffffff!important;
+  box-shadow:0 1px 3px rgba(15,23,42,.25)!important;
+}
+
+.displayOptionV184 input:checked{
+  background:#0f4c81!important;
+  border-color:#0f4c81!important;
+}
+
+.displayOptionV184 input:checked::after{
+  left:17px!important;
+}
+
+/* 51-restore-controls-note-v190.css */
+/* ==========================================
+   Vrácení rozumné vzdálenosti data vytvoření
+   ========================================== */
+.createdDateV184{
+  margin-top:2px!important;
+  padding-top:3px!important;
+  border-top:0!important;
+}
+
+/* Patička výš než předtím, ale ne tak agresivně jako v189 */
+.webCopyrightV167,
+.schoolFooterOutsideV164,
+.schoolFooterInsideV166,
+.schoolFooterInsideV165,
+.schoolFooterV161,
+.schoolFooterV160,
+.schoolFooterV157{
+  margin-top:-5mm!important;
+}
+
+/* ==========================================
+   Modul Zobrazení – menší hezčí přepínače
+   Text vpravo, přepínač vertikálně uprostřed
+   ========================================== */
+.displayOptionsV184{
+  display:block!important;
+  background:#ffffff!important;
+  border:1px solid #d9e4f2!important;
+  border-left:5px solid var(--gold)!important;
+  border-radius:18px!important;
+  padding:14px!important;
+  margin-bottom:14px!important;
+  box-shadow:0 8px 22px rgba(15,76,129,.055)!important;
+}
+
+.displayOptionsTitleV184{
+  margin:0 0 10px 0!important;
+  color:var(--blue-dark)!important;
+  font-size:14px!important;
+  font-weight:900!important;
+}
+
+.displayOptionV184{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:10px!important;
+  min-height:38px!important;
+  padding:7px 9px!important;
+  margin-top:7px!important;
+  border:1px solid #e2e8f0!important;
+  background:#f8fafc!important;
+  border-radius:13px!important;
+  color:#475467!important;
+  font-size:12px!important;
+  font-weight:850!important;
+  cursor:pointer!important;
+  text-align:left!important;
+}
+
+.displayOptionV184:hover{
+  background:#eef5fb!important;
+  border-color:#c9d8e8!important;
+}
+
+.displayOptionV184 span{
+  display:block!important;
+  text-align:left!important;
+  line-height:1.2!important;
+}
+
+.displayOptionV184 input{
+  appearance:none!important;
+  -webkit-appearance:none!important;
+  width:32px!important;
+  height:18px!important;
+  border-radius:999px!important;
+  border:1px solid #cbd5e1!important;
+  background:#e5e7eb!important;
+  position:relative!important;
+  margin:0!important;
+  flex:0 0 32px!important;
+  cursor:pointer!important;
+  transition:none!important;
+}
+
+.displayOptionV184 input::after{
+  content:""!important;
+  position:absolute!important;
+  top:2px!important;
+  left:2px!important;
+  width:12px!important;
+  height:12px!important;
+  border-radius:50%!important;
+  background:#ffffff!important;
+  box-shadow:0 1px 3px rgba(15,23,42,.25)!important;
+}
+
+.displayOptionV184 input:checked{
+  background:#0f4c81!important;
+  border-color:#0f4c81!important;
+}
+
+.displayOptionV184 input:checked::after{
+  left:16px!important;
+}
+
+/* ==========================================
+   Víceřádková poznámka – stejný styl okamžitě
+   i po stisknutí Enter
+   ========================================== */
+.previewPage .notePreviewNoBlueV182,
+.previewPage .multilineNoteFinalV186,
+.previewPage .planMessageFixedV180,
+.previewPage .planMessageStableV189,
+.previewPage .planNoteRedV179,
+.previewPage .notePreviewFinalV178,
+.previewPage .planPreviewNoteV177,
+.previewPage .planPreviewNoteV176,
+.previewPage .planNoteV174,
+.previewPage .planMessage{
+  background:#fff7e6!important;
+  border:1px solid #f6d58d!important;
+  border-left:6px solid #9f1239!important;
+  border-radius:16px!important;
+  color:#7f1d1d!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  line-height:1.45!important;
+  font-weight:850!important;
+  padding:10px 12px!important;
+  margin:8px 0 8px 0!important;
+  box-shadow:0 6px 16px rgba(159,18,57,.06)!important;
+  white-space:pre-line!important;
+}
+
+.previewPage .notePreviewNoBlueV182 *,
+.previewPage .multilineNoteFinalV186 *,
+.previewPage .planMessageFixedV180 *,
+.previewPage .planMessageStableV189 *,
+.previewPage .planMessage *{
+  color:#7f1d1d!important;
+  font-weight:850!important;
+}
+
+/* 52-note-source-final-v193.css */
+/* =====================================================
+   FINÁLNĚ: poznámka v náhledu se už rovnou renderuje správně
+   ===================================================== */
+.previewPage .planNoteFinalV193{
+  background:#fff7e6!important;
+  border:1px solid #f6d58d!important;
+  border-left:6px solid #9f1239!important;
+  border-radius:16px!important;
+  color:#7f1d1d!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  line-height:1.45!important;
+  font-weight:850!important;
+  padding:10px 12px!important;
+  margin:8px 0 8px 0!important;
+  box-shadow:0 6px 16px rgba(159,18,57,.06)!important;
+}
+
+/* kdyby starý blok ještě někde přežil */
+.previewPage .notePreviewNoBlueV182,
+.previewPage .multilineNoteFinalV186,
+.previewPage .planMessageFixedV180,
+.previewPage .planMessageStableV189,
+.previewPage .planMessage{
+  background:#fff7e6!important;
+  border:1px solid #f6d58d!important;
+  border-left:6px solid #9f1239!important;
+  border-radius:16px!important;
+  color:#7f1d1d!important;
+  font-family:'Open Sans',sans-serif!important;
+  font-size:13px!important;
+  line-height:1.45!important;
+  font-weight:850!important;
+  padding:10px 12px!important;
+  margin:8px 0 8px 0!important;
+  box-shadow:0 6px 16px rgba(159,18,57,.06)!important;
+  white-space:pre-line!important;
+}
+
+/* patička výš */
+.webCopyrightV167,
+.schoolFooterOutsideV164,
+.schoolFooterInsideV166,
+.schoolFooterInsideV165,
+.schoolFooterV161,
+.schoolFooterV160,
+.schoolFooterV157{
+  margin-top:-10mm!important;
+}
+
+/* přepínače zůstanou dvě stejně velká tlačítka vedle sebe */
+.displayOptionsV184{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+}
+.displayOptionsTitleV184{
+  grid-column:1 / -1!important;
+}
+.displayOptionV184{
+  width:100%!important;
+  min-height:34px!important;
+  margin:0!important;
+  padding:6px 8px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:8px!important;
+  border-radius:12px!important;
+  font-size:11px!important;
+}
+.displayOptionV184 input{
+  width:28px!important;
+  height:16px!important;
+  flex:0 0 28px!important;
+}
+
+/* 53-week-switch-pdf-v205.css */
+body.pdfExportingV205 .panel,
+body.pdfExportingV205 .responsibleUndoOutsideV200,
+body.pdfExportingV205 .responsibleHintSubtleV200{
+  display:none!important;
+}
+
+body.pdfExportingV205 .previewPage{
+  width:190mm!important;
+  max-width:190mm!important;
+  margin:0 auto!important;
+  padding:8mm 8mm 10mm 8mm!important;
+  background:#fff!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+}
+
+body.pdfExportingV205 .previewWrapper{
+  padding-top:10mm!important;
+}
+
+body.pdfExportingV205 img{
+  width:auto!important;
+  height:auto!important;
+  max-width:100%!important;
+  max-height:28mm!important;
+  object-fit:contain!important;
+}
+
+body.pdfExportingV205 table{
+  width:100%!important;
+  border-collapse:collapse!important;
+  table-layout:fixed!important;
+}
+
+body.pdfExportingV205 th:nth-child(1),
+body.pdfExportingV205 td:nth-child(1){width:16%!important;}
+
+body.pdfExportingV205 th:nth-child(2),
+body.pdfExportingV205 td:nth-child(2){width:15%!important;}
+
+body.pdfExportingV205 th:nth-child(3),
+body.pdfExportingV205 td:nth-child(3){width:44%!important;}
+
+body.pdfExportingV205 th:nth-child(4),
+body.pdfExportingV205 td:nth-child(4){width:25%!important;}
+
+body.pdfExportingV205 td,
+body.pdfExportingV205 th{
+  white-space:normal!important;
+  overflow-wrap:break-word!important;
+}
+
+/* 54-clean-responsible-core-v213.css */
+.previewPage,.previewPage *{transition:none!important;animation:none!important}
+.previewPage td.responsibleCellV213{cursor:text!important;white-space:normal!important;overflow-wrap:anywhere!important;outline:none!important;background:inherit!important}
+.previewPage td.responsibleCellV213:hover{box-shadow:inset 0 0 0 1px rgba(217,154,0,.20)!important}
+.previewPage td.responsibleCellV213:focus{background:#fffdf4!important;box-shadow:inset 0 0 0 1px rgba(217,154,0,.45)!important}
+.responsibleUndoV213{position:absolute!important;width:18px!important;height:18px!important;border:1px solid #f6d58d!important;border-radius:50%!important;background:#fff7e6!important;color:#9f1239!important;font-size:11px!important;font-weight:900!important;line-height:16px!important;text-align:center!important;padding:0!important;cursor:pointer!important;z-index:99999!important;box-shadow:0 2px 6px rgba(15,23,42,.12)!important}
+.responsibleUndoV213:hover{background:#ffe8b5!important;border-color:#d99a00!important}
+.responsibleUndoOutsideV200,.responsibleUndoOutsideV199,.responsibleUndoOutsideV198,.responsibleUndoOutsideV197,.responsibleUndoBtnV196,.responsibleHintV196,.responsibleHintV198,.responsibleHintSubtleV199,.responsibleHintSubtleV200,.responsibleHintSubtleV212{display:none!important}
+.responsibleHintV213{margin:12px 2px 2px 2px;padding-top:8px;border-top:1px solid #eef2f7;color:#98a2b3;font-size:10.5px;font-weight:650;line-height:1.35}
+.responsibleHintV213 strong{color:#667085;font-weight:800}
+body.pdfExportingV205 th:nth-child(1),body.pdfExportingV205 td:nth-child(1){width:12%!important}
+body.pdfExportingV205 th:nth-child(2),body.pdfExportingV205 td:nth-child(2){width:20%!important}
+body.pdfExportingV205 th:nth-child(3),body.pdfExportingV205 td:nth-child(3){width:43%!important}
+body.pdfExportingV205 th:nth-child(4),body.pdfExportingV205 td:nth-child(4){width:25%!important}
+body.pdfExportingV205 td:nth-child(2),body.pdfExportingV205 th:nth-child(2){white-space:normal!important;overflow-wrap:break-word!important}
+@media print{.responsibleUndoV213,.responsibleHintV213{display:none!important}}
+
