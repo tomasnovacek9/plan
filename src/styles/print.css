@@ -1,6 +1,6 @@
 @page {
   size: A4 portrait;
-  margin: 0;
+  margin: 7mm;
 }
 
 @media print {
@@ -26,9 +26,39 @@
   }
 
   .previewPage {
-    width: 210mm;
-    min-height: 297mm;
+    width: auto;
+    min-height: auto;
     margin: 0;
+    padding: 0;
     box-shadow: none;
+  }
+
+  .docHeader {
+    grid-template-columns: minmax(0, 1fr) 132px;
+    gap: 10px;
+    padding-bottom: 4px;
+    margin-bottom: 4px;
+  }
+
+  .docHeaderTextV93 {
+    min-height: 90px;
+  }
+
+  .docSchool {
+    font-size: 12px;
+  }
+
+  .docHeader h2 {
+    font-size: 31px;
+  }
+
+  .docDates {
+    font-size: 13px;
+  }
+
+  .docLogoMark {
+    width: 90px;
+    height: 90px;
+    font-size: 28px;
   }
 }

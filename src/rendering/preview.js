@@ -42,13 +42,13 @@ export function renderPreview(target, state, events, note, responsibleOverrides)
   });
 
   target.innerHTML = `
-    <header class="docHeader">
-      <div class="docBrand">ZŠ</div>
-      <div>
+    <header class="docHeader headerV93">
+      <div class="docHeaderTextV93">
         <p class="docSchool">Základní škola Brno, Jana Babáka 1, příspěvková organizace</p>
         <h2>TÝDENNÍ PLÁN</h2>
         <p class="docDates">od ${formatDate(state.weekFrom)} do ${formatDate(state.weekTo)}</p>
       </div>
+      <div class="docLogoMark" aria-hidden="true">ZŠ</div>
     </header>
 
     ${note ? `<section class="weekNote">${escapeHtml(note).replace(/\n/g, "<br>")}</section>` : ""}
@@ -66,8 +66,12 @@ export function renderPreview(target, state, events, note, responsibleOverrides)
     </table>
 
     <footer class="docFooter">
-      <div class="signature">Mgr. MgA. Bc. Michal Jančík, ředitel školy</div>
-      <div class="footerMeta ${state.options.hideCreatedDate ? "hidden" : ""}">Vytvořeno ${formatDate(new Date())}</div>
+      <div class="signature"><span class="signatureName">Mgr. MgA. Bc. Michal Jančík</span><span class="signatureRole">, ředitel školy</span></div>
+      <div class="createdDate ${state.options.hideCreatedDate ? "hidden" : ""}">Vytvořeno: ${formatDate(new Date())}</div>
+      <div class="schoolFooter">
+        <div>© 2026 Základní škola Brno, Jana Babáka 1, příspěvková organizace</div>
+        <small>Design &amp; development: Tomáš Nováček</small>
+      </div>
     </footer>
   `;
 }
