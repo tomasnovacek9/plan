@@ -417,6 +417,135 @@ function currentWeekNoteV174(){
   return String(input?.value || "").trim();
 }
 
+function stableTextKeyV300(text){
+  return String(text || "")
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+function stableClassKeyV300(text){
+  const found = String(text || "").match(/\b[1-9]\.?\s*[a-zá-ž]?\b/gi) || [];
+  return found
+    .map(x => x.toLowerCase().replace(/\s+/g,"").replace(".", "."))
+    .sort()
+    .join(",");
+}
+
+function repeatKeyForEventV300(e){
+  const title = stableTextKeyV300(e?.title || "");
+  const person = stableTextKeyV300(e?.person || "");
+  if(title.length < 4) return "";
+
+  const classes = stableClassKeyV300(`${e?.title || ""} ${e?.person || ""}`);
+  return `${title}||${classes || person}`;
+}
+
+function repeatClassMapV300(list){
+  const groups = new Map();
+  list.forEach(e=>{
+    const key = repeatKeyForEventV300(e);
+    if(!key) return;
+    if(!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(e);
+  });
+
+  const classes = new Map();
+  let color = 1;
+  groups.forEach(group=>{
+    if(group.length < 2) return;
+    group.forEach(e=>classes.set(e, `repeatedEventV50 repeatColorV50-${color}`));
+    color++;
+    if(color > 6) color = 1;
+  });
+
+  return classes;
+}
+
+function todayTextV300(){
+  const d = new Date();
+  return `${String(d.getDate()).padStart(2,"0")}. ${String(d.getMonth()+1).padStart(2,"0")}. ${d.getFullYear()}`;
+}
+
+function applyDisplayBodyClassesV300(){
+  const hideWeekend = localStorage.getItem("tydenni_plan_hide_weekend_v184") === "1";
+  const hideCreated = localStorage.getItem("tydenni_plan_hide_created_v184") === "1";
+
+  document.body.classList.toggle("hideWeekendV184", hideWeekend);
+  document.body.classList.toggle("hideCreatedDateV184", hideCreated);
+}
+
+function initDisplayOptionsV300(){
+  const weekend = document.getElementById("hideWeekendV184");
+  const created = document.getElementById("hideCreatedDateV184");
+
+  if(weekend && !weekend.__stableV300){
+    weekend.__stableV300 = true;
+    weekend.checked = localStorage.getItem("tydenni_plan_hide_weekend_v184") === "1";
+    weekend.addEventListener("change", ()=>{
+      localStorage.setItem("tydenni_plan_hide_weekend_v184", weekend.checked ? "1" : "0");
+      applyDisplayBodyClassesV300();
+    });
+  }
+
+  if(created && !created.__stableV300){
+    created.__stableV300 = true;
+    created.checked = localStorage.getItem("tydenni_plan_hide_created_v184") === "1";
+    created.addEventListener("change", ()=>{
+      localStorage.setItem("tydenni_plan_hide_created_v184", created.checked ? "1" : "0");
+      applyDisplayBodyClassesV300();
+    });
+  }
+
+  applyDisplayBodyClassesV300();
+}
+
+function initWeekNoteV300(){
+  const input = document.getElementById("weeklyNoteInput");
+  const weekInputs = [document.getElementById("weekFrom"), document.getElementById("weekTo")].filter(Boolean);
+
+  weekInputs.forEach(field=>{
+    if(field.__noteWeekStableV300) return;
+    field.__noteWeekStableV300 = true;
+    field.addEventListener("change", ()=>{
+      loadWeekNoteIntoInputV300();
+      renderPreview();
+    });
+  });
+
+  if(!input || input.__stableV300) return;
+
+  input.__stableV300 = true;
+  input.removeAttribute("oninput");
+  input.addEventListener("input", ()=>{
+    const key = weekNoteKeyV174();
+    if(!key) return;
+
+    const notes = loadWeekNotesV174();
+    const value = String(input.value || "").trim();
+    if(value) notes[key] = value;
+    else delete notes[key];
+    saveWeekNotesV174(notes);
+
+    const status = document.getElementById("noteAutoStatusV174");
+    if(status) status.textContent = value ? "Uloženo automaticky pro aktuální týden." : "Poznámka je prázdná.";
+
+    renderPreview();
+  });
+}
+
+function loadWeekNoteIntoInputV300(){
+  const input = document.getElementById("weeklyNoteInput");
+  if(!input || document.activeElement === input) return;
+
+  const notes = loadWeekNotesV174();
+  input.value = notes[weekNoteKeyV174()] || "";
+
+  const status = document.getElementById("noteAutoStatusV174");
+  if(status) status.textContent = "Poznámka se ukládá automaticky k aktuálnímu týdnu.";
+}
+
 
 function renderPlanNoteFinalV193(message){
   const txt = String(message || "").trim();
@@ -425,22 +554,26 @@ function renderPlanNoteFinalV193(message){
 }
 
 function renderPreview(){
+  applyDisplayBodyClassesV300();
   const from=document.getElementById("weekFrom").value;
   const to=document.getElementById("weekTo").value;
   const signature=document.getElementById("signature").value;
   const weekDates=getWeekDates();
   const planMessage=currentWeekNoteV174();
   const messageHtml = planMessage ? `${renderPlanNoteFinalV193(planMessage)}` : "";
+  const repeatClasses = repeatClassMapV300(events);
 
   const rows=[];
   weekDates.forEach(d=>{
     const dateKey=dateToInput(d);
     const dayEvents=sortEvents(events.filter(e=>e.date===dateKey));
+    const weekendClass = (d.getDay() === 0 || d.getDay() === 6) ? " weekendRowV184" : "";
     if(dayEvents.length===0){
-      rows.push(`<tr class="dayBreak"><td class="dayCell"><div class="dayName">${dayNames[d.getDay()]}</div><div class="dayDate">${formatDate(dateKey)}</div></td><td class="timeCell"></td><td class="eventCell"></td><td class="personCell"></td></tr>`);
+      rows.push(`<tr class="dayBreak emptyDayV162${weekendClass}"><td class="dayCell"><div class="dayName">${dayNames[d.getDay()]}</div><div class="dayDate">${formatDate(dateKey)}</div></td><td class="timeCell"></td><td class="eventCell"></td><td class="personCell"></td></tr>`);
     }else{
       dayEvents.forEach((e,idx)=>{
-        rows.push(`<tr class="${idx===0?'dayBreak':''}">
+        const repeated = repeatClasses.get(e) || "";
+        rows.push(`<tr class="${idx===0?'dayBreak ':''}${repeated}${weekendClass}">
           ${idx===0?`<td class="dayCell" rowspan="${dayEvents.length}"><div class="dayName">${dayNames[d.getDay()]}</div><div class="dayDate">${formatDate(dateKey)}</div></td>`:""}
           <td class="timeCell">${renderTimeCellV161(e.from,e.to)}</td>
           <td class="eventCell">${escapeHtml(e.title).replace(/\n/g,"<br>")}</td>
@@ -471,6 +604,7 @@ function renderPreview(){
         <span class="podpisFinal41Name">${escapeHtml(signature || "Mgr. MgA. Bc. Michal Jančík")}</span><span class="podpisFinal41Role">, ředitel školy</span>
       </div>
     </div>
+    <div class="createdDateV184">Vytvořeno: ${todayTextV300()}</div>
 
     `;
 }
@@ -515,6 +649,7 @@ function setWeekByDate(baseDate){
   document.getElementById("weekFrom").value = dateToInput(monday);
   document.getElementById("weekTo").value = dateToInput(sunday);
   document.getElementById("eventDate").value = dateToInput(monday);
+  loadWeekNoteIntoInputV300();
 }
 
 function setDefaultWeek(){
@@ -578,6 +713,8 @@ async function loadCalendarFromUrl(){
   }
 }
 
+initDisplayOptionsV300();
+initWeekNoteV300();
 setDefaultWeek();
 setCalendarInfo();
 renderAll();
@@ -709,353 +846,6 @@ window.addEventListener("load",()=>{
 });
 
 ;
-// 03-weekly-note-script-v8.js
-function updateWeeklyNoteV8(){
-  const text = (document.getElementById("weeklyNoteInput")?.value || "").trim();
-
-  document.querySelectorAll(".previewPage").forEach(page=>{
-    let box = page.querySelector(".weeklyNotePreviewV8");
-
-    if(!box){
-      box = document.createElement("div");
-      box.className = "weeklyNotePreviewV8";
-
-      const header = page.querySelector(".docHeader, .planHeader") || page.firstElementChild;
-
-      if(header && header.parentNode){
-        header.parentNode.insertBefore(box, header.nextSibling);
-      }else{
-        page.prepend(box);
-      }
-    }
-
-    if(text){
-      box.innerHTML = text.replace(/\n/g,"<br>");
-      box.style.display = "";
-    }else{
-      box.style.display = "none";
-    }
-  });
-}
-
-window.addEventListener("load",()=>{
-  setTimeout(updateWeeklyNoteV8,500);
-});
-
-;
-// 04-note-separate-v12.js
-function separateWeeklyNoteV12(){
-  const note = document.getElementById("weeklyNoteSection");
-  if(!note || note.dataset.separatedV12) return;
-
-  const panel = document.querySelector(".panel");
-  if(!panel) return;
-
-  const signatureTitle = Array.from(document.querySelectorAll(".sectionTitle"))
-    .find(el => (el.textContent || "").toLowerCase().includes("podpis"));
-
-  const signatureSection = signatureTitle ? signatureTitle.closest(".section") : null;
-
-  if(signatureSection && signatureSection.parentNode === panel){
-    panel.insertBefore(note, signatureSection);
-  }else{
-    const sections = panel.querySelectorAll(".section");
-    if(sections.length >= 1){
-      panel.insertBefore(note, sections[1] || sections[0].nextSibling);
-    }
-  }
-
-  note.dataset.separatedV12 = "1";
-}
-window.addEventListener("load",()=>setTimeout(separateWeeklyNoteV12,300));
-setTimeout(separateWeeklyNoteV12,900);
-
-;
-// 05-all-day-time-v52.js
-function fixAllDayEventsV52(){
-  if(Array.isArray(window.events)){
-    window.events.forEach(e=>{
-      const from = (e.from || "").trim();
-      const to = (e.to || "").trim();
-
-      // Pokud EduPage akce nemá čas, je to celodenní akce.
-      if(!from && !to){
-        e.from = "celý den";
-        e.to = "";
-      }
-    });
-  }
-}
-
-function fixAllDayPreviewV52(){
-  document.querySelectorAll(".previewPage table tbody tr").forEach(row=>{
-    const timeCell = row.querySelector(".timeCell");
-    if(!timeCell) return;
-
-    const txt = (timeCell.textContent || "").trim();
-
-    if(txt === "" || txt === "–" || txt === "-"){
-      timeCell.textContent = "celý den";
-    }
-  });
-}
-
-(function(){
-  const wrap = () => {
-    if(typeof window.importWeekFromCalendar === "function" && !window.importWeekFromCalendar.__allDayV52){
-      const originalImport = window.importWeekFromCalendar;
-      window.importWeekFromCalendar = function(){
-        const result = originalImport.apply(this, arguments);
-        fixAllDayEventsV52();
-        if(typeof window.renderAll === "function") window.renderAll();
-        setTimeout(fixAllDayPreviewV52, 50);
-        return result;
-      };
-      window.importWeekFromCalendar.__allDayV52 = true;
-    }
-
-    if(typeof window.renderAll === "function" && !window.renderAll.__allDayV52){
-      const originalRender = window.renderAll;
-      window.renderAll = function(){
-        fixAllDayEventsV52();
-        const result = originalRender.apply(this, arguments);
-        setTimeout(fixAllDayPreviewV52, 50);
-        return result;
-      };
-      window.renderAll.__allDayV52 = true;
-    }
-  };
-
-  window.addEventListener("load",()=>{
-    wrap();
-    fixAllDayEventsV52();
-    if(typeof window.renderAll === "function") window.renderAll();
-    setTimeout(fixAllDayPreviewV52, 300);
-    setTimeout(fixAllDayPreviewV52, 1000);
-  });
-
-  setTimeout(wrap, 300);
-  setTimeout(wrap, 1000);
-
-  const observer = new MutationObserver(()=>{
-    clearTimeout(window.__allDayV52);
-    window.__allDayV52 = setTimeout(fixAllDayPreviewV52, 100);
-  });
-  observer.observe(document.body,{childList:true,subtree:true});
-})();
-
-;
-// 06-repeat-events-v53.js
-(function(){
-  const COLOR_PREFIX = "repeatColorV50-";
-  const MARK_CLASS = "repeatedEventV50";
-
-  function norm(text){
-    return String(text || "")
-      .toLowerCase()
-      .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
-      .replace(/\s+/g," ")
-      .trim();
-  }
-
-  function cleanText(el){
-    if(!el) return "";
-    const clone = el.cloneNode(true);
-    clone.querySelectorAll(".repeatEventBadgeV9,.repeatBadgeV9,.repeatEventBadgeV50").forEach(x=>x.remove());
-    return norm(clone.textContent || "");
-  }
-
-  function extractClasses(text){
-    const source = String(text || "");
-    const found = source.match(/\b[1-9]\.?\s*[a-zá-ž]?\b/gi) || [];
-    return found
-      .map(x => x.toLowerCase().replace(/\s+/g,"").replace(".", "."))
-      .sort()
-      .join(",");
-  }
-
-  function clearRow(row){
-    row.classList.remove(MARK_CLASS, "repeatedEventV9");
-    for(let i=1;i<=6;i++){
-      row.classList.remove(COLOR_PREFIX + i);
-      row.classList.remove("repeatColorV9-" + i);
-    }
-  }
-
-  function getCells(row){
-    let eventCell = row.querySelector(".eventCell");
-    let personCell = row.querySelector(".personCell");
-
-    const cells = Array.from(row.querySelectorAll("td"));
-
-    if(!eventCell && cells.length >= 2) eventCell = cells[cells.length - 2];
-    if(!personCell && cells.length >= 1) personCell = cells[cells.length - 1];
-
-    return {eventCell, personCell};
-  }
-
-  function keyFor(row){
-    const {eventCell, personCell} = getCells(row);
-    if(!eventCell) return "";
-
-    const titleRaw = cleanText(eventCell);
-    const personRaw = cleanText(personCell);
-
-    if(titleRaw.length < 4) return "";
-
-    const classes = extractClasses(titleRaw + " " + personRaw);
-
-    // Pokud jsou v události třídy, rozhoduje název + třídy.
-    // Pokud třídy nejsou rozpoznané, použijeme název + celý text zodpovídá jako zálohu.
-    return titleRaw + "||" + (classes || personRaw);
-  }
-
-  function mark(){
-    const rows = Array.from(document.querySelectorAll(".previewPage table tbody tr"))
-      .filter(row => row.offsetParent !== null);
-
-    const groups = new Map();
-
-    rows.forEach(row=>{
-      clearRow(row);
-      const key = keyFor(row);
-      if(!key) return;
-      if(!groups.has(key)) groups.set(key, []);
-      groups.get(key).push(row);
-    });
-
-    let color = 1;
-    groups.forEach(group=>{
-      if(group.length < 2) return;
-
-      const cls = COLOR_PREFIX + color;
-      group.forEach(row=>{
-        row.classList.add(MARK_CLASS, cls);
-      });
-
-      color++;
-      if(color > 6) color = 1;
-    });
-  }
-
-  function schedule(){
-    clearTimeout(window.__repeatV53Timer);
-    window.__repeatV53Timer = setTimeout(mark, 80);
-  }
-
-  const tryWrap = () => {
-    if(typeof window.renderAll === "function" && !window.renderAll.__repeatV53Wrapped){
-      const original = window.renderAll;
-      window.renderAll = function(){
-        const result = original.apply(this, arguments);
-        setTimeout(mark, 0);
-        setTimeout(mark, 120);
-        return result;
-      };
-      window.renderAll.__repeatV53Wrapped = true;
-    }
-  };
-
-  window.addEventListener("load",()=>{
-    tryWrap();
-    setTimeout(mark, 300);
-    setTimeout(mark, 900);
-    setTimeout(mark, 1800);
-  });
-
-  setTimeout(tryWrap, 300);
-  setTimeout(tryWrap, 1000);
-
-  const observer = new MutationObserver(schedule);
-  observer.observe(document.body,{childList:true,subtree:true});
-
-  window.markRepeatedEventsV53 = mark;
-})();
-
-;
-// 07-reload-calendar-on-week-change-v54.js
-(function(){
-  async function reloadCalendarForCurrentWeekV54(){
-    if(window.__reloadingCalendarV54) return;
-    window.__reloadingCalendarV54 = true;
-
-    try{
-      if(typeof loadCalendarFromUrl === "function"){
-        await loadCalendarFromUrl();
-      }else if(typeof window.loadCalendarFromUrl === "function"){
-        await window.loadCalendarFromUrl();
-      }else if(typeof renderAll === "function"){
-        renderAll();
-      }
-    }catch(e){
-      console.warn("Kalendář se nepodařilo znovu načíst:", e);
-      if(typeof renderAll === "function") renderAll();
-    }finally{
-      window.__reloadingCalendarV54 = false;
-    }
-  }
-
-  function wrapFunctionV54(name){
-    const fn = window[name];
-    if(typeof fn !== "function" || fn.__reloadWrappedV54) return;
-
-    const wrapped = function(){
-      const result = fn.apply(this, arguments);
-
-      // necháme původní funkci nejdřív změnit datum týdne
-      setTimeout(reloadCalendarForCurrentWeekV54, 60);
-
-      return result;
-    };
-
-    wrapped.__reloadWrappedV54 = true;
-    window[name] = wrapped;
-  }
-
-  function installReloadV54(){
-    // typické názvy funkcí podle aplikace
-    [
-      "setCurrentWeek",
-      "setThisWeek",
-      "goCurrentWeek",
-      "previousWeek",
-      "prevWeek",
-      "nextWeek",
-      "setPreviousWeek",
-      "setNextWeek"
-    ].forEach(wrapFunctionV54);
-
-    // záloha: podle textu tlačítek
-    document.querySelectorAll("button").forEach(btn=>{
-      const text = (btn.textContent || "").toLowerCase();
-
-      const isWeekButton =
-        text.includes("aktuální týden") ||
-        text.includes("předchozí týden") ||
-        text.includes("další týden");
-
-      if(isWeekButton && !btn.dataset.reloadCalendarV54){
-        btn.dataset.reloadCalendarV54 = "1";
-        btn.addEventListener("click",()=>{
-          setTimeout(reloadCalendarForCurrentWeekV54, 120);
-        });
-      }
-    });
-  }
-
-  window.addEventListener("load",()=>{
-    setTimeout(installReloadV54, 300);
-    setTimeout(installReloadV54, 1000);
-  });
-
-  const observer = new MutationObserver(()=>{
-    clearTimeout(window.__installReloadV54);
-    window.__installReloadV54 = setTimeout(installReloadV54, 100);
-  });
-  observer.observe(document.body,{childList:true,subtree:true});
-})();
-
-;
 // 08-clean-calendar-buttons-v55.js
 function cleanCalendarButtonsV55(){
   document.querySelectorAll("button").forEach(btn=>{
@@ -1156,53 +946,6 @@ function setCurrentWeekOnStartV55(){
   setTimeout(install,300);
   setTimeout(install,1000);
 })();
-
-;
-// 10-empty-days-only-v83.js
-function cleanEmptyDaysV83(){
-  document.querySelectorAll(".previewPage table tbody tr").forEach(row=>{
-    const timeCell = row.querySelector(".timeCell");
-    const eventCell = row.querySelector(".eventCell");
-    if(!timeCell || !eventCell) return;
-
-    const eventText = (eventCell.textContent || "").trim();
-    if(!eventText){
-      timeCell.textContent = "";
-    }
-  });
-}
-
-window.addEventListener("load",()=>{
-  setTimeout(cleanEmptyDaysV83,600);
-  setTimeout(cleanEmptyDaysV83,1500);
-});
-
-const emptyObsV83 = new MutationObserver(()=>{
-  clearTimeout(window.__emptyV83);
-  window.__emptyV83 = setTimeout(cleanEmptyDaysV83,120);
-});
-emptyObsV83.observe(document.body,{childList:true,subtree:true});
-
-;
-// 11-current-week-on-start-v84.js
-function forceCurrentWeekOnStartV84(){
-  if(typeof setWeekByDate === "function"){
-    setWeekByDate(new Date());
-  }
-
-  if(typeof importWeekFromCalendar === "function"){
-    importWeekFromCalendar();
-  }
-
-  if(typeof renderAll === "function"){
-    renderAll();
-  }
-}
-
-window.addEventListener("load",()=>{
-  setTimeout(forceCurrentWeekOnStartV84, 700);
-  setTimeout(forceCurrentWeekOnStartV84, 1600);
-});
 
 ;
 // 12-edupage-badge-lock-v89-js.js
@@ -1321,33 +1064,6 @@ const obsV102 = new MutationObserver(()=>{
 obsV102.observe(document.body,{childList:true,subtree:true});
 
 ;
-// 14-hide-left-dates-v103-js.js
-function hideLeftDateFieldsV103(){
-  ["weekFrom","weekTo"].forEach(id=>{
-    const input = document.getElementById(id);
-    if(!input) return;
-
-    const field = input.closest(".field");
-    if(field) field.classList.add("hideWeekDateFieldV103");
-
-    // kdyby label nebyl uvnitř .field
-    const label = document.querySelector(`label[for="${id}"]`);
-    if(label) label.classList.add("hideWeekDateFieldV103");
-  });
-}
-
-window.addEventListener("load",()=>{
-  setTimeout(hideLeftDateFieldsV103,300);
-  setTimeout(hideLeftDateFieldsV103,1200);
-});
-
-const obsV103 = new MutationObserver(()=>{
-  clearTimeout(window.__v103);
-  window.__v103 = setTimeout(hideLeftDateFieldsV103,120);
-});
-obsV103.observe(document.body,{childList:true,subtree:true});
-
-;
 // 15-clean-pdf-v113-js.js
 /* =====================================================
    PDF = přímo systémový tisk prohlížeče
@@ -1397,100 +1113,6 @@ window.addEventListener("load", ()=>{
     }
   });
 });
-
-;
-// 17-empty-days-all-day-v162-js.js
-(function(){
-  function fixEmptyDaysV162(){
-    document.querySelectorAll(".previewPage table tbody tr").forEach(row=>{
-      const timeCell = row.querySelector(".timeCell");
-      const eventCell = row.querySelector(".eventCell");
-      if(!timeCell || !eventCell) return;
-
-      const eventText = (eventCell.textContent || "").trim();
-
-      if(!eventText){
-        row.classList.add("emptyDayV162");
-        if((timeCell.textContent || "").trim() !== ""){
-          timeCell.textContent = "";
-        }
-        return;
-      }
-
-      row.classList.remove("emptyDayV162");
-
-      const range = timeCell.querySelector(".timeRangeV161");
-      if(range && /celý den|cely den/i.test(range.textContent || "")){
-        range.textContent = "celý den";
-      }
-    });
-  }
-
-  window.addEventListener("load",()=>{
-    setTimeout(fixEmptyDaysV162,400);
-    setTimeout(fixEmptyDaysV162,1200);
-    setTimeout(fixEmptyDaysV162,2400);
-  });
-
-  const obs = new MutationObserver(()=>{
-    clearTimeout(window.__v162);
-    window.__v162 = setTimeout(fixEmptyDaysV162,100);
-  });
-
-  obs.observe(document.body,{childList:true,subtree:true});
-})();
-
-;
-// 18-footer-bg-allday-v164-js.js
-(function(){
-  function moveFooterOutsideV164(){
-    document.querySelectorAll(".previewPage").forEach(page=>{
-      // odstranit staré footery uvnitř bílé stránky
-      page.querySelectorAll(".schoolFooterV161,.schoolFooterV160,.schoolFooterV157,.schoolCopyrightV153,.schoolCopyrightV152").forEach(el=>el.remove());
-
-      let footer = page.nextElementSibling;
-      if(!footer || !footer.classList || !footer.classList.contains("schoolFooterOutsideV164")){
-        footer = document.createElement("div");
-        footer.className = "schoolFooterOutsideV164";
-        footer.innerHTML = `
-          <div class="schoolFooterOutsideMainV164">© 2026 Základní škola Brno, Jana Babáka 1, příspěvková organizace</div>
-          <div class="schoolFooterOutsideAuthorV164">Design &amp; development: Tomáš Nováček</div>
-        `;
-        page.insertAdjacentElement("afterend", footer);
-      }
-    });
-  }
-
-  function fixEmptyDaysAgainV164(){
-    document.querySelectorAll(".previewPage table tbody tr").forEach(row=>{
-      const timeCell = row.querySelector(".timeCell");
-      const eventCell = row.querySelector(".eventCell");
-      if(!timeCell || !eventCell) return;
-
-      if(!(eventCell.textContent || "").trim()){
-        timeCell.textContent = "";
-      }
-    });
-  }
-
-  function runV164(){
-    moveFooterOutsideV164();
-    fixEmptyDaysAgainV164();
-  }
-
-  window.addEventListener("load",()=>{
-    setTimeout(runV164,300);
-    setTimeout(runV164,1000);
-    setTimeout(runV164,2200);
-  });
-
-  const obs = new MutationObserver(()=>{
-    clearTimeout(window.__v164);
-    window.__v164 = setTimeout(runV164,120);
-  });
-
-  obs.observe(document.body,{childList:true,subtree:true});
-})();
 
 ;
 // 19-manual-event-real-v167-js.js
@@ -2335,978 +1957,6 @@ window.addEventListener("load", ()=>{
   });
 
   obs.observe(document.body,{childList:true,subtree:true});
-})();
-
-;
-// 22-note-direct-render-v174-js.js
-(function(){
-  function noteInput(){
-    return document.getElementById("weeklyNoteInput");
-  }
-
-  function setStatus(text, cls){
-    const input = noteInput();
-    if(!input) return;
-
-    let status = document.getElementById("noteAutoStatusV174");
-    if(!status){
-      status = document.createElement("div");
-      status.id = "noteAutoStatusV174";
-      status.className = "noteAutoStatusV174";
-      input.insertAdjacentElement("afterend", status);
-    }
-
-    status.className = "noteAutoStatusV174";
-    if(cls) status.classList.add(cls);
-    status.textContent = text;
-  }
-
-  function saveCurrent(){
-    const input = noteInput();
-    const key = weekNoteKeyV174();
-    if(!input || !key) return;
-
-    const notes = loadWeekNotesV174();
-    const value = String(input.value || "").trim();
-
-    if(value) notes[key] = value;
-    else delete notes[key];
-
-    saveWeekNotesV174(notes);
-
-    setStatus(value ? "Uloženo automaticky pro aktuální týden." : "Poznámka je prázdná – pro tento týden se nezobrazí.", "saved");
-
-    // Důležité: render už teď bere poznámku přímo z currentWeekNoteV174(), takže nezmizí.
-    if(typeof window.renderPreview === "function"){
-      window.renderPreview();
-    }
-  }
-
-  function loadForCurrentWeek(){
-    const input = noteInput();
-    const key = weekNoteKeyV174();
-    if(!input || !key) return;
-
-    const notes = loadWeekNotesV174();
-    const value = notes[key] || "";
-
-    if(document.activeElement !== input && input.value !== value){
-      input.value = value;
-    }
-
-    setStatus("Poznámka se ukládá automaticky k aktuálnímu týdnu.", "");
-  }
-
-  function cleanDuplicateTitles(){
-    const section = document.getElementById("weeklyNoteSection");
-    if(!section) return;
-
-    // V modulu má zůstat jen původní .weeklyNotePanelTitle
-    section.querySelectorAll(".unifiedWeekNoteTitleV171,.unifiedWeekNoteInfoV171,.sectionTitle").forEach(el=>el.remove());
-
-    const titles = [...section.querySelectorAll(".weeklyNotePanelTitle")];
-    titles.forEach((t,i)=>{
-      if(i === 0){
-        t.textContent = "Poznámka do plánu";
-      }else{
-        t.remove();
-      }
-    });
-  }
-
-  function attach(){
-    const input = noteInput();
-    if(!input || input.__noteDirectV174) return;
-
-    input.__noteDirectV174 = true;
-    input.removeAttribute("oninput");
-
-    input.addEventListener("input", ()=>{
-      setStatus("Ukládám poznámku…", "saving");
-      clearTimeout(window.__noteSaveV174);
-      window.__noteSaveV174 = setTimeout(saveCurrent, 350);
-    });
-
-    input.addEventListener("blur", saveCurrent);
-  }
-
-  function patchWeekChange(){
-    if(typeof window.moveWeek === "function" && !window.moveWeek.__noteDirectV174){
-      const original = window.moveWeek;
-      window.moveWeek = function(){
-        const result = original.apply(this, arguments);
-        setTimeout(()=>{
-          loadForCurrentWeek();
-          if(typeof window.renderPreview === "function") window.renderPreview();
-        }, 160);
-        return result;
-      };
-      window.moveWeek.__noteDirectV174 = true;
-    }
-
-    if(typeof window.renderAll === "function" && !window.renderAll.__noteDirectV174){
-      const original = window.renderAll;
-      window.renderAll = function(){
-        const result = original.apply(this, arguments);
-        setTimeout(cleanDuplicateTitles, 80);
-        return result;
-      };
-      window.renderAll.__noteDirectV174 = true;
-    }
-  }
-
-  function run(){
-    cleanDuplicateTitles();
-    attach();
-    patchWeekChange();
-    loadForCurrentWeek();
-  }
-
-  window.addEventListener("load",()=>{
-    setTimeout(run,400);
-    setTimeout(run,1200);
-    setTimeout(run,2400);
-  });
-
-  const obs = new MutationObserver(()=>{
-    clearTimeout(window.__noteRunV174);
-    window.__noteRunV174 = setTimeout(run,220);
-  });
-
-  obs.observe(document.body,{childList:true,subtree:true});
-})();
-
-;
-// 23-note-source-fixed-v180-js.js
-(function(){
-  function noteInput(){
-    return document.getElementById("weeklyNoteInput");
-  }
-
-  function fixLeftModule(){
-    const input = noteInput();
-    if(!input) return;
-
-    const section = input.closest(".unifiedWeekNoteV171") || input.closest(".section") || input.parentElement;
-    if(!section) return;
-
-    section.classList.add("noteModuleFixedV180");
-
-    // Odstranit všechny staré / duplicitní nadpisy.
-    section.querySelectorAll(".sectionTitle,.weeklyNotePanelTitle,.unifiedWeekNoteTitleV171,.unifiedWeekNoteInfoV171").forEach(el=>el.remove());
-
-    let title = section.querySelector(".noteModuleTitleFixedV180");
-    if(!title){
-      title = document.createElement("div");
-      title.className = "noteModuleTitleFixedV180";
-      title.textContent = "Poznámka do plánu";
-      section.insertBefore(title, section.firstChild);
-    }
-
-    // Ponechat jen jeden finální nadpis.
-    [...section.querySelectorAll(".noteModuleTitleFixedV180")].forEach((el,i)=>{
-      if(i > 0) el.remove();
-    });
-  }
-
-  function fixPreviewNote(){
-    const input = noteInput();
-    const note = (input?.value || "").trim();
-    if(!note) return;
-
-    document.querySelectorAll(".previewPage").forEach(page=>{
-      [...page.querySelectorAll("div,p")].forEach(el=>{
-        const text = (el.textContent || "").trim();
-
-        // Přesná shoda textu poznámky, mimo tabulku.
-        if(text === note && !el.closest("table")){
-          el.classList.remove("notice");
-          el.classList.add("planMessageFixedV180");
-        }
-      });
-    });
-  }
-
-  function patchRenders(){
-    if(typeof window.renderPreview === "function" && !window.renderPreview.__noteFixedV180){
-      const original = window.renderPreview;
-      window.renderPreview = function(){
-        const result = original.apply(this, arguments);
-        setTimeout(()=>{fixLeftModule(); fixPreviewNote();}, 10);
-        setTimeout(()=>{fixLeftModule(); fixPreviewNote();}, 120);
-        return result;
-      };
-      window.renderPreview.__noteFixedV180 = true;
-    }
-
-    if(typeof window.renderAll === "function" && !window.renderAll.__noteFixedV180){
-      const original = window.renderAll;
-      window.renderAll = function(){
-        const result = original.apply(this, arguments);
-        setTimeout(()=>{fixLeftModule(); fixPreviewNote();}, 20);
-        setTimeout(()=>{fixLeftModule(); fixPreviewNote();}, 160);
-        return result;
-      };
-      window.renderAll.__noteFixedV180 = true;
-    }
-  }
-
-  function run(){
-    patchRenders();
-    fixLeftModule();
-    fixPreviewNote();
-  }
-
-  window.addEventListener("load",()=>{
-    setTimeout(run,250);
-    setTimeout(run,900);
-    setTimeout(run,1800);
-  });
-
-  const obs = new MutationObserver(()=>{
-    clearTimeout(window.__noteFixedV180);
-    window.__noteFixedV180 = setTimeout(run,80);
-  });
-
-  obs.observe(document.body,{childList:true,subtree:true});
-})();
-
-;
-// 24-note-colors-final-v181-js.js
-(function(){
-  function noteInput(){
-    return document.getElementById("weeklyNoteInput");
-  }
-
-  function fixLeftModuleV181(){
-    const input = noteInput();
-    if(!input) return;
-
-    const section =
-      document.getElementById("weeklyNoteSection") ||
-      input.closest(".unifiedWeekNoteV171") ||
-      input.closest(".section") ||
-      input.parentElement;
-
-    if(!section) return;
-
-    section.id = section.id || "weeklyNoteSection";
-    section.classList.add("unifiedWeekNoteV171");
-
-    // odstranit duplicitní / barevně špatné nadpisy
-    section.querySelectorAll(".sectionTitle,.weeklyNotePanelTitle,.unifiedWeekNoteInfoV171").forEach(el=>el.remove());
-
-    let title = section.querySelector(".noteModuleTitleFixedV180") || section.querySelector(".unifiedWeekNoteTitleV171");
-    if(!title){
-      title = document.createElement("div");
-      title.className = "noteModuleTitleFixedV180";
-      section.insertBefore(title, section.firstChild);
-    }
-
-    title.textContent = "Poznámka do plánu";
-    title.className = "noteModuleTitleFixedV180";
-
-    [...section.querySelectorAll(".noteModuleTitleFixedV180,.unifiedWeekNoteTitleV171")].forEach((el,i)=>{
-      if(i > 0) el.remove();
-    });
-  }
-
-  function fixPreviewNoteV181(){
-    const input = noteInput();
-    const note = (input?.value || "").trim();
-    if(!note) return;
-
-    document.querySelectorAll(".previewPage").forEach(page=>{
-      [...page.querySelectorAll("div,p,section")].forEach(el=>{
-        if(el.closest("table")) return;
-
-        const txt = (el.textContent || "").trim();
-
-        // Přesná shoda poznámky nebo již známé třídy poznámky
-        if(
-          txt === note ||
-          el.classList.contains("planMessage") ||
-          el.classList.contains("planMessageFixedV180") ||
-          el.classList.contains("planNoteRedV179")
-        ){
-          el.classList.remove("notice");
-          el.classList.add("planMessageFixedV180");
-          el.style.background = "#fff7e6";
-          el.style.border = "1px solid #f6d58d";
-          el.style.borderLeft = "6px solid #9f1239";
-          el.style.borderRadius = "16px";
-          el.style.color = "#7f1d1d";
-          el.style.fontSize = "13px";
-          el.style.fontWeight = "850";
-          el.style.lineHeight = "1.45";
-          el.style.padding = "10px 12px";
-          el.style.margin = "10px 0 12px 0";
-        }
-      });
-    });
-  }
-
-  function patchRendersV181(){
-    if(typeof window.renderPreview === "function" && !window.renderPreview.__noteColorsV181){
-      const original = window.renderPreview;
-      window.renderPreview = function(){
-        const result = original.apply(this, arguments);
-        setTimeout(()=>{fixLeftModuleV181(); fixPreviewNoteV181();}, 20);
-        setTimeout(()=>{fixLeftModuleV181(); fixPreviewNoteV181();}, 150);
-        setTimeout(()=>{fixLeftModuleV181(); fixPreviewNoteV181();}, 500);
-        return result;
-      };
-      window.renderPreview.__noteColorsV181 = true;
-    }
-
-    if(typeof window.renderAll === "function" && !window.renderAll.__noteColorsV181){
-      const original = window.renderAll;
-      window.renderAll = function(){
-        const result = original.apply(this, arguments);
-        setTimeout(()=>{fixLeftModuleV181(); fixPreviewNoteV181();}, 40);
-        setTimeout(()=>{fixLeftModuleV181(); fixPreviewNoteV181();}, 200);
-        setTimeout(()=>{fixLeftModuleV181(); fixPreviewNoteV181();}, 600);
-        return result;
-      };
-      window.renderAll.__noteColorsV181 = true;
-    }
-  }
-
-  function runV181(){
-    patchRendersV181();
-    fixLeftModuleV181();
-    fixPreviewNoteV181();
-  }
-
-  window.addEventListener("load",()=>{
-    setTimeout(runV181,250);
-    setTimeout(runV181,900);
-    setTimeout(runV181,1800);
-    setTimeout(runV181,3200);
-  });
-
-  const obs = new MutationObserver(()=>{
-    clearTimeout(window.__noteColorsV181);
-    window.__noteColorsV181 = setTimeout(runV181,100);
-  });
-
-  obs.observe(document.body,{childList:true,subtree:true});
-})();
-
-;
-// 25-note-no-blue-left-yellow-v182-js.js
-(function(){
-  function noteInput(){
-    return document.getElementById("weeklyNoteInput");
-  }
-
-  function forceNotePreviewStyleV182(){
-    const input = noteInput();
-    const note = (input?.value || "").trim();
-    if(!note) return;
-
-    document.querySelectorAll(".previewPage").forEach(page=>{
-      [...page.querySelectorAll("div,p,section")].forEach(el=>{
-        if(el.closest("table")) return;
-
-        const txt = (el.textContent || "").trim();
-        const isNote =
-          txt === note ||
-          el.classList.contains("planMessage") ||
-          el.classList.contains("planMessageFixedV180") ||
-          el.classList.contains("planNoteRedV179") ||
-          el.classList.contains("notePreviewFinalV178");
-
-        if(isNote){
-          el.classList.remove("notice");
-          el.classList.add("notePreviewNoBlueV182");
-          el.style.background = "#fff7e6";
-          el.style.border = "1px solid #f6d58d";
-          el.style.borderLeft = "6px solid #9f1239";
-          el.style.borderRadius = "16px";
-          el.style.color = "#7f1d1d";
-          el.style.fontSize = "13px";
-          el.style.fontWeight = "850";
-          el.style.lineHeight = "1.45";
-          el.style.padding = "10px 12px";
-          el.style.margin = "8px 0 4px 0";
-          el.style.boxShadow = "0 6px 16px rgba(159,18,57,.06)";
-        }
-      });
-    });
-  }
-
-  function forceLeftModuleV182(){
-    const input = noteInput();
-    if(!input) return;
-
-    const section =
-      document.getElementById("weeklyNoteSection") ||
-      input.closest(".unifiedWeekNoteV171") ||
-      input.closest(".section") ||
-      input.parentElement;
-
-    if(!section) return;
-
-    section.id = section.id || "weeklyNoteSection";
-    section.classList.add("unifiedWeekNoteV171");
-
-    section.querySelectorAll(".sectionTitle,.weeklyNotePanelTitle,.unifiedWeekNoteInfoV171").forEach(el=>el.remove());
-
-    let title = section.querySelector(".noteModuleTitleFixedV180") || section.querySelector(".unifiedWeekNoteTitleV171");
-    if(!title){
-      title = document.createElement("div");
-      title.className = "noteModuleTitleFixedV180";
-      section.insertBefore(title, section.firstChild);
-    }
-
-    title.className = "noteModuleTitleFixedV180";
-    title.textContent = "Poznámka do plánu";
-
-    [...section.querySelectorAll(".noteModuleTitleFixedV180,.unifiedWeekNoteTitleV171")].forEach((el,i)=>{
-      if(i > 0) el.remove();
-    });
-  }
-
-  function patchRenderV182(){
-    if(typeof window.renderPreview === "function" && !window.renderPreview.__noteNoBlueV182){
-      const original = window.renderPreview;
-      window.renderPreview = function(){
-        const result = original.apply(this, arguments);
-
-        // rychle po renderu, aby modrá skoro neproblikla
-        forceNotePreviewStyleV182();
-        setTimeout(forceNotePreviewStyleV182, 0);
-        setTimeout(forceNotePreviewStyleV182, 30);
-        setTimeout(forceNotePreviewStyleV182, 120);
-        return result;
-      };
-      window.renderPreview.__noteNoBlueV182 = true;
-    }
-
-    if(typeof window.renderAll === "function" && !window.renderAll.__noteNoBlueV182){
-      const original = window.renderAll;
-      window.renderAll = function(){
-        const result = original.apply(this, arguments);
-        forceLeftModuleV182();
-        forceNotePreviewStyleV182();
-        setTimeout(()=>{forceLeftModuleV182(); forceNotePreviewStyleV182();}, 40);
-        setTimeout(()=>{forceLeftModuleV182(); forceNotePreviewStyleV182();}, 160);
-        return result;
-      };
-      window.renderAll.__noteNoBlueV182 = true;
-    }
-  }
-
-  function runV182(){
-    patchRenderV182();
-    forceLeftModuleV182();
-    forceNotePreviewStyleV182();
-  }
-
-  window.addEventListener("load",()=>{
-    setTimeout(runV182,200);
-    setTimeout(runV182,800);
-    setTimeout(runV182,1800);
-  });
-
-  const obs = new MutationObserver(()=>{
-    clearTimeout(window.__noteNoBlueV182);
-    window.__noteNoBlueV182 = setTimeout(runV182,80);
-  });
-
-  obs.observe(document.body,{childList:true,subtree:true});
-})();
-
-;
-// 26-weekend-created-v184-js.js
-(function(){
-  const KEY_WEEKEND = "tydenni_plan_hide_weekend_v184";
-  const KEY_CREATED = "tydenni_plan_hide_created_v184";
-
-  function todayText(){
-    const d = new Date();
-    return `${String(d.getDate()).padStart(2,"0")}. ${String(d.getMonth()+1).padStart(2,"0")}. ${d.getFullYear()}`;
-  }
-
-  function ensureOptions(){
-    if(document.querySelector(".displayOptionsV184")) return;
-
-    const panel = document.querySelector(".panel");
-    if(!panel) return;
-
-    const box = document.createElement("div");
-    box.className = "displayOptionsV184";
-    box.innerHTML = `
-      <div class="displayOptionsTitleV184">Zobrazení</div>
-      <label class="displayOptionV184">
-        <input type="checkbox" id="hideWeekendV184">
-        <span>Skrýt víkend</span>
-      </label>
-      <label class="displayOptionV184">
-        <input type="checkbox" id="hideCreatedDateV184">
-        <span>Skrýt datum vytvoření</span>
-      </label>
-    `;
-
-    const manual = document.querySelector(".manualEventV167") || document.querySelector(".manualEventV166") || document.querySelector(".manualEventV165");
-    if(manual){
-      manual.insertAdjacentElement("beforebegin", box);
-    }else{
-      panel.appendChild(box);
-    }
-
-    const weekend = document.getElementById("hideWeekendV184");
-    const created = document.getElementById("hideCreatedDateV184");
-
-    weekend.checked = localStorage.getItem(KEY_WEEKEND) === "1";
-    created.checked = localStorage.getItem(KEY_CREATED) === "1";
-
-    weekend.addEventListener("change",()=>{
-      localStorage.setItem(KEY_WEEKEND, weekend.checked ? "1" : "0");
-      applyDisplayOptions();
-    });
-
-    created.addEventListener("change",()=>{
-      localStorage.setItem(KEY_CREATED, created.checked ? "1" : "0");
-      applyDisplayOptions();
-    });
-  }
-
-  function markWeekendRows(){
-    document.querySelectorAll(".previewPage table tbody tr").forEach(row=>{
-      const dayCell = row.querySelector(".dayCell");
-      const text = (dayCell?.textContent || "").toLowerCase();
-
-      if(text.includes("sobota") || text.includes("neděle") || text.includes("nedele") || text.trim().startsWith("so") || text.trim().startsWith("ne")){
-        row.classList.add("weekendRowV184");
-      }else{
-        row.classList.remove("weekendRowV184");
-      }
-    });
-  }
-
-  function ensureCreatedDate(){
-    document.querySelectorAll(".previewPage").forEach(page=>{
-      let box = page.querySelector(".createdDateV184");
-      if(!box){
-        box = document.createElement("div");
-        box.className = "createdDateV184";
-        box.textContent = "Vytvořeno: " + todayText();
-
-        const footer = page.querySelector(".schoolFooterInsideV166,.schoolFooterInsideV165,.schoolFooterV161,.schoolFooterV160,.schoolFooterV157");
-        if(footer){
-          footer.insertAdjacentElement("beforebegin", box);
-        }else{
-          page.appendChild(box);
-        }
-      }
-    });
-  }
-
-  function applyDisplayOptions(){
-    const hideWeekend = localStorage.getItem(KEY_WEEKEND) === "1";
-    const hideCreated = localStorage.getItem(KEY_CREATED) === "1";
-
-    document.body.classList.toggle("hideWeekendV184", hideWeekend);
-    document.body.classList.toggle("hideCreatedDateV184", hideCreated);
-
-    markWeekendRows();
-    ensureCreatedDate();
-  }
-
-  function patchRender(){
-    if(typeof window.renderAll === "function" && !window.renderAll.__displayV184){
-      const original = window.renderAll;
-      window.renderAll = function(){
-        const result = original.apply(this, arguments);
-        setTimeout(applyDisplayOptions, 80);
-        setTimeout(applyDisplayOptions, 250);
-        return result;
-      };
-      window.renderAll.__displayV184 = true;
-    }
-
-    if(typeof window.renderPreview === "function" && !window.renderPreview.__displayV184){
-      const original = window.renderPreview;
-      window.renderPreview = function(){
-        const result = original.apply(this, arguments);
-        setTimeout(applyDisplayOptions, 80);
-        return result;
-      };
-      window.renderPreview.__displayV184 = true;
-    }
-
-    if(typeof window.moveWeek === "function" && !window.moveWeek.__displayV184){
-      const original = window.moveWeek;
-      window.moveWeek = function(){
-        const result = original.apply(this, arguments);
-        setTimeout(applyDisplayOptions, 150);
-        return result;
-      };
-      window.moveWeek.__displayV184 = true;
-    }
-  }
-
-  function run(){
-    ensureOptions();
-    patchRender();
-    applyDisplayOptions();
-  }
-
-  window.addEventListener("load",()=>{
-    setTimeout(run,300);
-    setTimeout(run,1000);
-    setTimeout(run,2200);
-  });
-
-  const obs = new MutationObserver(()=>{
-    clearTimeout(window.__displayV184);
-    window.__displayV184 = setTimeout(run,160);
-  });
-
-  obs.observe(document.body,{childList:true,subtree:true});
-})();
-
-;
-// 27-multiline-note-page-align-v186-js.js
-(function(){
-  function noteInput(){
-    return document.getElementById("weeklyNoteInput");
-  }
-
-  function normalizeText(t){
-    return String(t || "").replace(/\r\n/g,"\n").replace(/\r/g,"\n").trim();
-  }
-
-  function forceMultilineNoteStyle(){
-    const input = noteInput();
-    const note = normalizeText(input?.value || "");
-    if(!note) return;
-
-    const noteFlat = note.replace(/\s+/g," ");
-
-    document.querySelectorAll(".previewPage").forEach(page=>{
-      [...page.querySelectorAll("div,p,section")].forEach(el=>{
-        if(el.closest("table")) return;
-
-        const elText = normalizeText(el.textContent || "");
-        const elFlat = elText.replace(/\s+/g," ");
-
-        const isNote =
-          elFlat === noteFlat ||
-          el.classList.contains("planMessage") ||
-          el.classList.contains("planMessageFixedV180") ||
-          el.classList.contains("notePreviewNoBlueV182") ||
-          el.classList.contains("planNoteRedV179");
-
-        if(isNote){
-          el.classList.remove("notice");
-          el.classList.add("multilineNoteFinalV186");
-          el.style.background = "#fff7e6";
-          el.style.border = "1px solid #f6d58d";
-          el.style.borderLeft = "6px solid #9f1239";
-          el.style.borderRadius = "16px";
-          el.style.color = "#7f1d1d";
-          el.style.fontSize = "13px";
-          el.style.fontWeight = "850";
-          el.style.lineHeight = "1.45";
-          el.style.padding = "10px 12px";
-          el.style.margin = "8px 0 8px 0";
-          el.style.whiteSpace = "pre-line";
-          el.style.boxShadow = "0 6px 16px rgba(159,18,57,.06)";
-        }
-      });
-    });
-  }
-
-  function patchRender(){
-    if(typeof window.renderPreview === "function" && !window.renderPreview.__multiNoteV186){
-      const original = window.renderPreview;
-      window.renderPreview = function(){
-        const result = original.apply(this, arguments);
-        forceMultilineNoteStyle();
-        setTimeout(forceMultilineNoteStyle, 20);
-        setTimeout(forceMultilineNoteStyle, 120);
-        return result;
-      };
-      window.renderPreview.__multiNoteV186 = true;
-    }
-
-    if(typeof window.renderAll === "function" && !window.renderAll.__multiNoteV186){
-      const original = window.renderAll;
-      window.renderAll = function(){
-        const result = original.apply(this, arguments);
-        forceMultilineNoteStyle();
-        setTimeout(forceMultilineNoteStyle, 50);
-        setTimeout(forceMultilineNoteStyle, 160);
-        return result;
-      };
-      window.renderAll.__multiNoteV186 = true;
-    }
-  }
-
-  function run(){
-    patchRender();
-    forceMultilineNoteStyle();
-  }
-
-  window.addEventListener("load",()=>{
-    setTimeout(run,250);
-    setTimeout(run,900);
-    setTimeout(run,1800);
-  });
-
-  const obs = new MutationObserver(()=>{
-    clearTimeout(window.__multiNoteV186);
-    window.__multiNoteV186 = setTimeout(run,90);
-  });
-
-  obs.observe(document.body,{childList:true,subtree:true});
-})();
-
-;
-// 28-final-polish-v188-js.js
-(function(){
-  function noteInput(){
-    return document.getElementById("weeklyNoteInput");
-  }
-
-  function normalize(t){
-    return String(t || "").replace(/\r\n/g,"\n").replace(/\r/g,"\n").trim();
-  }
-
-  function fixMultilineNoteFinalV188(){
-    const input = noteInput();
-    const note = normalize(input?.value || "");
-    if(!note) return;
-
-    const noteFlat = note.replace(/\s+/g," ");
-
-    document.querySelectorAll(".previewPage").forEach(page=>{
-      [...page.querySelectorAll("div,p,section")].forEach(el=>{
-        if(el.closest("table")) return;
-
-        const elText = normalize(el.textContent || "");
-        const elFlat = elText.replace(/\s+/g," ");
-
-        const isNote =
-          elFlat === noteFlat ||
-          el.classList.contains("notePreviewNoBlueV182") ||
-          el.classList.contains("multilineNoteFinalV186") ||
-          el.classList.contains("planMessageFixedV180") ||
-          el.classList.contains("planMessage") ||
-          el.classList.contains("planNoteRedV179");
-
-        if(isNote){
-          el.classList.remove("notice");
-          el.classList.add("notePreviewNoBlueV182");
-          el.style.background = "#fff7e6";
-          el.style.border = "1px solid #f6d58d";
-          el.style.borderLeft = "6px solid #9f1239";
-          el.style.borderRadius = "16px";
-          el.style.color = "#7f1d1d";
-          el.style.fontFamily = "'Open Sans', sans-serif";
-          el.style.fontSize = "13px";
-          el.style.fontWeight = "850";
-          el.style.lineHeight = "1.45";
-          el.style.padding = "10px 12px";
-          el.style.margin = "8px 0 8px 0";
-          el.style.whiteSpace = "pre-line";
-          el.style.boxShadow = "0 6px 16px rgba(159,18,57,.06)";
-        }
-      });
-    });
-  }
-
-  function patchRenderV188(){
-    if(typeof window.renderPreview === "function" && !window.renderPreview.__finalPolishV188){
-      const original = window.renderPreview;
-      window.renderPreview = function(){
-        const result = original.apply(this, arguments);
-        requestAnimationFrame(fixMultilineNoteFinalV188);
-        setTimeout(fixMultilineNoteFinalV188, 80);
-        return result;
-      };
-      window.renderPreview.__finalPolishV188 = true;
-    }
-
-    if(typeof window.renderAll === "function" && !window.renderAll.__finalPolishV188){
-      const original = window.renderAll;
-      window.renderAll = function(){
-        const result = original.apply(this, arguments);
-        requestAnimationFrame(fixMultilineNoteFinalV188);
-        setTimeout(fixMultilineNoteFinalV188, 100);
-        return result;
-      };
-      window.renderAll.__finalPolishV188 = true;
-    }
-  }
-
-  function runV188(){
-    patchRenderV188();
-    fixMultilineNoteFinalV188();
-  }
-
-  window.addEventListener("load",()=>{
-    setTimeout(runV188,250);
-    setTimeout(runV188,900);
-    setTimeout(runV188,1800);
-  });
-
-  const obs = new MutationObserver(()=>{
-    clearTimeout(window.__finalPolishV188);
-    window.__finalPolishV188 = setTimeout(runV188,100);
-  });
-
-  obs.observe(document.body,{childList:true,subtree:true});
-})();
-
-;
-// 29-restore-controls-note-v190-js.js
-(function(){
-  function noteInput(){
-    return document.getElementById("weeklyNoteInput");
-  }
-
-  function normalize(t){
-    return String(t || "").replace(/\r\n/g,"\n").replace(/\r/g,"\n").trim();
-  }
-
-  function forceNoteStyleV190(){
-    const input = noteInput();
-    const note = normalize(input?.value || "");
-    if(!note) return;
-
-    const noteFlat = note.replace(/\s+/g," ");
-
-    document.querySelectorAll(".previewPage").forEach(page=>{
-      [...page.querySelectorAll("div,p,section")].forEach(el=>{
-        if(el.closest("table")) return;
-
-        const txt = normalize(el.textContent || "");
-        const flat = txt.replace(/\s+/g," ");
-
-        const isNote =
-          flat === noteFlat ||
-          el.classList.contains("notice") && flat && noteFlat && (flat.includes(noteFlat) || noteFlat.includes(flat)) ||
-          el.classList.contains("planMessage") ||
-          el.classList.contains("planMessageFixedV180") ||
-          el.classList.contains("planMessageStableV189") ||
-          el.classList.contains("notePreviewNoBlueV182") ||
-          el.classList.contains("multilineNoteFinalV186");
-
-        if(isNote){
-          el.classList.remove("notice");
-          el.classList.add("notePreviewNoBlueV182");
-          el.style.background = "#fff7e6";
-          el.style.border = "1px solid #f6d58d";
-          el.style.borderLeft = "6px solid #9f1239";
-          el.style.borderRadius = "16px";
-          el.style.color = "#7f1d1d";
-          el.style.fontFamily = "'Open Sans', sans-serif";
-          el.style.fontSize = "13px";
-          el.style.fontWeight = "850";
-          el.style.lineHeight = "1.45";
-          el.style.padding = "10px 12px";
-          el.style.margin = "8px 0 8px 0";
-          el.style.whiteSpace = "pre-line";
-          el.style.boxShadow = "0 6px 16px rgba(159,18,57,.06)";
-        }
-      });
-    });
-  }
-
-  function patchRenderV190(){
-    if(typeof window.renderPreview === "function" && !window.renderPreview.__noteV190){
-      const original = window.renderPreview;
-      window.renderPreview = function(){
-        const result = original.apply(this, arguments);
-        forceNoteStyleV190();
-        requestAnimationFrame(forceNoteStyleV190);
-        setTimeout(forceNoteStyleV190, 40);
-        return result;
-      };
-      window.renderPreview.__noteV190 = true;
-    }
-
-    if(typeof window.renderAll === "function" && !window.renderAll.__noteV190){
-      const original = window.renderAll;
-      window.renderAll = function(){
-        const result = original.apply(this, arguments);
-        forceNoteStyleV190();
-        requestAnimationFrame(forceNoteStyleV190);
-        setTimeout(forceNoteStyleV190, 60);
-        return result;
-      };
-      window.renderAll.__noteV190 = true;
-    }
-  }
-
-  function attachInputV190(){
-    const input = noteInput();
-    if(!input || input.__noteInputV190) return;
-    input.__noteInputV190 = true;
-
-    input.addEventListener("keydown", function(ev){
-      if(ev.key === "Enter"){
-        setTimeout(forceNoteStyleV190, 0);
-        setTimeout(forceNoteStyleV190, 30);
-        setTimeout(forceNoteStyleV190, 120);
-      }
-    }, true);
-
-    input.addEventListener("input", function(){
-      setTimeout(forceNoteStyleV190, 0);
-      setTimeout(forceNoteStyleV190, 30);
-    }, true);
-  }
-
-  function runV190(){
-    patchRenderV190();
-    attachInputV190();
-    forceNoteStyleV190();
-  }
-
-  window.addEventListener("load",()=>{
-    setTimeout(runV190,200);
-    setTimeout(runV190,800);
-    setTimeout(runV190,1600);
-  });
-
-  const obs = new MutationObserver(()=>{
-    clearTimeout(window.__noteV190);
-    window.__noteV190 = setTimeout(runV190,80);
-  });
-
-  obs.observe(document.body,{childList:true,subtree:true});
-})();
-
-;
-// 30-note-source-final-v193-js.js
-(function(){
-  function patchAutosaveToPreviewOnly(){
-    // Po psaní jen standardně přerenderovat. Styl už je přímo v renderu.
-    const input = document.getElementById("weeklyNoteInput");
-    if(input && !input.__v193){
-      input.__v193 = true;
-      input.addEventListener("input", ()=>{
-        clearTimeout(window.__renderNoteV193);
-        window.__renderNoteV193 = setTimeout(()=>{
-          if(typeof window.renderPreview === "function") window.renderPreview();
-        }, 60);
-      }, true);
-    }
-  }
-
-  function run(){
-    patchAutosaveToPreviewOnly();
-  }
-
-  window.addEventListener("load",()=>{
-    setTimeout(run,200);
-    setTimeout(run,800);
-  });
 })();
 
 ;

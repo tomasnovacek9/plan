@@ -416,6 +416,135 @@ function currentWeekNoteV174(){
   return String(input?.value || "").trim();
 }
 
+function stableTextKeyV300(text){
+  return String(text || "")
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+function stableClassKeyV300(text){
+  const found = String(text || "").match(/\b[1-9]\.?\s*[a-zá-ž]?\b/gi) || [];
+  return found
+    .map(x => x.toLowerCase().replace(/\s+/g,"").replace(".", "."))
+    .sort()
+    .join(",");
+}
+
+function repeatKeyForEventV300(e){
+  const title = stableTextKeyV300(e?.title || "");
+  const person = stableTextKeyV300(e?.person || "");
+  if(title.length < 4) return "";
+
+  const classes = stableClassKeyV300(`${e?.title || ""} ${e?.person || ""}`);
+  return `${title}||${classes || person}`;
+}
+
+function repeatClassMapV300(list){
+  const groups = new Map();
+  list.forEach(e=>{
+    const key = repeatKeyForEventV300(e);
+    if(!key) return;
+    if(!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(e);
+  });
+
+  const classes = new Map();
+  let color = 1;
+  groups.forEach(group=>{
+    if(group.length < 2) return;
+    group.forEach(e=>classes.set(e, `repeatedEventV50 repeatColorV50-${color}`));
+    color++;
+    if(color > 6) color = 1;
+  });
+
+  return classes;
+}
+
+function todayTextV300(){
+  const d = new Date();
+  return `${String(d.getDate()).padStart(2,"0")}. ${String(d.getMonth()+1).padStart(2,"0")}. ${d.getFullYear()}`;
+}
+
+function applyDisplayBodyClassesV300(){
+  const hideWeekend = localStorage.getItem("tydenni_plan_hide_weekend_v184") === "1";
+  const hideCreated = localStorage.getItem("tydenni_plan_hide_created_v184") === "1";
+
+  document.body.classList.toggle("hideWeekendV184", hideWeekend);
+  document.body.classList.toggle("hideCreatedDateV184", hideCreated);
+}
+
+function initDisplayOptionsV300(){
+  const weekend = document.getElementById("hideWeekendV184");
+  const created = document.getElementById("hideCreatedDateV184");
+
+  if(weekend && !weekend.__stableV300){
+    weekend.__stableV300 = true;
+    weekend.checked = localStorage.getItem("tydenni_plan_hide_weekend_v184") === "1";
+    weekend.addEventListener("change", ()=>{
+      localStorage.setItem("tydenni_plan_hide_weekend_v184", weekend.checked ? "1" : "0");
+      applyDisplayBodyClassesV300();
+    });
+  }
+
+  if(created && !created.__stableV300){
+    created.__stableV300 = true;
+    created.checked = localStorage.getItem("tydenni_plan_hide_created_v184") === "1";
+    created.addEventListener("change", ()=>{
+      localStorage.setItem("tydenni_plan_hide_created_v184", created.checked ? "1" : "0");
+      applyDisplayBodyClassesV300();
+    });
+  }
+
+  applyDisplayBodyClassesV300();
+}
+
+function initWeekNoteV300(){
+  const input = document.getElementById("weeklyNoteInput");
+  const weekInputs = [document.getElementById("weekFrom"), document.getElementById("weekTo")].filter(Boolean);
+
+  weekInputs.forEach(field=>{
+    if(field.__noteWeekStableV300) return;
+    field.__noteWeekStableV300 = true;
+    field.addEventListener("change", ()=>{
+      loadWeekNoteIntoInputV300();
+      renderPreview();
+    });
+  });
+
+  if(!input || input.__stableV300) return;
+
+  input.__stableV300 = true;
+  input.removeAttribute("oninput");
+  input.addEventListener("input", ()=>{
+    const key = weekNoteKeyV174();
+    if(!key) return;
+
+    const notes = loadWeekNotesV174();
+    const value = String(input.value || "").trim();
+    if(value) notes[key] = value;
+    else delete notes[key];
+    saveWeekNotesV174(notes);
+
+    const status = document.getElementById("noteAutoStatusV174");
+    if(status) status.textContent = value ? "Uloženo automaticky pro aktuální týden." : "Poznámka je prázdná.";
+
+    renderPreview();
+  });
+}
+
+function loadWeekNoteIntoInputV300(){
+  const input = document.getElementById("weeklyNoteInput");
+  if(!input || document.activeElement === input) return;
+
+  const notes = loadWeekNotesV174();
+  input.value = notes[weekNoteKeyV174()] || "";
+
+  const status = document.getElementById("noteAutoStatusV174");
+  if(status) status.textContent = "Poznámka se ukládá automaticky k aktuálnímu týdnu.";
+}
+
 
 function renderPlanNoteFinalV193(message){
   const txt = String(message || "").trim();
@@ -424,22 +553,26 @@ function renderPlanNoteFinalV193(message){
 }
 
 function renderPreview(){
+  applyDisplayBodyClassesV300();
   const from=document.getElementById("weekFrom").value;
   const to=document.getElementById("weekTo").value;
   const signature=document.getElementById("signature").value;
   const weekDates=getWeekDates();
   const planMessage=currentWeekNoteV174();
   const messageHtml = planMessage ? `${renderPlanNoteFinalV193(planMessage)}` : "";
+  const repeatClasses = repeatClassMapV300(events);
 
   const rows=[];
   weekDates.forEach(d=>{
     const dateKey=dateToInput(d);
     const dayEvents=sortEvents(events.filter(e=>e.date===dateKey));
+    const weekendClass = (d.getDay() === 0 || d.getDay() === 6) ? " weekendRowV184" : "";
     if(dayEvents.length===0){
-      rows.push(`<tr class="dayBreak"><td class="dayCell"><div class="dayName">${dayNames[d.getDay()]}</div><div class="dayDate">${formatDate(dateKey)}</div></td><td class="timeCell"></td><td class="eventCell"></td><td class="personCell"></td></tr>`);
+      rows.push(`<tr class="dayBreak emptyDayV162${weekendClass}"><td class="dayCell"><div class="dayName">${dayNames[d.getDay()]}</div><div class="dayDate">${formatDate(dateKey)}</div></td><td class="timeCell"></td><td class="eventCell"></td><td class="personCell"></td></tr>`);
     }else{
       dayEvents.forEach((e,idx)=>{
-        rows.push(`<tr class="${idx===0?'dayBreak':''}">
+        const repeated = repeatClasses.get(e) || "";
+        rows.push(`<tr class="${idx===0?'dayBreak ':''}${repeated}${weekendClass}">
           ${idx===0?`<td class="dayCell" rowspan="${dayEvents.length}"><div class="dayName">${dayNames[d.getDay()]}</div><div class="dayDate">${formatDate(dateKey)}</div></td>`:""}
           <td class="timeCell">${renderTimeCellV161(e.from,e.to)}</td>
           <td class="eventCell">${escapeHtml(e.title).replace(/\n/g,"<br>")}</td>
@@ -470,6 +603,7 @@ function renderPreview(){
         <span class="podpisFinal41Name">${escapeHtml(signature || "Mgr. MgA. Bc. Michal Jančík")}</span><span class="podpisFinal41Role">, ředitel školy</span>
       </div>
     </div>
+    <div class="createdDateV184">Vytvořeno: ${todayTextV300()}</div>
 
     `;
 }
@@ -514,6 +648,7 @@ function setWeekByDate(baseDate){
   document.getElementById("weekFrom").value = dateToInput(monday);
   document.getElementById("weekTo").value = dateToInput(sunday);
   document.getElementById("eventDate").value = dateToInput(monday);
+  loadWeekNoteIntoInputV300();
 }
 
 function setDefaultWeek(){
@@ -577,6 +712,8 @@ async function loadCalendarFromUrl(){
   }
 }
 
+initDisplayOptionsV300();
+initWeekNoteV300();
 setDefaultWeek();
 setCalendarInfo();
 renderAll();
