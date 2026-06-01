@@ -3,8 +3,19 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22 <23"
+  },
   "scripts": {
-    "dev": "python3 -m http.server 4173",
-    "check": "node --check src/main.js"
+    "dev": "vite --host 0.0.0.0 --port 4173",
+    "build": "npm run build:legacy && vite build",
+    "build:legacy": "node tools/build-legacy-bundles.mjs",
+    "preview": "vite preview --host 0.0.0.0 --port 4173",
+    "check": "npm run build:legacy && npm run check:js && npm run check:links",
+    "check:js": "node tools/check-js-syntax.mjs",
+    "check:links": "node tools/check-local-links.mjs"
+  },
+  "devDependencies": {
+    "vite": "^5.4.11"
   }
 }
