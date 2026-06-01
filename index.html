@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Generator tydenniho planu skoly</title>
+    <title>Generátor týdenního plánu školy</title>
     <link rel="stylesheet" href="./src/styles/base.css">
     <link rel="stylesheet" href="./src/styles/layout.css">
     <link rel="stylesheet" href="./src/styles/print.css">
@@ -14,24 +14,28 @@
   <body>
     <div class="appShell">
       <header class="appHeader">
-        <div class="brandMark" aria-hidden="true">JB</div>
+        <div class="brandMark" aria-hidden="true">ZŠ</div>
         <div>
-          <h1>Generator tydenniho planu</h1>
-          <p>Import z EduPage kalendare, rucni upravy a hotovy tiskovy vystup A4.</p>
+          <h1>Základní škola Brno, Jana Babáka 1</h1>
+          <p>Generátor týdenního plánu z EduPage kalendáře</p>
         </div>
         <div class="headerActions">
-          <button class="ghostButton" id="saveButton" type="button">Ulozit</button>
-          <button class="ghostButton" id="loadButton" type="button">Nacist</button>
+          <button class="ghostButton" id="saveButton" type="button">Uložit</button>
+          <button class="ghostButton" id="loadButton" type="button">Načíst</button>
           <button class="primaryButton" id="pdfButton" type="button">PDF</button>
         </div>
       </header>
 
       <main class="workspace">
         <aside class="controlPanel" aria-label="Nastaveni planu">
+          <section class="noticeBox">
+            Načti EduPage kalendář, doplň vlastní záznamy a zkontroluj náhled před tiskem nebo exportem do PDF.
+          </section>
+
           <section class="panelSection compact">
             <div class="sectionHeader">
-              <h2>Tyden</h2>
-              <span id="calendarStatus" class="statusBadge">Cekam</span>
+              <h2>Týden</h2>
+              <span id="calendarStatus" class="statusBadge">Čekám</span>
             </div>
             <div class="twoCols">
               <label>
@@ -44,10 +48,10 @@
               </label>
             </div>
             <div class="buttonGrid">
-              <button id="prevWeekButton" type="button">Predchozi</button>
-              <button id="currentWeekButton" type="button">Aktualni</button>
-              <button id="nextWeekButton" type="button">Dalsi</button>
-              <button id="importCalendarButton" type="button">Nacist kalendar</button>
+              <button id="prevWeekButton" type="button">Předchozí</button>
+              <button id="currentWeekButton" type="button">Aktuální</button>
+              <button id="nextWeekButton" type="button">Další</button>
+              <button id="importCalendarButton" type="button">Načíst kalendář</button>
             </div>
             <label class="fileButton">
               Import .ics souboru
@@ -57,8 +61,8 @@
 
           <section class="panelSection">
             <div class="sectionHeader">
-              <h2>Rucni zaznam</h2>
-              <button id="clearFormButton" type="button">Vycistit</button>
+              <h2>Ruční záznam</h2>
+              <button id="clearFormButton" type="button">Vyčistit</button>
             </div>
             <input id="manualId" type="hidden">
             <div class="twoCols">
@@ -69,8 +73,8 @@
               <label>
                 Typ
                 <select id="eventType">
-                  <option value="timed">Cas</option>
-                  <option value="allDay">Cely den</option>
+                  <option value="timed">Čas</option>
+                  <option value="allDay">Celý den</option>
                 </select>
               </label>
             </div>
@@ -86,26 +90,26 @@
             </div>
             <label>
               Akce
-              <textarea id="eventTitle" rows="3" placeholder="Napriklad porada pedagogicke rady"></textarea>
+              <textarea id="eventTitle" rows="3" placeholder="Například porada pedagogické rady"></textarea>
             </label>
             <label>
-              Zodpovida
-              <input id="eventPerson" placeholder="Napriklad Novakova">
+              Zodpovídá
+              <input id="eventPerson" placeholder="Například Nováková">
             </label>
-            <button class="primaryButton fullWidth" id="addEventButton" type="button">Pridat do planu</button>
+            <button class="primaryButton fullWidth" id="addEventButton" type="button">Přidat do plánu</button>
           </section>
 
           <section class="panelSection">
             <div class="sectionHeader">
-              <h2>Poznamka tydne</h2>
-              <span id="noteStatus" class="muted">Automaticky se uklada</span>
+              <h2>Poznámka týdne</h2>
+              <span id="noteStatus" class="muted">Automaticky se ukládá</span>
             </div>
-            <textarea id="weekNote" rows="4" placeholder="Dulezite informace pro tento tyden"></textarea>
+            <textarea id="weekNote" rows="4" placeholder="Důležité informace pro tento týden"></textarea>
           </section>
 
           <section class="panelSection">
             <div class="sectionHeader">
-              <h2>Zobrazeni</h2>
+              <h2>Zobrazení</h2>
             </div>
             <label class="checkRow">
               <input id="hideWeekend" type="checkbox">
@@ -113,7 +117,7 @@
             </label>
             <label class="checkRow">
               <input id="hideCreatedDate" type="checkbox">
-              Skryt datum vytvoreni
+              Skrýt datum vytvoření
             </label>
             <label class="checkRow">
               <input id="skipReservations" type="checkbox" checked>
@@ -127,8 +131,8 @@
 
           <section class="panelSection">
             <div class="sectionHeader">
-              <h2>Rucni zaznamy</h2>
-              <button id="clearManualButton" type="button">Smazat vse</button>
+              <h2>Ruční záznamy</h2>
+              <button id="clearManualButton" type="button">Smazat vše</button>
             </div>
             <div id="manualList" class="manualList"></div>
           </section>
@@ -136,7 +140,7 @@
 
         <section class="previewArea" aria-label="Nahled dokumentu">
           <div class="previewToolbar">
-            <strong>Nahled A4</strong>
+            <strong>Náhled A4</strong>
             <div>
               <button id="printButton" type="button">Tisk</button>
               <button id="resetButton" class="dangerButton" type="button">Reset</button>

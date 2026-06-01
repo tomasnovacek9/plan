@@ -1,4 +1,4 @@
-export const DAY_NAMES = ["Nedele", "Pondeli", "Utery", "Streda", "Ctvrtek", "Patek", "Sobota"];
+export const DAY_NAMES = ["Neděle", "Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota"];
 
 export function pad(value) {
   return String(value).padStart(2, "0");

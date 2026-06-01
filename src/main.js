@@ -108,8 +108,8 @@ function attachEvents() {
   el.weekNote.addEventListener("input", () => {
     notes[state.weekFrom] = el.weekNote.value;
     saveNotes(notes);
-    el.noteStatus.textContent = "Ulozeno";
-    setTimeout(() => { el.noteStatus.textContent = "Automaticky se uklada"; }, 900);
+    el.noteStatus.textContent = "Uloženo";
+    setTimeout(() => { el.noteStatus.textContent = "Automaticky se ukládá"; }, 900);
     render();
   });
 
@@ -179,7 +179,7 @@ function clearManualForm() {
   el.eventTitle.value = "";
   el.eventPerson.value = "";
   el.timeFields.classList.remove("hidden");
-  document.getElementById("addEventButton").textContent = "Pridat do planu";
+  document.getElementById("addEventButton").textContent = "Přidat do plánu";
 }
 
 function editManualEvent(id) {
@@ -193,7 +193,7 @@ function editManualEvent(id) {
   el.eventTitle.value = event.title;
   el.eventPerson.value = event.person;
   el.timeFields.classList.toggle("hidden", event.allDay);
-  document.getElementById("addEventButton").textContent = "Ulozit zmenu";
+  document.getElementById("addEventButton").textContent = "Uložit změnu";
 }
 
 function deleteManualEvent(id) {
@@ -203,7 +203,7 @@ function deleteManualEvent(id) {
 }
 
 function clearManualEvents() {
-  if (!state.manualEvents.length || !confirm("Smazat vsechny rucni zaznamy?")) return;
+  if (!state.manualEvents.length || !confirm("Smazat všechny ruční záznamy?")) return;
   state.manualEvents = [];
   clearManualForm();
   render();
@@ -213,7 +213,7 @@ function clearManualEvents() {
 function renderManualList(events) {
   const manualInWeek = events.filter((event) => event.source === "manual");
   if (!manualInWeek.length) {
-    el.manualList.innerHTML = `<p class="emptyText">V tomto tydnu nejsou rucni zaznamy.</p>`;
+    el.manualList.innerHTML = `<p class="emptyText">V tomto týdnu nejsou ruční záznamy.</p>`;
     return;
   }
 
@@ -221,7 +221,7 @@ function renderManualList(events) {
     <div class="manualItem">
       <div>
         <strong>${event.date}</strong>
-        <span>${event.allDay ? "cely den" : `${event.from}-${event.to}`}</span>
+        <span>${event.allDay ? "celý den" : `${event.from}-${event.to}`}</span>
         <p>${event.title}</p>
       </div>
       <div class="itemActions">
@@ -240,19 +240,19 @@ function renderManualList(events) {
 }
 
 async function loadCalendarFromUrl(showErrors) {
-  setStatus("Nacitam", "loading");
+  setStatus("Načítám", "loading");
   try {
     const response = await fetch(`/calendar.ics?t=${Date.now()}`, { cache: "no-store" });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const text = await response.text();
     if (!text.includes("BEGIN:VCALENDAR")) throw new Error("Odpoved neni ICS kalendar.");
     state.calendarEvents = parseIcs(text);
-    setStatus(`${state.calendarEvents.length} akci`, "ok");
+    setStatus(`${state.calendarEvents.length} akcí`, "ok");
     render();
     persist(false);
   } catch (error) {
-    setStatus("Bez ziveho kalendare", "warning");
-    if (showErrors) alert(`Kalendar se nepodarilo nacist: ${error.message}`);
+    setStatus("Bez živého kalendáře", "warning");
+    if (showErrors) alert(`Kalendář se nepodařilo načíst: ${error.message}`);
   }
 }
 
@@ -261,7 +261,7 @@ async function importIcsFile(event) {
   if (!file) return;
   const text = await file.text();
   state.calendarEvents = parseIcs(text);
-  setStatus(`${state.calendarEvents.length} akci`, "ok");
+  setStatus(`${state.calendarEvents.length} akcí`, "ok");
   render();
   persist(false);
 }
@@ -278,13 +278,13 @@ function loadWeekNote() {
 
 function persist(showAlert) {
   saveAppState(state);
-  if (showAlert) alert("Ulozeno v tomto prohlizeci.");
+  if (showAlert) alert("Uloženo v tomto prohlížeči.");
 }
 
 function restoreSavedState() {
   const saved = loadAppState();
   if (!saved) {
-    alert("Zatim neni nic ulozene.");
+    alert("Zatím není nic uložené.");
     return;
   }
   Object.assign(state, saved);
@@ -293,7 +293,7 @@ function restoreSavedState() {
 }
 
 function resetApp() {
-  if (!confirm("Opravdu vycistit plan v tomto prohlizeci?")) return;
+  if (!confirm("Opravdu vyčistit plán v tomto prohlížeči?")) return;
   state.calendarEvents = [];
   state.manualEvents = [];
   responsibleOverrides = {};

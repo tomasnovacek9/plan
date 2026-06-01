@@ -17,7 +17,7 @@ export function formatTime(time) {
 }
 
 export function renderTimeRange(event) {
-  if (event.allDay) return "cely den";
+  if (event.allDay) return "celý den";
   if (event.from && event.to) return `${formatTime(event.from)}-${formatTime(event.to)}`;
   return formatTime(event.from);
 }

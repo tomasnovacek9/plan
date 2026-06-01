@@ -43,10 +43,10 @@ export function renderPreview(target, state, events, note, responsibleOverrides)
 
   target.innerHTML = `
     <header class="docHeader">
-      <div class="docBrand">JB</div>
+      <div class="docBrand">ZŠ</div>
       <div>
-        <p class="docSchool">Zakladni skola Brno, Jana Babaka 1, prispevkova organizace</p>
-        <h2>TYDENNI PLAN</h2>
+        <p class="docSchool">Základní škola Brno, Jana Babáka 1, příspěvková organizace</p>
+        <h2>TÝDENNÍ PLÁN</h2>
         <p class="docDates">od ${formatDate(state.weekFrom)} do ${formatDate(state.weekTo)}</p>
       </div>
     </header>
@@ -59,15 +59,15 @@ export function renderPreview(target, state, events, note, responsibleOverrides)
           <th>Datum</th>
           <th>Hodina</th>
           <th>Akce</th>
-          <th>Zodpovida</th>
+          <th>Zodpovídá</th>
         </tr>
       </thead>
       <tbody>${rows.join("")}</tbody>
     </table>
 
     <footer class="docFooter">
-      <div class="signature">Mgr. MgA. Bc. Michal Jancik, reditel skoly</div>
-      <div class="footerMeta ${state.options.hideCreatedDate ? "hidden" : ""}">Vytvoreno ${formatDate(new Date())}</div>
+      <div class="signature">Mgr. MgA. Bc. Michal Jančík, ředitel školy</div>
+      <div class="footerMeta ${state.options.hideCreatedDate ? "hidden" : ""}">Vytvořeno ${formatDate(new Date())}</div>
     </footer>
   `;
 }
