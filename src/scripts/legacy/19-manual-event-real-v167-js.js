@@ -271,46 +271,14 @@
   }
 
   function patchRender(){
-    if(typeof renderAll === "function" && !renderAll.__manualV167){
-      const original = renderAll;
-      renderAll = function(){
-        mergeManualEvents();
-        const r = original.apply(this, arguments);
-        setTimeout(()=>{ refreshDaySelect(); putFooterAtPageEnd(); },100);
-        return r;
-      };
-      renderAll.__manualV167 = true;
-    }
-
-    if(typeof renderPreview === "function" && !renderPreview.__manualV167){
-      const original = renderPreview;
-      renderPreview = function(){
-        mergeManualEvents();
-        const r = original.apply(this, arguments);
-        setTimeout(putFooterAtPageEnd,100);
-        return r;
-      };
-      renderPreview.__manualV167 = true;
-    }
-
     if(typeof moveWeek === "function" && !moveWeek.__manualV167){
       const original = moveWeek;
       moveWeek = function(){
         const r = original.apply(this, arguments);
-        setTimeout(refreshDaySelect,120);
+        refreshDaySelect();
         return r;
       };
       moveWeek.__manualV167 = true;
-    }
-
-    if(typeof importWeekFromCalendar === "function" && !importWeekFromCalendar.__manualV167){
-      const original = importWeekFromCalendar;
-      importWeekFromCalendar = function(){
-        const r = original.apply(this, arguments);
-        setTimeout(()=>{ mergeManualEvents(); if(typeof renderAll === "function") renderAll(); },100);
-        return r;
-      };
-      importWeekFromCalendar.__manualV167 = true;
     }
   }
 
@@ -326,7 +294,7 @@
 
   window.addEventListener("load",()=>{
     setTimeout(run,400);
-    setTimeout(()=>{ run(); if(typeof renderAll === "function") renderAll(); },1200);
+    setTimeout(run,1200);
   });
 
   const obs = new MutationObserver(()=>{

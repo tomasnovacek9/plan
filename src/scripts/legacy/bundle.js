@@ -143,6 +143,7 @@ function importWeekFromCalendar(){
     }
   });
 
+  mergeManualEventsV300();
   renderAll();
 }
 
@@ -319,6 +320,48 @@ function minutesFromTimeV161(t){
   const m = String(t || "").match(/(\d{1,2}):(\d{2})/);
   if(!m) return null;
   return Number(m[1]) * 60 + Number(m[2]);
+}
+
+const MANUAL_EVENTS_STORE_V300 = "tydenni_plan_manual_events_v167";
+
+function loadManualEventsV300(){
+  try{
+    const data = JSON.parse(localStorage.getItem(MANUAL_EVENTS_STORE_V300) || "[]");
+    return Array.isArray(data) ? data : [];
+  }catch(e){
+    return [];
+  }
+}
+
+function eventSortMinutesV300(value){
+  if(!value || /celý den|cely den/i.test(value)) return -1;
+  const match = String(value).match(/(\d{1,2}):(\d{2})/);
+  if(!match) return 9999;
+  return Number(match[1]) * 60 + Number(match[2]);
+}
+
+function mergeManualEventsV300(){
+  events = events.filter(e => !e.manualV167 && e.source !== "manual");
+
+  loadManualEventsV300().forEach(e=>{
+    events.push({
+      uid: e.uid,
+      date: e.date,
+      from: e.from,
+      to: e.to,
+      title: e.title,
+      person: e.person,
+      classes: e.classes || "",
+      manualV167: true,
+      source: "manual"
+    });
+  });
+
+  events.sort((a,b)=>{
+    const date = String(a.date || "").localeCompare(String(b.date || ""));
+    if(date !== 0) return date;
+    return eventSortMinutesV300(a.from) - eventSortMinutesV300(b.from);
+  });
 }
 
 function displayTimeV161(t){
@@ -1419,46 +1462,14 @@ window.addEventListener("load", ()=>{
   }
 
   function patchRender(){
-    if(typeof renderAll === "function" && !renderAll.__manualV167){
-      const original = renderAll;
-      renderAll = function(){
-        mergeManualEvents();
-        const r = original.apply(this, arguments);
-        setTimeout(()=>{ refreshDaySelect(); putFooterAtPageEnd(); },100);
-        return r;
-      };
-      renderAll.__manualV167 = true;
-    }
-
-    if(typeof renderPreview === "function" && !renderPreview.__manualV167){
-      const original = renderPreview;
-      renderPreview = function(){
-        mergeManualEvents();
-        const r = original.apply(this, arguments);
-        setTimeout(putFooterAtPageEnd,100);
-        return r;
-      };
-      renderPreview.__manualV167 = true;
-    }
-
     if(typeof moveWeek === "function" && !moveWeek.__manualV167){
       const original = moveWeek;
       moveWeek = function(){
         const r = original.apply(this, arguments);
-        setTimeout(refreshDaySelect,120);
+        refreshDaySelect();
         return r;
       };
       moveWeek.__manualV167 = true;
-    }
-
-    if(typeof importWeekFromCalendar === "function" && !importWeekFromCalendar.__manualV167){
-      const original = importWeekFromCalendar;
-      importWeekFromCalendar = function(){
-        const r = original.apply(this, arguments);
-        setTimeout(()=>{ mergeManualEvents(); if(typeof renderAll === "function") renderAll(); },100);
-        return r;
-      };
-      importWeekFromCalendar.__manualV167 = true;
     }
   }
 
@@ -1474,7 +1485,7 @@ window.addEventListener("load", ()=>{
 
   window.addEventListener("load",()=>{
     setTimeout(run,400);
-    setTimeout(()=>{ run(); if(typeof renderAll === "function") renderAll(); },1200);
+    setTimeout(run,1200);
   });
 
   const obs = new MutationObserver(()=>{
