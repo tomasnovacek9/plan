@@ -165,6 +165,7 @@
     if(!v || /celý den|cely den/i.test(v)) return -1;
     const m = String(v).match(/(\d{1,2}):(\d{2})/);
     if(!m) return 9999;
+    if(Number(m[1]) === 0 && Number(m[2]) === 0) return 24 * 60;
     return Number(m[1]) * 60 + Number(m[2]);
   }
 

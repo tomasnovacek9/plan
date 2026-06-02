@@ -324,10 +324,7 @@ body{
 }
 
 .manualTimeHintV169{
-  color:#718096!important;
-  font-size:10.5px!important;
-  font-weight:620!important;
-  line-height:1.35!important;
+  display:none!important;
 }
 
 .manualLessonPickerV300{
@@ -410,12 +407,67 @@ body{
 }
 
 .manualDatePickerV301{
+  position:relative!important;
   display:grid!important;
   gap:8px!important;
   padding:10px!important;
   border:1px solid rgba(31,111,175,.12)!important;
   border-radius:16px!important;
   background:linear-gradient(180deg,#fbfdff,#f6f9fd)!important;
+}
+
+.manualDateTriggerV301{
+  position:relative!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  width:100%!important;
+  min-height:42px!important;
+  padding:9px 12px!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  box-shadow:0 7px 18px rgba(15,23,42,.055)!important;
+}
+
+.manualDateTriggerV301::after{
+  content:"v"!important;
+  color:#64748b!important;
+  font-size:15px!important;
+  line-height:1!important;
+}
+
+.manualDateTriggerV301[aria-expanded="true"]::after{
+  transform:rotate(180deg)!important;
+}
+
+.manualDateTriggerV301 span{
+  color:#64748b!important;
+  font-size:11px!important;
+  font-weight:780!important;
+}
+
+.manualDateTriggerV301 strong{
+  color:#0f172a!important;
+  font-size:13px!important;
+  font-weight:820!important;
+}
+
+.manualDatePopoverV301{
+  position:absolute!important;
+  z-index:20!important;
+  top:calc(100% + 6px)!important;
+  left:0!important;
+  right:0!important;
+  padding:8px!important;
+  border:1px solid rgba(15,23,42,.10)!important;
+  border-radius:16px!important;
+  background:rgba(255,255,255,.96)!important;
+  box-shadow:0 18px 42px rgba(15,23,42,.16)!important;
+  backdrop-filter:blur(18px)!important;
+}
+
+.manualDatePopoverV301[hidden]{
+  display:none!important;
 }
 
 .manualDateStripV301{
@@ -493,6 +545,7 @@ body{
     linear-gradient(180deg,rgba(248,250,252,.96),rgba(248,250,252,0) 26%,rgba(248,250,252,0) 74%,rgba(248,250,252,.96)),
     #f8fafc!important;
   scroll-snap-type:y mandatory!important;
+  scroll-behavior:smooth!important;
 }
 
 .manualTimeWheelListV301::-webkit-scrollbar{
@@ -671,36 +724,40 @@ body{
 .previewPage .planTable{
   border:1px solid #d7e3ee!important;
   border-radius:14px!important;
+  border-collapse:separate!important;
+  border-spacing:0!important;
   overflow:hidden!important;
-  box-shadow:0 1px 0 rgba(15,23,42,.04),0 10px 28px rgba(15,23,42,.055)!important;
+  background:#fff!important;
+  box-shadow:0 1px 0 rgba(15,23,42,.04),0 12px 30px rgba(15,23,42,.06)!important;
 }
 
 .previewPage .planTable th{
   padding-top:7px!important;
   padding-bottom:7px!important;
-  background:linear-gradient(180deg,#236fae 0%,#155a94 100%)!important;
-  color:#fff!important;
-  border-right:1px solid rgba(255,255,255,.20)!important;
+  background:linear-gradient(180deg,#fbfdff,#f2f7fc)!important;
+  color:#155a94!important;
+  border-right:1px solid #e3edf6!important;
+  border-bottom:2px solid rgba(21,90,148,.24)!important;
   font-weight:850!important;
   letter-spacing:0!important;
 }
 
 .previewPage .planTable td{
-  border-top:1px solid #e6edf5!important;
-  border-right:1px solid #eef4f8!important;
+  border-top:1px solid #edf3f8!important;
+  border-right:1px solid #f0f5f9!important;
   color:#1f2937!important;
 }
 
 .previewPage .planTable tbody tr:nth-child(even) td:not(.dayCell){
-  background:#fbfdff!important;
+  background:#fcfdff!important;
 }
 
 .previewPage .planTable tbody tr:hover td:not(.dayCell){
-  background:#f7fbff!important;
+  background:#f6fbff!important;
 }
 
 .previewPage .dayCell{
-  background:linear-gradient(180deg,#f3f8ff 0%,#eaf3fb 100%)!important;
+  background:linear-gradient(180deg,#f7fbff 0%,#eef6fd 100%)!important;
   color:#164e85!important;
   border-right:1px solid #d8e5f0!important;
 }

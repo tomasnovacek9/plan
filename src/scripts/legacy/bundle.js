@@ -1152,6 +1152,7 @@ hookPrintPdfButtonV115();
     if(!v || /celý den|cely den/i.test(v)) return -1;
     const m = String(v).match(/(\d{1,2}):(\d{2})/);
     if(!m) return 9999;
+    if(Number(m[1]) === 0 && Number(m[2]) === 0) return 24 * 60;
     return Number(m[1]) * 60 + Number(m[2]);
   }
 
@@ -1589,6 +1590,7 @@ hookPrintPdfButtonV115();
     if(!v || /celý den|cely den/i.test(v)) return -1;
     const m = String(v).match(/(\d{1,2}):(\d{2})/);
     if(!m) return 9999;
+    if(Number(m[1]) === 0 && Number(m[2]) === 0) return 24 * 60;
     return Number(m[1])*60 + Number(m[2]);
   }
 
@@ -1614,7 +1616,7 @@ hookPrintPdfButtonV115();
       mode.innerHTML = `
         <label>Čas záznamu</label>
         <div class="manualTimeModeGridV300">
-          <button type="button" class="manualModeBtnV300" data-time-mode="time">Čas po 5 min</button>
+          <button type="button" class="manualModeBtnV300" data-time-mode="time">Čas</button>
           <button type="button" class="manualModeBtnV300" data-time-mode="lesson">Vyučovací hodiny</button>
           <button type="button" class="manualModeBtnV300" data-time-mode="allDay">Celý den</button>
         </div>
@@ -1646,13 +1648,7 @@ hookPrintPdfButtonV115();
       });
     }
 
-    if(!document.querySelector(".manualTimeHintV169")){
-      const hint = document.createElement("div");
-      hint.className = "manualTimeHintV169";
-      hint.textContent = "Rolováním vyber čas po 5 minutách, nebo přepni na vyučovací hodiny.";
-      const timeRow = document.getElementById("manualTimeRowV167");
-      if(timeRow) timeRow.insertAdjacentElement("afterend", hint);
-    }
+    document.querySelector(".manualTimeHintV169")?.remove();
 
     setTimeMode(currentTimeMode());
     syncDatePicker();
@@ -1662,12 +1658,12 @@ hookPrintPdfButtonV115();
 
   function timeValuesV301(){
     const out = [];
-    for(let h=6; h<=20; h++){
+    for(let h=6; h<=23; h++){
       for(let m=0; m<60; m+=5){
-        if(h===20 && m>0) continue;
         out.push(`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`);
       }
     }
+    out.push("00:00");
     return out;
   }
 
@@ -1690,19 +1686,34 @@ hookPrintPdfButtonV115();
     if(picker.dataset.signatureV301 !== signature){
       picker.innerHTML = `
         <label>Datum</label>
-        <div class="manualDateStripV301">
-          ${[...day.options].map(o=>`
-            <button type="button" class="manualDateBtnV301" data-date="${o.value}">
-              <span>${escapeForHtml(o.textContent.split(" ")[0] || "")}</span>
-              <strong>${escapeForHtml(o.textContent.replace(/^[^ ]+\s*/,""))}</strong>
-            </button>
-          `).join("")}
+        <button type="button" class="manualDateTriggerV301" aria-expanded="false">
+          <span>Datum</span>
+          <strong>Vybrat</strong>
+        </button>
+        <div class="manualDatePopoverV301" hidden>
+          <div class="manualDateStripV301">
+            ${[...day.options].map(o=>`
+              <button type="button" class="manualDateBtnV301" data-date="${o.value}">
+                <span>${escapeForHtml(o.textContent.split(" ")[0] || "")}</span>
+                <strong>${escapeForHtml(o.textContent.replace(/^[^ ]+\s*/,""))}</strong>
+              </button>
+            `).join("")}
+          </div>
         </div>
       `;
       picker.dataset.signatureV301 = signature;
+      const trigger = picker.querySelector(".manualDateTriggerV301");
+      const popover = picker.querySelector(".manualDatePopoverV301");
+      trigger?.addEventListener("click",()=>{
+        const isOpen = !popover?.hidden;
+        if(popover) popover.hidden = isOpen;
+        trigger.setAttribute("aria-expanded", isOpen ? "false" : "true");
+      });
       picker.querySelectorAll("[data-date]").forEach(btn=>{
         btn.addEventListener("click",()=>{
           day.value = btn.dataset.date || "";
+          if(popover) popover.hidden = true;
+          trigger?.setAttribute("aria-expanded","false");
           syncDatePicker();
         });
       });
@@ -1749,6 +1760,12 @@ hookPrintPdfButtonV115();
           syncTimeWheel();
         });
       });
+      wheel.querySelectorAll(".manualTimeWheelListV301").forEach(list=>{
+        list.addEventListener("scroll",()=>{
+          clearTimeout(list.__wheelTimerV301);
+          list.__wheelTimerV301 = setTimeout(()=>selectCenteredTime(list), 90);
+        });
+      });
     }
 
     ["manualFromV167","manualToV167"].forEach(id=>{
@@ -1784,6 +1801,8 @@ hookPrintPdfButtonV115();
       if(field.tagName === "INPUT"){
         field.type = "time";
         field.step = "300";
+        field.min = "00:00";
+        field.max = "23:55";
         field.dataset.timeInputV300 = "1";
         return;
       }
@@ -1792,8 +1811,8 @@ hookPrintPdfButtonV115();
       input.id = id;
       input.value = field.value || "";
       input.step = "300";
-      input.min = "06:00";
-      input.max = "20:00";
+      input.min = "00:00";
+      input.max = "23:55";
       input.dataset.timeInputV300 = "1";
       input.setAttribute("aria-label", id === "manualFromV167" ? "Čas od" : "Čas do");
       field.replaceWith(input);
@@ -1818,9 +1837,37 @@ hookPrintPdfButtonV115();
   function syncDatePicker(){
     const day = document.getElementById("manualDayV167");
     if(!day) return;
+    const selected = [...day.options].find(o=>o.value === day.value);
+    const trigger = document.querySelector(".manualDateTriggerV301");
+    if(trigger){
+      const label = selected?.textContent || "Vybrat datum";
+      const parts = label.split(" ");
+      const strong = label.replace(/^[^ ]+\s*/,"");
+      trigger.querySelector("span").textContent = parts[0] || "Datum";
+      trigger.querySelector("strong").textContent = strong || "Vybrat";
+    }
     document.querySelectorAll(".manualDateBtnV301[data-date]").forEach(btn=>{
       btn.classList.toggle("active", btn.dataset.date === day.value);
     });
+  }
+
+  function selectCenteredTime(list){
+    if(!list || list.__syncingV301) return;
+    const listRect = list.getBoundingClientRect();
+    const center = listRect.top + listRect.height / 2;
+    let best = null;
+    let bestDistance = Infinity;
+    list.querySelectorAll("button").forEach(btn=>{
+      const rect = btn.getBoundingClientRect();
+      const distance = Math.abs((rect.top + rect.height / 2) - center);
+      if(distance < bestDistance){
+        bestDistance = distance;
+        best = btn;
+      }
+    });
+    if(!best) return;
+    setVal(list.dataset.timeList, best.dataset.time || "");
+    syncTimeWheel();
   }
 
   function syncTimeWheel(){
@@ -1836,7 +1883,9 @@ hookPrintPdfButtonV115();
       });
       if(active && list.dataset.lastValueV301 !== value){
         list.dataset.lastValueV301 = value;
+        list.__syncingV301 = true;
         active.scrollIntoView({block:"center", inline:"nearest"});
+        setTimeout(()=>{ list.__syncingV301 = false; }, 140);
       }
     });
     syncTimeSummary();
