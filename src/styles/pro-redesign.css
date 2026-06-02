@@ -4,9 +4,15 @@
 */
 
 body{
+  --brand-blue:#155a94;
+  --brand-blue-2:#1f6faf;
+  --brand-gold:#f4b400;
+  --brand-ink:#0f172a;
+  --brand-muted:#64748b;
+  --brand-line:rgba(15,23,42,.08);
   background:
     radial-gradient(circle at 8% 0%, rgba(255,255,255,.96), rgba(255,255,255,0) 30%),
-    linear-gradient(135deg,#f5f7fb 0%,#eef3f9 46%,#e8eef6 100%)!important;
+    linear-gradient(135deg,#f7f9fc 0%,#eef5fb 48%,#e9f0f6 100%)!important;
 }
 
 .page{
@@ -94,14 +100,16 @@ body{
 .panel{
   position:sticky!important;
   top:18px!important;
+  height:calc(100vh - 36px)!important;
   max-height:calc(100vh - 36px)!important;
   overflow:auto!important;
   padding:14px!important;
-  border:1px solid rgba(15,23,42,.08)!important;
+  border:1px solid var(--brand-line)!important;
   border-radius:26px!important;
   background:rgba(255,255,255,.78)!important;
   box-shadow:0 24px 70px rgba(15,23,42,.12)!important;
   backdrop-filter:blur(22px)!important;
+  overscroll-behavior:contain!important;
 }
 
 .panel::-webkit-scrollbar{width:8px}
@@ -144,7 +152,7 @@ body{
 .panel label,
 .manualEventV167 label,
 .displayOptionV184 span{
-  color:#64748b!important;
+  color:var(--brand-muted)!important;
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
   font-size:11px!important;
   font-weight:680!important;
@@ -174,9 +182,9 @@ body{
 #weeklyNoteInput:focus,
 .manualEventV167 input:focus,
 .manualEventV167 select:focus{
-  border-color:#2563eb!important;
+  border-color:var(--brand-blue-2)!important;
   background:#fff!important;
-  box-shadow:0 0 0 4px rgba(37,99,235,.12)!important;
+  box-shadow:0 0 0 4px rgba(31,111,175,.12)!important;
 }
 
 #weeklyNoteInput{
@@ -195,21 +203,35 @@ body{
   font-size:12px!important;
   font-weight:720!important;
   box-shadow:0 5px 16px rgba(15,23,42,.05)!important;
+  transition:transform .16s ease, background-color .16s ease, border-color .16s ease, box-shadow .16s ease!important;
 }
 
 .panel button:hover,
 .manualEventV167 button:hover{
   transform:translateY(-1px)!important;
   background:#f8fafc!important;
-  border-color:rgba(37,99,235,.24)!important;
+  border-color:rgba(31,111,175,.26)!important;
+}
+
+.panel button:active,
+.manualEventV167 button:active,
+.actions button:active{
+  transform:translateY(0) scale(.98)!important;
+}
+
+.panel button:focus-visible,
+.manualEventV167 button:focus-visible,
+.actions button:focus-visible{
+  outline:none!important;
+  box-shadow:0 0 0 4px rgba(244,180,0,.22),0 5px 16px rgba(15,23,42,.05)!important;
 }
 
 .panel .primary,
 #manualAddV167,
 .manualEventBtnV167{
-  border-color:#0f172a!important;
+  border-color:var(--brand-blue)!important;
   color:#fff!important;
-  background:#0f172a!important;
+  background:linear-gradient(180deg,var(--brand-blue-2),var(--brand-blue))!important;
 }
 
 #weekButtonsWrapperV7 > div{
@@ -244,13 +266,63 @@ body{
   gap:7px!important;
 }
 
-.manualTimeHintV169,
 .noteAutoStatusV174,
 .responsibleHintV213{
-  color:#94a3b8!important;
+  display:flex!important;
+  align-items:flex-start!important;
+  gap:8px!important;
+  margin-top:8px!important;
+  padding:9px 10px!important;
+  border:1px solid rgba(31,111,175,.12)!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,rgba(239,246,255,.74),rgba(248,250,252,.92))!important;
+  color:#486174!important;
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
-  font-size:10.5px!important;
-  font-weight:560!important;
+  font-size:11px!important;
+  font-weight:620!important;
+  line-height:1.35!important;
+}
+
+.noteAutoStatusV174::before,
+.responsibleHintV213::before{
+  content:""!important;
+  width:7px!important;
+  height:7px!important;
+  margin-top:4px!important;
+  flex:0 0 7px!important;
+  border-radius:999px!important;
+  background:var(--brand-gold)!important;
+  box-shadow:0 0 0 4px rgba(244,180,0,.16)!important;
+}
+
+.manualTimeHintV169{
+  display:none!important;
+}
+
+.manualLessonPickerV300{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+  padding:10px!important;
+  border:1px solid rgba(31,111,175,.12)!important;
+  border-radius:16px!important;
+  background:#f8fbff!important;
+}
+
+.manualLessonPickerV300 > label{
+  grid-column:1 / -1!important;
+  margin:0!important;
+}
+
+.manualLessonPickerV300 select,
+#manualFromV167,
+#manualToV167{
+  min-height:38px!important;
+}
+
+#manualTimeRowV167,
+.manualEventTimeRowV167{
+  gap:8px!important;
 }
 
 .manualListV168{
@@ -265,14 +337,30 @@ body{
 
 .displayOptionsV184{
   display:grid!important;
-  gap:8px!important;
+  gap:6px!important;
 }
 
 .displayOptionV184{
-  border:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:9px!important;
+  min-height:34px!important;
+  border:1px solid rgba(15,23,42,.06)!important;
   background:#f8fafc!important;
-  border-radius:14px!important;
-  padding:9px 10px!important;
+  border-radius:12px!important;
+  padding:6px 9px!important;
+}
+
+.displayOptionV184 input{
+  width:17px!important;
+  height:17px!important;
+  margin:0!important;
+  accent-color:var(--brand-blue)!important;
+}
+
+.displayOptionV184 span{
+  line-height:1.15!important;
 }
 
 .previewShell{
@@ -370,6 +458,8 @@ body{
 @media(max-width:1050px){
   .panel{
     position:static!important;
+    height:auto!important;
+    min-height:0!important;
     max-height:none!important;
   }
   .layout{

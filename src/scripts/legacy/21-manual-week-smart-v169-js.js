@@ -1,5 +1,23 @@
 (function(){
   const STORAGE_KEY = "tydenni_plan_manual_events_v167";
+  const LESSONS_V300 = [
+    { id:"0", label:"0. hodina", from:"07:10", to:"07:55" },
+    { id:"1", label:"1. hodina", from:"08:00", to:"08:45" },
+    { id:"2", label:"2. hodina", from:"08:55", to:"09:40" },
+    { id:"3", label:"3. hodina", from:"10:00", to:"10:45" },
+    { id:"4", label:"4. hodina", from:"10:55", to:"11:40" },
+    { id:"5", label:"5. hodina", from:"11:50", to:"12:35" },
+    { id:"6", label:"6. hodina", from:"12:45", to:"13:30" },
+    { id:"7", label:"7. hodina", from:"13:15", to:"14:00" },
+    { id:"8", label:"8. hodina", from:"14:00", to:"14:45" },
+    { id:"9", label:"9. hodina", from:"14:50", to:"15:35" },
+    { id:"10", label:"10. hodina", from:"15:35", to:"16:20" }
+  ];
+  const TIME_PRESETS_V300 = Array.from(new Set([
+    "",
+    ...LESSONS_V300.flatMap(x=>[x.from,x.to]),
+    "06:45","07:00","08:30","09:30","11:30","12:00","13:00","14:30","15:00","16:00","17:00"
+  ])).sort((a,b)=>minutes(a)-minutes(b));
 
   function load(){
     try{
@@ -52,6 +70,8 @@
     const grid = document.querySelector(".manualEventGridV167");
     if(!grid) return;
 
+    compactTimeSelects();
+
     if(!document.querySelector(".manualQuickV169")){
       const quick = document.createElement("div");
       quick.className = "manualQuickV169";
@@ -68,18 +88,67 @@
       if(timeRow) timeRow.insertAdjacentElement("beforebegin", quick);
       else grid.insertBefore(quick, grid.children[2] || null);
 
-      quick.querySelectorAll("[data-quick]").forEach(btn=>{
-        btn.addEventListener("click",()=>applyQuick(btn.dataset.quick));
+    }
+    attachQuickButtons();
+
+    if(!document.querySelector(".manualLessonPickerV300")){
+      const picker = document.createElement("div");
+      picker.className = "manualLessonPickerV300";
+      picker.innerHTML = `
+        <label>Vyučovací hodina</label>
+        <select id="manualLessonFromV300" aria-label="Od hodiny">
+          <option value="">Od hodiny</option>
+          ${LESSONS_V300.map(x=>`<option value="${x.id}">${x.label}</option>`).join("")}
+        </select>
+        <select id="manualLessonToV300" aria-label="Do hodiny">
+          <option value="">Do hodiny</option>
+          ${LESSONS_V300.map(x=>`<option value="${x.id}">${x.label}</option>`).join("")}
+        </select>
+      `;
+      const timeRow = document.getElementById("manualTimeRowV167");
+      if(timeRow) timeRow.insertAdjacentElement("beforebegin", picker);
+      else grid.insertBefore(picker, grid.children[2] || null);
+
+      picker.querySelectorAll("select").forEach(select=>{
+        select.addEventListener("change",applyLessonRange);
       });
     }
 
     if(!document.querySelector(".manualTimeHintV169")){
       const hint = document.createElement("div");
       hint.className = "manualTimeHintV169";
-      hint.textContent = "Tip: čas vybírej po 5 minutách, nebo použij rychlý rozsah.";
+      hint.textContent = "Tip: vyber vyučovací hodinu, čas se doplní automaticky.";
       const timeRow = document.getElementById("manualTimeRowV167");
       if(timeRow) timeRow.insertAdjacentElement("afterend", hint);
     }
+  }
+
+  function attachQuickButtons(){
+    document.querySelectorAll(".manualQuickBtnV169[data-quick]").forEach(btn=>{
+      if(btn.dataset.quickBoundV300 === "1") return;
+      btn.dataset.quickBoundV300 = "1";
+      btn.addEventListener("click",()=>applyQuick(btn.dataset.quick));
+    });
+  }
+
+  function compactTimeSelects(){
+    ["manualFromV167","manualToV167"].forEach(id=>{
+      const select = document.getElementById(id);
+      if(!select || select.dataset.compactV300 === "1") return;
+      const current = select.value;
+      select.innerHTML = TIME_PRESETS_V300.map(time=>{
+        const label = time || "Bez času";
+        return `<option value="${time}">${label}</option>`;
+      }).join("");
+      if(current && !TIME_PRESETS_V300.includes(current)){
+        const option = document.createElement("option");
+        option.value = current;
+        option.textContent = current;
+        select.appendChild(option);
+      }
+      select.value = current || "";
+      select.dataset.compactV300 = "1";
+    });
   }
 
   function setVal(id,v){
@@ -90,12 +159,16 @@
   function applyQuick(kind){
     const type = document.getElementById("manualTypeV167");
     const row = document.getElementById("manualTimeRowV167");
+    const lessonFrom = document.getElementById("manualLessonFromV300");
+    const lessonTo = document.getElementById("manualLessonToV300");
 
     if(kind === "allDay"){
       if(type) type.value = "allDay";
       if(row) row.style.display = "none";
       setVal("manualFromV167","");
       setVal("manualToV167","");
+      if(lessonFrom) lessonFrom.value = "";
+      if(lessonTo) lessonTo.value = "";
       return;
     }
 
@@ -111,6 +184,38 @@
     const r = ranges[kind] || ["",""];
     setVal("manualFromV167",r[0]);
     setVal("manualToV167",r[1]);
+    if(kind === "morning"){
+      if(lessonFrom) lessonFrom.value = "1";
+      if(lessonTo) lessonTo.value = "4";
+    }else if(kind === "zero"){
+      if(lessonFrom) lessonFrom.value = "0";
+      if(lessonTo) lessonTo.value = "0";
+    }else{
+      if(lessonFrom) lessonFrom.value = "";
+      if(lessonTo) lessonTo.value = "";
+    }
+  }
+
+  function applyLessonRange(){
+    const fromSelect = document.getElementById("manualLessonFromV300");
+    const toSelect = document.getElementById("manualLessonToV300");
+    const fromIndex = LESSONS_V300.findIndex(x=>x.id === fromSelect?.value);
+    let toIndex = LESSONS_V300.findIndex(x=>x.id === toSelect?.value);
+    if(fromIndex < 0){
+      setVal("manualFromV167","");
+      setVal("manualToV167","");
+      return;
+    }
+    if(toIndex < 0 || toIndex < fromIndex){
+      toIndex = fromIndex;
+      if(toSelect) toSelect.value = LESSONS_V300[toIndex].id;
+    }
+    const type = document.getElementById("manualTypeV167");
+    const row = document.getElementById("manualTimeRowV167");
+    if(type) type.value = "time";
+    if(row) row.style.display = "grid";
+    setVal("manualFromV167",LESSONS_V300[fromIndex].from);
+    setVal("manualToV167",LESSONS_V300[toIndex].to);
   }
 
   function deleteManual(id){
