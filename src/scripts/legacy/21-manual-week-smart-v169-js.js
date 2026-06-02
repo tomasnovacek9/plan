@@ -122,7 +122,7 @@
     save();
     if(typeof window.renderAll === "function") window.renderAll();
     else if(typeof window.renderPreview === "function") window.renderPreview();
-    setTimeout(renderFilteredManualList,150);
+    renderFilteredManualList();
   }
 
   function startEditFallback(id){
@@ -153,7 +153,7 @@
     if(nativeBtn && nativeBtn.__nativeClicked !== true){
       nativeBtn.__nativeClicked = true;
       nativeBtn.click();
-      setTimeout(()=>{ nativeBtn.__nativeClicked = false; }, 50);
+      nativeBtn.__nativeClicked = false;
     }
   }
 
@@ -214,7 +214,7 @@
       const original = window.renderAll;
       window.renderAll = function(){
         const r = original.apply(this,arguments);
-        setTimeout(run,140);
+        run();
         return r;
       };
       window.renderAll.__weekFilterV169 = true;
@@ -224,7 +224,7 @@
       const original = window.moveWeek;
       window.moveWeek = function(){
         const r = original.apply(this,arguments);
-        setTimeout(run,180);
+        run();
         return r;
       };
       window.moveWeek.__weekFilterV169 = true;
@@ -237,16 +237,5 @@
     patchWeekRefresh();
   }
 
-  window.addEventListener("load",()=>{
-    setTimeout(run,700);
-    setTimeout(run,1600);
-    setTimeout(run,2800);
-  });
-
-  const obs = new MutationObserver(()=>{
-    clearTimeout(window.__manualWeekSmartV169);
-    window.__manualWeekSmartV169 = setTimeout(run,220);
-  });
-
-  obs.observe(document.body,{childList:true,subtree:true});
+  run();
 })();

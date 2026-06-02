@@ -166,7 +166,7 @@
     if(typeof window.renderAll === "function") window.renderAll();
     else if(typeof window.renderPreview === "function") window.renderPreview();
 
-    setTimeout(renderManualListV168,150);
+    renderManualListV168();
   }
 
   function patchAddButtonV168(){
@@ -221,7 +221,7 @@
       if(typeof window.renderAll === "function") window.renderAll();
       else if(typeof window.renderPreview === "function") window.renderPreview();
 
-      setTimeout(renderManualListV168,150);
+      renderManualListV168();
     }, true);
   }
 
@@ -231,16 +231,5 @@
     renderManualListV168();
   }
 
-  window.addEventListener("load",()=>{
-    setTimeout(runV168,700);
-    setTimeout(runV168,1600);
-    setTimeout(runV168,2800);
-  });
-
-  const obs = new MutationObserver(()=>{
-    clearTimeout(window.__manualEditV168);
-    window.__manualEditV168 = setTimeout(runV168,180);
-  });
-
-  obs.observe(document.body,{childList:true,subtree:true});
+  runV168();
 })();

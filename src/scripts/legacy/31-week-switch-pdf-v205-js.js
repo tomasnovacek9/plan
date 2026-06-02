@@ -96,9 +96,6 @@ function hookButton(){
   });
 }
 
-window.addEventListener("load",()=>{
-  setTimeout(hookButton,300);
-  setTimeout(hookButton,1200);
-});
+hookButton();
 
 })();

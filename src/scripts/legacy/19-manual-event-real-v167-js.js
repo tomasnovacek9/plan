@@ -251,7 +251,7 @@
     document.getElementById("manualFromV167").value = "";
     document.getElementById("manualToV167").value = "";
 
-    setTimeout(run,150);
+    run();
   }
 
   function putFooterAtPageEnd(){
@@ -292,15 +292,5 @@
     putFooterAtPageEnd();
   }
 
-  window.addEventListener("load",()=>{
-    setTimeout(run,400);
-    setTimeout(run,1200);
-  });
-
-  const obs = new MutationObserver(()=>{
-    clearTimeout(window.__manualV167);
-    window.__manualV167 = setTimeout(run,180);
-  });
-
-  obs.observe(document.body,{childList:true,subtree:true});
+  run();
 })();

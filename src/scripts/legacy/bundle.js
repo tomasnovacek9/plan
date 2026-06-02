@@ -945,7 +945,7 @@ function generatePdf(){
 }
 
 /* přepsat PDF tlačítko */
-window.addEventListener("load", ()=>{
+function hookPrintPdfButtonV115(){
   document.querySelectorAll("button").forEach(btn=>{
     const t = (btn.textContent || "").trim().toLowerCase();
 
@@ -962,7 +962,9 @@ window.addEventListener("load", ()=>{
       };
     }
   });
-});
+}
+
+hookPrintPdfButtonV115();
 
 ;
 // 19-manual-event-real-v167-js.js
@@ -1219,7 +1221,7 @@ window.addEventListener("load", ()=>{
     document.getElementById("manualFromV167").value = "";
     document.getElementById("manualToV167").value = "";
 
-    setTimeout(run,150);
+    run();
   }
 
   function putFooterAtPageEnd(){
@@ -1260,17 +1262,7 @@ window.addEventListener("load", ()=>{
     putFooterAtPageEnd();
   }
 
-  window.addEventListener("load",()=>{
-    setTimeout(run,400);
-    setTimeout(run,1200);
-  });
-
-  const obs = new MutationObserver(()=>{
-    clearTimeout(window.__manualV167);
-    window.__manualV167 = setTimeout(run,180);
-  });
-
-  obs.observe(document.body,{childList:true,subtree:true});
+  run();
 })();
 
 ;
@@ -1443,7 +1435,7 @@ window.addEventListener("load", ()=>{
     if(typeof window.renderAll === "function") window.renderAll();
     else if(typeof window.renderPreview === "function") window.renderPreview();
 
-    setTimeout(renderManualListV168,150);
+    renderManualListV168();
   }
 
   function patchAddButtonV168(){
@@ -1498,7 +1490,7 @@ window.addEventListener("load", ()=>{
       if(typeof window.renderAll === "function") window.renderAll();
       else if(typeof window.renderPreview === "function") window.renderPreview();
 
-      setTimeout(renderManualListV168,150);
+      renderManualListV168();
     }, true);
   }
 
@@ -1508,18 +1500,7 @@ window.addEventListener("load", ()=>{
     renderManualListV168();
   }
 
-  window.addEventListener("load",()=>{
-    setTimeout(runV168,700);
-    setTimeout(runV168,1600);
-    setTimeout(runV168,2800);
-  });
-
-  const obs = new MutationObserver(()=>{
-    clearTimeout(window.__manualEditV168);
-    window.__manualEditV168 = setTimeout(runV168,180);
-  });
-
-  obs.observe(document.body,{childList:true,subtree:true});
+  runV168();
 })();
 
 ;
@@ -1648,7 +1629,7 @@ window.addEventListener("load", ()=>{
     save();
     if(typeof window.renderAll === "function") window.renderAll();
     else if(typeof window.renderPreview === "function") window.renderPreview();
-    setTimeout(renderFilteredManualList,150);
+    renderFilteredManualList();
   }
 
   function startEditFallback(id){
@@ -1679,7 +1660,7 @@ window.addEventListener("load", ()=>{
     if(nativeBtn && nativeBtn.__nativeClicked !== true){
       nativeBtn.__nativeClicked = true;
       nativeBtn.click();
-      setTimeout(()=>{ nativeBtn.__nativeClicked = false; }, 50);
+      nativeBtn.__nativeClicked = false;
     }
   }
 
@@ -1740,7 +1721,7 @@ window.addEventListener("load", ()=>{
       const original = window.renderAll;
       window.renderAll = function(){
         const r = original.apply(this,arguments);
-        setTimeout(run,140);
+        run();
         return r;
       };
       window.renderAll.__weekFilterV169 = true;
@@ -1750,7 +1731,7 @@ window.addEventListener("load", ()=>{
       const original = window.moveWeek;
       window.moveWeek = function(){
         const r = original.apply(this,arguments);
-        setTimeout(run,180);
+        run();
         return r;
       };
       window.moveWeek.__weekFilterV169 = true;
@@ -1763,18 +1744,7 @@ window.addEventListener("load", ()=>{
     patchWeekRefresh();
   }
 
-  window.addEventListener("load",()=>{
-    setTimeout(run,700);
-    setTimeout(run,1600);
-    setTimeout(run,2800);
-  });
-
-  const obs = new MutationObserver(()=>{
-    clearTimeout(window.__manualWeekSmartV169);
-    window.__manualWeekSmartV169 = setTimeout(run,220);
-  });
-
-  obs.observe(document.body,{childList:true,subtree:true});
+  run();
 })();
 
 ;
@@ -1877,10 +1847,7 @@ function hookButton(){
   });
 }
 
-window.addEventListener("load",()=>{
-  setTimeout(hookButton,300);
-  setTimeout(hookButton,1200);
-});
+hookButton();
 
 })();
 

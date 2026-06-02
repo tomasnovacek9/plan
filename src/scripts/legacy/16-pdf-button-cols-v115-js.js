@@ -9,7 +9,7 @@ function generatePdf(){
 }
 
 /* přepsat PDF tlačítko */
-window.addEventListener("load", ()=>{
+function hookPrintPdfButtonV115(){
   document.querySelectorAll("button").forEach(btn=>{
     const t = (btn.textContent || "").trim().toLowerCase();
 
@@ -26,4 +26,6 @@ window.addEventListener("load", ()=>{
       };
     }
   });
-});
+}
+
+hookPrintPdfButtonV115();
