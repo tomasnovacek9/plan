@@ -1543,6 +1543,8 @@ hookPrintPdfButtonV115();
     { id:"9", label:"9. hodina", from:"14:50", to:"15:35" },
     { id:"10", label:"10. hodina", from:"15:35", to:"16:20" }
   ];
+  const TIME_VALUES_V301 = timeValuesV301();
+
   function load(){
     try{
       window.manualEventsV167 = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
@@ -1595,6 +1597,9 @@ hookPrintPdfButtonV115();
     if(!grid) return;
 
     enhanceTimeInputs();
+    ensureDatePicker();
+    ensureTimeWheel();
+    ensureTimeSummary();
 
     let mode = document.querySelector(".manualQuickV169");
     if(!mode){
@@ -1625,11 +1630,11 @@ hookPrintPdfButtonV115();
         <label>Vyučovací hodina</label>
         <select id="manualLessonFromV300" aria-label="Od hodiny">
           <option value="">Od hodiny</option>
-          ${LESSONS_V300.map(x=>`<option value="${x.id}">${x.label}</option>`).join("")}
+          ${LESSONS_V300.map(x=>`<option value="${x.id}">${x.label} (${x.from} - ${x.to})</option>`).join("")}
         </select>
         <select id="manualLessonToV300" aria-label="Do hodiny">
           <option value="">Do hodiny</option>
-          ${LESSONS_V300.map(x=>`<option value="${x.id}">${x.label}</option>`).join("")}
+          ${LESSONS_V300.map(x=>`<option value="${x.id}">${x.label} (${x.from} - ${x.to})</option>`).join("")}
         </select>
       `;
       const timeRow = document.getElementById("manualTimeRowV167");
@@ -1644,12 +1649,124 @@ hookPrintPdfButtonV115();
     if(!document.querySelector(".manualTimeHintV169")){
       const hint = document.createElement("div");
       hint.className = "manualTimeHintV169";
-      hint.textContent = "Čas lze zadat ručně po 5 minutách, vyučovací hodinou, nebo jako celý den.";
+      hint.textContent = "Rolováním vyber čas po 5 minutách, nebo přepni na vyučovací hodiny.";
       const timeRow = document.getElementById("manualTimeRowV167");
       if(timeRow) timeRow.insertAdjacentElement("afterend", hint);
     }
 
     setTimeMode(currentTimeMode());
+    syncDatePicker();
+    syncTimeWheel();
+    syncTimeSummary();
+  }
+
+  function timeValuesV301(){
+    const out = [];
+    for(let h=6; h<=20; h++){
+      for(let m=0; m<60; m+=5){
+        if(h===20 && m>0) continue;
+        out.push(`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`);
+      }
+    }
+    return out;
+  }
+
+  function ensureDatePicker(){
+    const day = document.getElementById("manualDayV167");
+    if(!day) return;
+
+    const holder = day.closest("div");
+    if(holder) holder.classList.add("manualDateNativeV301");
+
+    let picker = document.querySelector(".manualDatePickerV301");
+    if(!picker){
+      picker = document.createElement("div");
+      picker.className = "manualDatePickerV301";
+      if(holder) holder.insertAdjacentElement("afterend", picker);
+      else day.insertAdjacentElement("afterend", picker);
+    }
+
+    const signature = [...day.options].map(o=>`${o.value}:${o.textContent}`).join("|");
+    if(picker.dataset.signatureV301 !== signature){
+      picker.innerHTML = `
+        <label>Datum</label>
+        <div class="manualDateStripV301">
+          ${[...day.options].map(o=>`
+            <button type="button" class="manualDateBtnV301" data-date="${o.value}">
+              <span>${escapeForHtml(o.textContent.split(" ")[0] || "")}</span>
+              <strong>${escapeForHtml(o.textContent.replace(/^[^ ]+\s*/,""))}</strong>
+            </button>
+          `).join("")}
+        </div>
+      `;
+      picker.dataset.signatureV301 = signature;
+      picker.querySelectorAll("[data-date]").forEach(btn=>{
+        btn.addEventListener("click",()=>{
+          day.value = btn.dataset.date || "";
+          syncDatePicker();
+        });
+      });
+    }
+
+    if(!day.dataset.dateSyncV301){
+      day.dataset.dateSyncV301 = "1";
+      day.addEventListener("change",syncDatePicker);
+    }
+  }
+
+  function ensureTimeWheel(){
+    const row = document.getElementById("manualTimeRowV167");
+    if(!row) return;
+    row.classList.add("manualTimeFieldsV301");
+
+    let wheel = document.querySelector(".manualTimeWheelV301");
+    if(!wheel){
+      wheel = document.createElement("div");
+      wheel.className = "manualTimeWheelV301";
+      row.insertAdjacentElement("afterend", wheel);
+    }
+
+    if(wheel.dataset.readyV301 !== "1"){
+      wheel.innerHTML = `
+        <div class="manualTimeWheelColV301">
+          <label>Od</label>
+          <div class="manualTimeWheelListV301" data-time-list="manualFromV167">
+            ${TIME_VALUES_V301.map(t=>`<button type="button" data-time="${t}">${t}</button>`).join("")}
+          </div>
+        </div>
+        <div class="manualTimeWheelColV301">
+          <label>Do</label>
+          <div class="manualTimeWheelListV301" data-time-list="manualToV167">
+            ${TIME_VALUES_V301.map(t=>`<button type="button" data-time="${t}">${t}</button>`).join("")}
+          </div>
+        </div>
+      `;
+      wheel.dataset.readyV301 = "1";
+      wheel.querySelectorAll("[data-time-list] button").forEach(btn=>{
+        btn.addEventListener("click",()=>{
+          const list = btn.closest("[data-time-list]");
+          setVal(list?.dataset.timeList, btn.dataset.time || "");
+          syncTimeWheel();
+        });
+      });
+    }
+
+    ["manualFromV167","manualToV167"].forEach(id=>{
+      const input = document.getElementById(id);
+      if(!input || input.dataset.wheelSyncV301 === "1") return;
+      input.dataset.wheelSyncV301 = "1";
+      input.addEventListener("input",syncTimeWheel);
+      input.addEventListener("change",syncTimeWheel);
+    });
+  }
+
+  function ensureTimeSummary(){
+    if(document.querySelector(".manualTimeSummaryV301")) return;
+    const mode = document.querySelector(".manualTimeModeV300");
+    const summary = document.createElement("div");
+    summary.className = "manualTimeSummaryV301";
+    summary.textContent = "Vybraný čas: doplň čas záznamu";
+    if(mode) mode.insertAdjacentElement("afterend", summary);
   }
 
   function attachModeButtons(){
@@ -1686,6 +1803,58 @@ hookPrintPdfButtonV115();
   function setVal(id,v){
     const el = document.getElementById(id);
     if(el) el.value = v;
+    syncTimeSummary();
+  }
+
+  function escapeForHtml(value){
+    return String(value || "")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#39;");
+  }
+
+  function syncDatePicker(){
+    const day = document.getElementById("manualDayV167");
+    if(!day) return;
+    document.querySelectorAll(".manualDateBtnV301[data-date]").forEach(btn=>{
+      btn.classList.toggle("active", btn.dataset.date === day.value);
+    });
+  }
+
+  function syncTimeWheel(){
+    ["manualFromV167","manualToV167"].forEach(id=>{
+      const value = document.getElementById(id)?.value || "";
+      const list = document.querySelector(`.manualTimeWheelListV301[data-time-list="${id}"]`);
+      if(!list) return;
+      let active = null;
+      list.querySelectorAll("button").forEach(btn=>{
+        const isActive = btn.dataset.time === value;
+        btn.classList.toggle("active", isActive);
+        if(isActive) active = btn;
+      });
+      if(active && list.dataset.lastValueV301 !== value){
+        list.dataset.lastValueV301 = value;
+        active.scrollIntoView({block:"center", inline:"nearest"});
+      }
+    });
+    syncTimeSummary();
+  }
+
+  function syncTimeSummary(){
+    const summary = document.querySelector(".manualTimeSummaryV301");
+    if(!summary) return;
+    const mode = currentTimeMode();
+    const from = document.getElementById("manualFromV167")?.value || "";
+    const to = document.getElementById("manualToV167")?.value || "";
+    if(mode === "allDay"){
+      summary.textContent = "Vybraný čas: celý den";
+    }else if(from && to){
+      summary.textContent = `Vybraný čas: ${from} - ${to}`;
+    }else{
+      summary.textContent = "Vybraný čas: doplň čas záznamu";
+    }
   }
 
   function currentTimeMode(){
@@ -1714,17 +1883,24 @@ hookPrintPdfButtonV115();
       if(type) type.value = "time";
       if(row) row.style.display = "grid";
       if(picker) picker.style.display = "grid";
+      document.querySelector(".manualTimeWheelV301")?.style.setProperty("display","none");
     }else{
       if(type) type.value = "time";
       if(row) row.style.display = "grid";
       if(picker) picker.style.display = "none";
+      document.querySelector(".manualTimeWheelV301")?.style.setProperty("display","grid");
       if(lessonFrom) lessonFrom.value = "";
       if(lessonTo) lessonTo.value = "";
+    }
+
+    if(mode === "allDay"){
+      document.querySelector(".manualTimeWheelV301")?.style.setProperty("display","none");
     }
 
     document.querySelectorAll(".manualModeBtnV300[data-time-mode]").forEach(btn=>{
       btn.classList.toggle("active", btn.dataset.timeMode === mode);
     });
+    syncTimeSummary();
   }
 
   function applyLessonRange(){
@@ -1748,6 +1924,7 @@ hookPrintPdfButtonV115();
     setVal("manualFromV167",LESSONS_V300[fromIndex].from);
     setVal("manualToV167",LESSONS_V300[toIndex].to);
     setTimeMode("lesson");
+    syncTimeWheel();
   }
 
   function deleteManual(id){
@@ -1781,12 +1958,14 @@ hookPrintPdfButtonV115();
       if(from) from.value = "";
       if(to) to.value = "";
       setTimeMode("allDay");
+      syncTimeWheel();
     }else{
       if(type) type.value = "time";
       if(row) row.style.display = "grid";
       if(from) from.value = ev.from || "";
       if(to) to.value = ev.to || "";
       setTimeMode("time");
+      syncTimeWheel();
     }
     const nativeBtn = document.querySelector(`[data-edit="${id}"]`);
     if(nativeBtn && nativeBtn.__nativeClicked !== true){
