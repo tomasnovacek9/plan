@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 4173",
-    "build": "npm run build:legacy && vite build",
+    "build": "npm run build:legacy && node tools/build-static-dist.mjs",
     "build:legacy": "node tools/build-legacy-bundles.mjs",
     "preview": "vite preview --host 0.0.0.0 --port 4173",
     "check": "npm run build:legacy && npm run check:js && npm run check:links",

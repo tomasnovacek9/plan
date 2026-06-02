@@ -50,7 +50,7 @@ npm run check
 Tento prikaz znovu vygeneruje legacy baliky, zkontroluje syntaxi JavaScriptu
 a overi lokalni odkazy v `index.html`.
 
-Produkce se sestavi do `dist/`:
+Produkce se sestavi do `dist/` jako staticka kopie aplikace:
 
 ```bash
 npm run build
@@ -70,6 +70,8 @@ rozdelene do samostatnych souboru:
 - `tools/` obsahuje pomocne skripty pro opakovatelny cleanup inline assetu.
 - `src/styles/legacy/bundle.css` a `src/scripts/legacy/bundle.js` jsou
   generovane soubory pro rychlejsi nacitani aplikace.
+- `tools/build-static-dist.mjs` vytvori produkcni `dist/` bez transformace cest,
+  aby se legacy skripty nacitaly ze stejnych URL jako lokalne.
 
 Pri dalsich upravach je nejbezpecnejsi sahat nejdriv do `pro-redesign.css`
 a `pro-redesign.js`. Legacy soubory je dobre menit jen cilene, protoze kopiruji
