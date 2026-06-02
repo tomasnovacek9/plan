@@ -622,7 +622,7 @@ function initWeekNoteV300(){
     saveWeekNotesV174(notes);
 
     const status = document.getElementById("noteAutoStatusV174");
-    if(status) status.textContent = value ? "Uloženo automaticky pro aktuální týden." : "Poznámka je prázdná.";
+    if(status) status.textContent = value ? "Automaticky uloženo." : "Bez poznámky pro tento týden.";
 
     renderPreview();
   });
@@ -636,7 +636,7 @@ function loadWeekNoteIntoInputV300(){
   input.value = notes[weekNoteKeyV174()] || "";
 
   const status = document.getElementById("noteAutoStatusV174");
-  if(status) status.textContent = "Poznámka se ukládá automaticky k aktuálnímu týdnu.";
+  if(status) status.textContent = "Ukládá se automaticky.";
 }
 
 const RESPONSIBLE_STORE_V300 = "tydenni_plan_responsible_overrides_v213";
@@ -1059,7 +1059,9 @@ hookPrintPdfButtonV115();
   function fillTimeSelects(){
     const from = document.getElementById("manualFromV167");
     const to = document.getElementById("manualToV167");
-    if(!from || !to || from.options.length) return;
+    if(!from || !to) return;
+    if(from.tagName !== "SELECT" || to.tagName !== "SELECT") return;
+    if(from.options.length) return;
 
     const opts = timeOptions();
 
@@ -1379,6 +1381,10 @@ hookPrintPdfButtonV115();
 
   function setSelectValue(sel, val){
     if(!sel) return;
+    if(sel.tagName !== "SELECT"){
+      sel.value = val || "";
+      return;
+    }
     if(val && ![...sel.options].some(o=>o.value===val)){
       const o = document.createElement("option");
       o.value = val;
@@ -1537,12 +1543,6 @@ hookPrintPdfButtonV115();
     { id:"9", label:"9. hodina", from:"14:50", to:"15:35" },
     { id:"10", label:"10. hodina", from:"15:35", to:"16:20" }
   ];
-  const TIME_PRESETS_V300 = Array.from(new Set([
-    "",
-    ...LESSONS_V300.flatMap(x=>[x.from,x.to]),
-    "06:45","07:00","08:30","09:30","11:30","12:00","13:00","14:30","15:00","16:00","17:00"
-  ])).sort((a,b)=>minutes(a)-minutes(b));
-
   function load(){
     try{
       window.manualEventsV167 = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
@@ -1594,26 +1594,29 @@ hookPrintPdfButtonV115();
     const grid = document.querySelector(".manualEventGridV167");
     if(!grid) return;
 
-    compactTimeSelects();
+    enhanceTimeInputs();
 
-    if(!document.querySelector(".manualQuickV169")){
-      const quick = document.createElement("div");
-      quick.className = "manualQuickV169";
-      quick.innerHTML = `
-        <label>Rychlý rozsah</label>
-        <div class="manualQuickGridV169">
-          <button type="button" class="manualQuickBtnV169" data-quick="allDay">Celý den</button>
-          <button type="button" class="manualQuickBtnV169" data-quick="morning">1.–4. hod.</button>
-          <button type="button" class="manualQuickBtnV169" data-quick="zero">0. hod.</button>
-          <button type="button" class="manualQuickBtnV169" data-quick="clear">Vymazat čas</button>
+    let mode = document.querySelector(".manualQuickV169");
+    if(!mode){
+      mode = document.createElement("div");
+      mode.className = "manualQuickV169";
+      const timeRow = document.getElementById("manualTimeRowV167");
+      if(timeRow) timeRow.insertAdjacentElement("beforebegin", mode);
+      else grid.insertBefore(mode, grid.children[2] || null);
+    }
+    mode.classList.add("manualTimeModeV300");
+    if(mode.dataset.modeReadyV300 !== "1"){
+      mode.innerHTML = `
+        <label>Čas záznamu</label>
+        <div class="manualTimeModeGridV300">
+          <button type="button" class="manualModeBtnV300" data-time-mode="time">Čas po 5 min</button>
+          <button type="button" class="manualModeBtnV300" data-time-mode="lesson">Vyučovací hodiny</button>
+          <button type="button" class="manualModeBtnV300" data-time-mode="allDay">Celý den</button>
         </div>
       `;
-      const timeRow = document.getElementById("manualTimeRowV167");
-      if(timeRow) timeRow.insertAdjacentElement("beforebegin", quick);
-      else grid.insertBefore(quick, grid.children[2] || null);
-
+      mode.dataset.modeReadyV300 = "1";
     }
-    attachQuickButtons();
+    attachModeButtons();
 
     if(!document.querySelector(".manualLessonPickerV300")){
       const picker = document.createElement("div");
@@ -1641,37 +1644,42 @@ hookPrintPdfButtonV115();
     if(!document.querySelector(".manualTimeHintV169")){
       const hint = document.createElement("div");
       hint.className = "manualTimeHintV169";
-      hint.textContent = "Tip: vyber vyučovací hodinu, čas se doplní automaticky.";
+      hint.textContent = "Čas lze zadat ručně po 5 minutách, vyučovací hodinou, nebo jako celý den.";
       const timeRow = document.getElementById("manualTimeRowV167");
       if(timeRow) timeRow.insertAdjacentElement("afterend", hint);
     }
+
+    setTimeMode(currentTimeMode());
   }
 
-  function attachQuickButtons(){
-    document.querySelectorAll(".manualQuickBtnV169[data-quick]").forEach(btn=>{
-      if(btn.dataset.quickBoundV300 === "1") return;
-      btn.dataset.quickBoundV300 = "1";
-      btn.addEventListener("click",()=>applyQuick(btn.dataset.quick));
+  function attachModeButtons(){
+    document.querySelectorAll(".manualModeBtnV300[data-time-mode]").forEach(btn=>{
+      if(btn.dataset.modeBoundV300 === "1") return;
+      btn.dataset.modeBoundV300 = "1";
+      btn.addEventListener("click",()=>setTimeMode(btn.dataset.timeMode));
     });
   }
 
-  function compactTimeSelects(){
+  function enhanceTimeInputs(){
     ["manualFromV167","manualToV167"].forEach(id=>{
-      const select = document.getElementById(id);
-      if(!select || select.dataset.compactV300 === "1") return;
-      const current = select.value;
-      select.innerHTML = TIME_PRESETS_V300.map(time=>{
-        const label = time || "Bez času";
-        return `<option value="${time}">${label}</option>`;
-      }).join("");
-      if(current && !TIME_PRESETS_V300.includes(current)){
-        const option = document.createElement("option");
-        option.value = current;
-        option.textContent = current;
-        select.appendChild(option);
+      const field = document.getElementById(id);
+      if(!field || field.dataset.timeInputV300 === "1") return;
+      if(field.tagName === "INPUT"){
+        field.type = "time";
+        field.step = "300";
+        field.dataset.timeInputV300 = "1";
+        return;
       }
-      select.value = current || "";
-      select.dataset.compactV300 = "1";
+      const input = document.createElement("input");
+      input.type = "time";
+      input.id = id;
+      input.value = field.value || "";
+      input.step = "300";
+      input.min = "06:00";
+      input.max = "20:00";
+      input.dataset.timeInputV300 = "1";
+      input.setAttribute("aria-label", id === "manualFromV167" ? "Čas od" : "Čas do");
+      field.replaceWith(input);
     });
   }
 
@@ -1680,44 +1688,43 @@ hookPrintPdfButtonV115();
     if(el) el.value = v;
   }
 
-  function applyQuick(kind){
+  function currentTimeMode(){
+    const type = document.getElementById("manualTypeV167");
+    if(type?.value === "allDay") return "allDay";
+    if(document.getElementById("manualLessonFromV300")?.value) return "lesson";
+    return "time";
+  }
+
+  function setTimeMode(mode){
     const type = document.getElementById("manualTypeV167");
     const row = document.getElementById("manualTimeRowV167");
+    const picker = document.querySelector(".manualLessonPickerV300");
     const lessonFrom = document.getElementById("manualLessonFromV300");
     const lessonTo = document.getElementById("manualLessonToV300");
 
-    if(kind === "allDay"){
+    if(mode === "allDay"){
       if(type) type.value = "allDay";
       if(row) row.style.display = "none";
+      if(picker) picker.style.display = "none";
       setVal("manualFromV167","");
       setVal("manualToV167","");
       if(lessonFrom) lessonFrom.value = "";
       if(lessonTo) lessonTo.value = "";
-      return;
-    }
-
-    if(type) type.value = "time";
-    if(row) row.style.display = "grid";
-
-    const ranges = {
-      morning:["08:00","11:40"],
-      zero:["07:10","07:55"],
-      clear:["",""]
-    };
-
-    const r = ranges[kind] || ["",""];
-    setVal("manualFromV167",r[0]);
-    setVal("manualToV167",r[1]);
-    if(kind === "morning"){
-      if(lessonFrom) lessonFrom.value = "1";
-      if(lessonTo) lessonTo.value = "4";
-    }else if(kind === "zero"){
-      if(lessonFrom) lessonFrom.value = "0";
-      if(lessonTo) lessonTo.value = "0";
+    }else if(mode === "lesson"){
+      if(type) type.value = "time";
+      if(row) row.style.display = "grid";
+      if(picker) picker.style.display = "grid";
     }else{
+      if(type) type.value = "time";
+      if(row) row.style.display = "grid";
+      if(picker) picker.style.display = "none";
       if(lessonFrom) lessonFrom.value = "";
       if(lessonTo) lessonTo.value = "";
     }
+
+    document.querySelectorAll(".manualModeBtnV300[data-time-mode]").forEach(btn=>{
+      btn.classList.toggle("active", btn.dataset.timeMode === mode);
+    });
   }
 
   function applyLessonRange(){
@@ -1740,6 +1747,7 @@ hookPrintPdfButtonV115();
     if(row) row.style.display = "grid";
     setVal("manualFromV167",LESSONS_V300[fromIndex].from);
     setVal("manualToV167",LESSONS_V300[toIndex].to);
+    setTimeMode("lesson");
   }
 
   function deleteManual(id){
@@ -1772,11 +1780,13 @@ hookPrintPdfButtonV115();
       if(row) row.style.display = "none";
       if(from) from.value = "";
       if(to) to.value = "";
+      setTimeMode("allDay");
     }else{
       if(type) type.value = "time";
       if(row) row.style.display = "grid";
       if(from) from.value = ev.from || "";
       if(to) to.value = ev.to || "";
+      setTimeMode("time");
     }
     const nativeBtn = document.querySelector(`[data-edit="${id}"]`);
     if(nativeBtn && nativeBtn.__nativeClicked !== true){

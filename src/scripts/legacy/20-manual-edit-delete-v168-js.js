@@ -93,6 +93,10 @@
 
   function setSelectValue(sel, val){
     if(!sel) return;
+    if(sel.tagName !== "SELECT"){
+      sel.value = val || "";
+      return;
+    }
     if(val && ![...sel.options].some(o=>o.value===val)){
       const o = document.createElement("option");
       o.value = val;

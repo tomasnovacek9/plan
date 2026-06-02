@@ -72,7 +72,9 @@
   function fillTimeSelects(){
     const from = document.getElementById("manualFromV167");
     const to = document.getElementById("manualToV167");
-    if(!from || !to || from.options.length) return;
+    if(!from || !to) return;
+    if(from.tagName !== "SELECT" || to.tagName !== "SELECT") return;
+    if(from.options.length) return;
 
     const opts = timeOptions();
 

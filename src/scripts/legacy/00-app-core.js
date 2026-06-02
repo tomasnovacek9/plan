@@ -621,7 +621,7 @@ function initWeekNoteV300(){
     saveWeekNotesV174(notes);
 
     const status = document.getElementById("noteAutoStatusV174");
-    if(status) status.textContent = value ? "Uloženo automaticky pro aktuální týden." : "Poznámka je prázdná.";
+    if(status) status.textContent = value ? "Automaticky uloženo." : "Bez poznámky pro tento týden.";
 
     renderPreview();
   });
@@ -635,7 +635,7 @@ function loadWeekNoteIntoInputV300(){
   input.value = notes[weekNoteKeyV174()] || "";
 
   const status = document.getElementById("noteAutoStatusV174");
-  if(status) status.textContent = "Poznámka se ukládá automaticky k aktuálnímu týdnu.";
+  if(status) status.textContent = "Ukládá se automaticky.";
 }
 
 const RESPONSIBLE_STORE_V300 = "tydenni_plan_responsible_overrides_v213";

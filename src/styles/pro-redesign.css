@@ -100,20 +100,28 @@ body{
 .panel{
   position:sticky!important;
   top:18px!important;
-  height:calc(100vh - 36px)!important;
-  max-height:calc(100vh - 36px)!important;
-  overflow:auto!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
   padding:14px!important;
   border:1px solid var(--brand-line)!important;
   border-radius:26px!important;
-  background:rgba(255,255,255,.78)!important;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.74)) padding-box,
+    linear-gradient(135deg,rgba(31,111,175,.26),rgba(244,180,0,.20),rgba(15,23,42,.05)) border-box!important;
   box-shadow:0 24px 70px rgba(15,23,42,.12)!important;
   backdrop-filter:blur(22px)!important;
-  overscroll-behavior:contain!important;
 }
 
-.panel::-webkit-scrollbar{width:8px}
-.panel::-webkit-scrollbar-thumb{background:rgba(100,116,139,.28);border-radius:999px}
+.panel::before{
+  content:""!important;
+  display:block!important;
+  height:4px!important;
+  margin:0 8px 12px!important;
+  border-radius:999px!important;
+  background:linear-gradient(90deg,var(--brand-blue),var(--brand-blue-2) 68%,var(--brand-gold))!important;
+  opacity:.92!important;
+}
 
 .panel .section,
 .weeklyNotePanel,
@@ -127,6 +135,21 @@ body{
   border-radius:20px!important;
   background:rgba(255,255,255,.9)!important;
   box-shadow:0 8px 24px rgba(15,23,42,.045)!important;
+  position:relative!important;
+}
+
+.panel .section::after,
+.weeklyNotePanel::after,
+#weeklyNoteSection::after,
+.manualEventV167::after,
+.displayOptionsV184::after{
+  content:""!important;
+  position:absolute!important;
+  left:13px!important;
+  right:13px!important;
+  top:0!important;
+  height:1px!important;
+  background:linear-gradient(90deg,rgba(31,111,175,.18),rgba(244,180,0,.22),rgba(31,111,175,0))!important;
 }
 
 .panel .sectionTitle,
@@ -176,6 +199,10 @@ body{
   box-shadow:inset 0 1px 0 rgba(255,255,255,.7)!important;
 }
 
+.manualEventV167 input[type="time"]{
+  min-height:38px!important;
+}
+
 .panel input:focus,
 .panel textarea:focus,
 .panel select:focus,
@@ -194,6 +221,7 @@ body{
 .panel button,
 .manualEventV167 button,
 .manualQuickBtnV169,
+.manualModeBtnV300,
 .displayOptionsV184 button{
   border:1px solid rgba(15,23,42,.10)!important;
   border-radius:999px!important;
@@ -269,17 +297,17 @@ body{
 .noteAutoStatusV174,
 .responsibleHintV213{
   display:flex!important;
-  align-items:flex-start!important;
-  gap:8px!important;
-  margin-top:8px!important;
-  padding:9px 10px!important;
-  border:1px solid rgba(31,111,175,.12)!important;
-  border-radius:14px!important;
-  background:linear-gradient(180deg,rgba(239,246,255,.74),rgba(248,250,252,.92))!important;
-  color:#486174!important;
+  align-items:center!important;
+  gap:7px!important;
+  margin-top:7px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#718096!important;
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
-  font-size:11px!important;
-  font-weight:620!important;
+  font-size:10.5px!important;
+  font-weight:640!important;
   line-height:1.35!important;
 }
 
@@ -288,15 +316,18 @@ body{
   content:""!important;
   width:7px!important;
   height:7px!important;
-  margin-top:4px!important;
+  margin-top:0!important;
   flex:0 0 7px!important;
   border-radius:999px!important;
-  background:var(--brand-gold)!important;
-  box-shadow:0 0 0 4px rgba(244,180,0,.16)!important;
+  background:#22c55e!important;
+  box-shadow:0 0 0 3px rgba(34,197,94,.12)!important;
 }
 
 .manualTimeHintV169{
-  display:none!important;
+  color:#718096!important;
+  font-size:10.5px!important;
+  font-weight:620!important;
+  line-height:1.35!important;
 }
 
 .manualLessonPickerV300{
@@ -307,6 +338,44 @@ body{
   border:1px solid rgba(31,111,175,.12)!important;
   border-radius:16px!important;
   background:#f8fbff!important;
+}
+
+.manualLessonPickerV300[style*="display: none"],
+#manualTimeRowV167[style*="display: none"]{
+  display:none!important;
+}
+
+.manualTimeModeV300{
+  display:grid!important;
+  gap:8px!important;
+  padding:10px!important;
+  border:1px solid rgba(31,111,175,.12)!important;
+  border-radius:16px!important;
+  background:linear-gradient(180deg,#fbfdff,#f6f9fd)!important;
+}
+
+.manualTimeModeGridV300{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:7px!important;
+}
+
+.manualModeBtnV300{
+  width:100%!important;
+  min-height:34px!important;
+  padding:7px 10px!important;
+  text-align:left!important;
+}
+
+.manualModeBtnV300.active{
+  color:#fff!important;
+  border-color:var(--brand-blue)!important;
+  background:linear-gradient(180deg,var(--brand-blue-2),var(--brand-blue))!important;
+  box-shadow:0 8px 18px rgba(21,90,148,.18)!important;
+}
+
+.manualEventGridV167 > div:has(#manualTypeV167){
+  display:none!important;
 }
 
 .manualLessonPickerV300 > label{

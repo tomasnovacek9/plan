@@ -33,7 +33,7 @@
 
     saveWeekNotesV174(notes);
 
-    setStatus(value ? "Uloženo automaticky pro aktuální týden." : "Poznámka je prázdná – pro tento týden se nezobrazí.", "saved");
+    setStatus(value ? "Automaticky uloženo." : "Bez poznámky pro tento týden.", "saved");
 
     // Důležité: render už teď bere poznámku přímo z currentWeekNoteV174(), takže nezmizí.
     if(typeof window.renderPreview === "function"){
@@ -53,7 +53,7 @@
       input.value = value;
     }
 
-    setStatus("Poznámka se ukládá automaticky k aktuálnímu týdnu.", "");
+    setStatus("Ukládá se automaticky.", "");
   }
 
   function cleanDuplicateTitles(){
