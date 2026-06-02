@@ -863,9 +863,10 @@ function setNearestWeekWithEvents(){
   importWeekFromCalendar();
 }
 
-async function loadCalendarFromUrl(){
+async function loadCalendarFromUrl(options = {}){
+  const initialLoad = !!options.initial;
   try{
-    if(!calendarEvents.length){
+    if(!calendarEvents.length && !initialLoad){
       setCalendarBadgeV300("loading", "EduPage načítání", "Aktualizuji živý kalendář.");
     }
 
@@ -894,7 +895,7 @@ async function loadCalendarFromUrl(){
   }catch(err){
     console.error(err);
     setCalendarBadgeV300("connected", "EduPage připojeno", "Živý kalendář není dostupný, zobrazuji poslední uložená data.");
-    if(!events.length){
+    if(initialLoad || !events.length){
       calendarEvents = embeddedCalendarEvents;
       calendarSignatureV300 = calendarSignature(calendarEvents);
       setCalendarInfo();
@@ -907,7 +908,6 @@ initDisplayOptionsV300();
 initWeekNoteV300();
 initResponsibleEditingV300();
 setDefaultWeek();
-calendarSignatureV300 = calendarSignature(calendarEvents);
-setCalendarInfo();
-importWeekFromCalendar();
-loadCalendarFromUrl();
+calendarEvents = [];
+calendarSignatureV300 = "";
+loadCalendarFromUrl({ initial: true });
