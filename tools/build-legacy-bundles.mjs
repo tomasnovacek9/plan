@@ -13,6 +13,7 @@ const runtimeSkippedScripts = new Set([
   "05-all-day-time-v52.js",
   "06-repeat-events-v53.js",
   "07-reload-calendar-on-week-change-v54.js",
+  "09-edupage-status-v55-js.js",
   "10-empty-days-only-v83.js",
   "11-current-week-on-start-v84.js",
   "14-hide-left-dates-v103-js.js",

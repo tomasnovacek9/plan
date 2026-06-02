@@ -55,7 +55,7 @@ function eventPersonFromCalendar(ev){
 function importEmbeddedCalendar(){
   calendarEvents = embeddedCalendarEvents;
   setCalendarInfo();
-  setNearestWeekWithEvents();
+  setCurrentWeekAndImport();
 }
 function setCalendarInfo(){
   const dates = calendarEvents.map(e=>e.startDate).filter(Boolean).sort();
@@ -803,7 +803,7 @@ async function loadCalendarFromUrl(){
 
     calendarEvents = parseIcs(text);
     setCalendarInfo();
-    setNearestWeekWithEvents();
+    importWeekFromCalendar();
   }catch(err){
     console.error(err);
     setCalendarInfo();
