@@ -3,7 +3,7 @@ export async function onRequestGet(context) {
 
   if (!url) {
     return new Response("EDUPAGE_ICS_URL is not configured.", {
-      status: 404,
+      status: 503,
       headers: { "content-type": "text/plain; charset=utf-8" }
     });
   }

@@ -806,8 +806,15 @@ async function loadCalendarFromUrl(){
     importWeekFromCalendar();
   }catch(err){
     console.error(err);
-    setCalendarInfo();
-    alert("Živý kalendář se nepodařilo načíst. Detail: " + err.message);
+    const info = document.getElementById("calendarInfo");
+    if(info){
+      info.textContent = "Živý EduPage kalendář není dostupný. Zobrazuji poslední uložená data.";
+    }
+    if(!events.length){
+      calendarEvents = embeddedCalendarEvents;
+      setCalendarInfo();
+      importWeekFromCalendar();
+    }
   }
 }
 
