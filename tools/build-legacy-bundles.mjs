@@ -8,14 +8,19 @@ const scriptDir = path.join(root, "src", "scripts", "legacy");
 const styleBundle = "bundle.css";
 const scriptBundle = "bundle.js";
 const runtimeSkippedScripts = new Set([
+  "01-panel-layout-v5-js.js",
+  "02-v7-layout-fix.js",
   "03-weekly-note-script-v8.js",
   "04-note-separate-v12.js",
   "05-all-day-time-v52.js",
   "06-repeat-events-v53.js",
   "07-reload-calendar-on-week-change-v54.js",
+  "08-clean-calendar-buttons-v55.js",
   "09-edupage-status-v55-js.js",
   "10-empty-days-only-v83.js",
   "11-current-week-on-start-v84.js",
+  "12-edupage-badge-lock-v89-js.js",
+  "13-export-esborovna-v102-js.js",
   "14-hide-left-dates-v103-js.js",
   "17-empty-days-all-day-v162-js.js",
   "18-footer-bg-allday-v164-js.js",

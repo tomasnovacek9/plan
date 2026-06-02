@@ -4,6 +4,7 @@ let calendarEvents = embeddedCalendarEvents;
 const dayNames = ["Neděle","Pondělí","Úterý","Středa","Čtvrtek","Pátek","Sobota"];
 let events = [];
 let longEvents = [];
+let calendarSignatureV300 = "";
 
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2); }
 function pad(n){ return String(n).padStart(2,"0"); }
@@ -60,8 +61,42 @@ function importEmbeddedCalendar(){
 }
 function setCalendarInfo(){
   const dates = calendarEvents.map(e=>e.startDate).filter(Boolean).sort();
-  const info = dates.length ? `${calendarEvents.length} událostí v kalendáři · ${dates[0]} až ${dates[dates.length-1]}` : "Kalendář je prázdný.";
-  document.getElementById("calendarInfo").textContent = info;
+  const detail = dates.length ? `${calendarEvents.length} událostí · ${dates[0]} až ${dates[dates.length-1]}` : "Kalendář je prázdný.";
+  setCalendarBadgeV300("connected", "EduPage připojeno", detail);
+}
+
+function setCalendarBadgeV300(state, text, detail){
+  const holder = document.getElementById("calendarInfo");
+  if(!holder) return;
+
+  let badge = holder.querySelector(".eduBadgeLockV89");
+  if(!badge){
+    badge = document.createElement("div");
+    badge.className = "eduBadgeLockV89";
+    badge.innerHTML = '<span class="dot"></span><span class="txt"></span>';
+    holder.replaceChildren(badge);
+  }
+
+  badge.className = `eduBadgeLockV89 ${state || "connected"}`;
+  const label = badge.querySelector(".txt");
+  if(label) label.textContent = text || "EduPage připojeno";
+  if(detail) badge.title = detail;
+}
+
+function calendarSignature(eventsList){
+  return (eventsList || [])
+    .map(e => [
+      e.uid || "",
+      e.startDate || "",
+      e.endDate || "",
+      e.startTime || "",
+      e.endTime || "",
+      e.summary || "",
+      e.teachers || "",
+      e.classes || ""
+    ].join("|"))
+    .sort()
+    .join("\n");
 }
 
 function importWeekFromCalendar(){
@@ -831,8 +866,9 @@ function setNearestWeekWithEvents(){
 
 async function loadCalendarFromUrl(){
   try{
-    const info = document.getElementById("calendarInfo");
-    if(info) info.textContent = "Načítám živý kalendář z EduPage…";
+    if(!calendarEvents.length){
+      setCalendarBadgeV300("loading", "EduPage načítání", "Aktualizuji živý kalendář.");
+    }
 
     const res = await fetch("/calendar.ics?t=" + Date.now(), { cache: "no-store" });
     const text = await res.text();
@@ -845,17 +881,23 @@ async function loadCalendarFromUrl(){
       throw new Error("Načtená odpověď nevypadá jako kalendář. Pravděpodobně se nepoužil Netlify redirect.");
     }
 
-    calendarEvents = parseIcs(text);
+    const nextCalendarEvents = parseIcs(text);
+    const nextSignature = calendarSignature(nextCalendarEvents);
+    if(nextSignature === calendarSignatureV300){
+      setCalendarInfo();
+      return;
+    }
+
+    calendarEvents = nextCalendarEvents;
+    calendarSignatureV300 = nextSignature;
     setCalendarInfo();
     importWeekFromCalendar();
   }catch(err){
     console.error(err);
-    const info = document.getElementById("calendarInfo");
-    if(info){
-      info.textContent = "Živý EduPage kalendář není dostupný. Zobrazuji poslední uložená data.";
-    }
+    setCalendarBadgeV300("connected", "EduPage připojeno", "Živý kalendář není dostupný, zobrazuji poslední uložená data.");
     if(!events.length){
       calendarEvents = embeddedCalendarEvents;
+      calendarSignatureV300 = calendarSignature(calendarEvents);
       setCalendarInfo();
       importWeekFromCalendar();
     }
@@ -866,275 +908,10 @@ initDisplayOptionsV300();
 initWeekNoteV300();
 initResponsibleEditingV300();
 setDefaultWeek();
+calendarSignatureV300 = calendarSignature(calendarEvents);
 setCalendarInfo();
 importWeekFromCalendar();
 loadCalendarFromUrl();
-
-;
-// 01-panel-layout-v5-js.js
-function arrangeWeekPanelV5(){
-  // najdeme sekci s ovládáním týdne podle tlačítek
-  const buttons = Array.from(document.querySelectorAll("button"));
-  const reloadBtn = buttons.find(b => (b.textContent || "").toLowerCase().includes("znovu načíst"));
-  const currentBtn = buttons.find(b => (b.textContent || "").toLowerCase().includes("aktuální týden"));
-  const prevBtn = buttons.find(b => (b.textContent || "").toLowerCase().includes("předchozí"));
-  const nextBtn = buttons.find(b => (b.textContent || "").toLowerCase().includes("další"));
-  const weekFrom = document.getElementById("weekFrom");
-  const weekTo = document.getElementById("weekTo");
-
-  if(!reloadBtn || !currentBtn || !prevBtn || !nextBtn || !weekFrom || !weekTo) return;
-
-  const section = reloadBtn.closest(".section") || weekFrom.closest(".section");
-  if(!section || section.dataset.v5arranged) return;
-  section.dataset.v5arranged = "1";
-
-  const grid = document.createElement("div");
-  grid.className = "weekButtonGridV5";
-
-  reloadBtn.classList.add("full");
-
-  grid.appendChild(reloadBtn);
-  grid.appendChild(currentBtn);
-  grid.appendChild(prevBtn);
-  grid.appendChild(nextBtn);
-
-  const dates = document.createElement("div");
-  dates.className = "weekDatesV5";
-
-  const fromField = weekFrom.closest(".field");
-  const toField = weekTo.closest(".field");
-
-  if(fromField) dates.appendChild(fromField);
-  if(toField) dates.appendChild(toField);
-
-  const title = section.querySelector(".sectionTitle");
-  const insertAfter = title || section.firstChild;
-  if(insertAfter && insertAfter.nextSibling){
-    section.insertBefore(grid, insertAfter.nextSibling);
-    section.insertBefore(dates, grid.nextSibling);
-  }else{
-    section.prepend(dates);
-    section.prepend(grid);
-  }
-
-  // zrušit prázdné původní kontejnery
-  section.querySelectorAll(".weekTools,.rowButtons").forEach(el=>{
-    if(!el.contains(grid) && (el.textContent || "").trim()===""){
-      el.style.display="none";
-    }
-  });
-}
-
-function fixTitlesV5(){
-  document.querySelectorAll(".sectionTitle").forEach(t=>{
-    t.style.textAlign = "left";
-    t.style.justifyContent = "flex-start";
-  });
-}
-
-window.addEventListener("load",()=>{
-  setTimeout(()=>{arrangeWeekPanelV5(); fixTitlesV5();},400);
-});
-setTimeout(()=>{arrangeWeekPanelV5(); fixTitlesV5();},1000);
-
-;
-// 02-v7-layout-fix.js
-function fixWeekButtonsV7(){
-  const buttons = Array.from(document.querySelectorAll("button"));
-
-  const reloadBtn = buttons.find(b => (b.textContent || "").toLowerCase().includes("znovu"));
-  const currentBtn = buttons.find(b => (b.textContent || "").toLowerCase().includes("aktuální"));
-  const prevBtn = buttons.find(b => (b.textContent || "").toLowerCase().includes("předchozí"));
-  const nextBtn = buttons.find(b => (b.textContent || "").toLowerCase().includes("další"));
-
-  if(!currentBtn || !prevBtn || !nextBtn) return;
-
-  const section = currentBtn.closest(".section");
-  if(!section) return;
-
-  let wrapper = document.getElementById("weekButtonsWrapperV7");
-  if(wrapper) return;
-
-  wrapper = document.createElement("div");
-  wrapper.id = "weekButtonsWrapperV7";
-  wrapper.style.display = "flex";
-  wrapper.style.flexDirection = "column";
-  wrapper.style.gap = "8px";
-  wrapper.style.marginTop = "10px";
-
-  // první řádek
-  const row1 = document.createElement("div");
-  row1.style.display = "grid";
-  row1.style.gridTemplateColumns = "1fr 1fr";
-  row1.style.gap = "8px";
-
-  if(reloadBtn) row1.appendChild(reloadBtn);
-  row1.appendChild(currentBtn);
-
-  // druhý řádek
-  const row2 = document.createElement("div");
-  row2.style.display = "grid";
-  row2.style.gridTemplateColumns = "1fr 1fr";
-  row2.style.gap = "8px";
-
-  row2.appendChild(prevBtn);
-  row2.appendChild(nextBtn);
-
-  wrapper.appendChild(row1);
-  wrapper.appendChild(row2);
-
-  const title = section.querySelector(".sectionTitle");
-  if(title && title.nextSibling){
-    section.insertBefore(wrapper, title.nextSibling);
-  }else{
-    section.prepend(wrapper);
-  }
-}
-
-window.addEventListener("load",()=>{
-  setTimeout(fixWeekButtonsV7,500);
-});
-
-;
-// 08-clean-calendar-buttons-v55.js
-function cleanCalendarButtonsV55(){
-  document.querySelectorAll("button").forEach(btn=>{
-    const t = (btn.textContent || "").toLowerCase();
-    if(
-      t.includes("znovu načíst kalendář") ||
-      t.includes("znovu nacist kalendar") ||
-      t.includes("aktuální týden") ||
-      t.includes("aktualni tyden")
-    ){
-      btn.style.display = "none";
-    }
-  });
-}
-window.addEventListener("load",()=>{
-  setTimeout(cleanCalendarButtonsV55,300);
-  setTimeout(cleanCalendarButtonsV55,1000);
-});
-const cleanBtnObsV55 = new MutationObserver(()=>{
-  clearTimeout(window.__cleanBtnV55);
-  window.__cleanBtnV55 = setTimeout(cleanCalendarButtonsV55,100);
-});
-cleanBtnObsV55.observe(document.body,{childList:true,subtree:true});
-
-;
-// 12-edupage-badge-lock-v89-js.js
-function setEduBadgeLockV89(state){
-  const holder = document.getElementById("calendarInfo");
-  if(!holder) return;
-
-  let badge = holder.querySelector(".eduBadgeLockV89");
-
-  if(!badge){
-    holder.innerHTML = "";
-    badge = document.createElement("div");
-    badge.className = "eduBadgeLockV89";
-    badge.innerHTML = '<span class="dot"></span><span class="txt"></span>';
-    holder.appendChild(badge);
-  }
-
-  const finalState = state || "connected";
-  badge.className = "eduBadgeLockV89 " + finalState;
-
-  const txt = badge.querySelector(".txt");
-  if(txt){
-    txt.textContent =
-      finalState === "loading" ? "EduPage načítání" :
-      finalState === "error" ? "EduPage nedostupné" :
-      "EduPage připojeno";
-  }
-}
-
-function protectEduBadgeLockV89(){
-  const holder = document.getElementById("calendarInfo");
-  if(!holder) return;
-
-  if(!holder.querySelector(".eduBadgeLockV89")){
-    const t = (holder.textContent || "").toLowerCase();
-    if(t.includes("načít") || t.includes("nacit")){
-      setEduBadgeLockV89("loading");
-    }else if(t.includes("nepodař") || t.includes("nedostup") || t.includes("chyba")){
-      setEduBadgeLockV89("error");
-    }else{
-      setEduBadgeLockV89("connected");
-    }
-  }
-}
-
-// Přesměrování starší stavové funkce, pokud existuje.
-window.setEdupageStatusV55 = function(state){
-  setEduBadgeLockV89(
-    state === "loading" ? "loading" :
-    state === "error" ? "error" :
-    "connected"
-  );
-};
-
-window.addEventListener("load",()=>{
-  setEduBadgeLockV89("connected");
-  setTimeout(protectEduBadgeLockV89,200);
-  setTimeout(protectEduBadgeLockV89,900);
-});
-
-const eduBadgeObsV89 = new MutationObserver(()=>{
-  clearTimeout(window.__eduBadgeV89);
-  window.__eduBadgeV89 = setTimeout(protectEduBadgeLockV89,60);
-});
-eduBadgeObsV89.observe(document.body,{childList:true,subtree:true});
-
-;
-// 13-export-esborovna-v102-js.js
-function exportEsborovnaV102(){
-  alert("Export do eSborovny bude napojen později.");
-}
-
-function updateTopButtonsV102(){
-  const buttons = Array.from(document.querySelectorAll("button"));
-
-  // najdeme horní lištu podle původních tlačítek
-  const topButtons = buttons.filter(btn => {
-    if(btn.closest(".panel")) return false;
-    const t = (btn.textContent || "").trim().toLowerCase();
-    return (
-      t === "uložit" ||
-      t === "ulozit" ||
-      t === "načíst" ||
-      t === "nacist" ||
-      t === "vymazat vše" ||
-      t === "vymazat vse"
-    );
-  });
-
-  topButtons.forEach(btn => btn.classList.add("hiddenTopButtonV102"));
-
-  if(document.querySelector(".esborovnaTopButtonV102")) return;
-
-  const anchor = topButtons[0] || buttons.find(btn => !btn.closest(".panel"));
-  const parent = anchor ? anchor.parentElement : null;
-  if(!parent) return;
-
-  const b = document.createElement("button");
-  b.type = "button";
-  b.className = "esborovnaTopButtonV102";
-  b.textContent = "Export do eSborovny";
-  b.addEventListener("click", exportEsborovnaV102);
-
-  parent.appendChild(b);
-}
-
-window.addEventListener("load",()=>{
-  setTimeout(updateTopButtonsV102,300);
-  setTimeout(updateTopButtonsV102,1200);
-});
-
-const obsV102 = new MutationObserver(()=>{
-  clearTimeout(window.__v102);
-  window.__v102 = setTimeout(updateTopButtonsV102,120);
-});
-obsV102.observe(document.body,{childList:true,subtree:true});
 
 ;
 // 15-clean-pdf-v113-js.js

@@ -3,6 +3,7 @@ let calendarEvents = embeddedCalendarEvents;
 const dayNames = ["Neděle","Pondělí","Úterý","Středa","Čtvrtek","Pátek","Sobota"];
 let events = [];
 let longEvents = [];
+let calendarSignatureV300 = "";
 
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2); }
 function pad(n){ return String(n).padStart(2,"0"); }
@@ -59,8 +60,42 @@ function importEmbeddedCalendar(){
 }
 function setCalendarInfo(){
   const dates = calendarEvents.map(e=>e.startDate).filter(Boolean).sort();
-  const info = dates.length ? `${calendarEvents.length} událostí v kalendáři · ${dates[0]} až ${dates[dates.length-1]}` : "Kalendář je prázdný.";
-  document.getElementById("calendarInfo").textContent = info;
+  const detail = dates.length ? `${calendarEvents.length} událostí · ${dates[0]} až ${dates[dates.length-1]}` : "Kalendář je prázdný.";
+  setCalendarBadgeV300("connected", "EduPage připojeno", detail);
+}
+
+function setCalendarBadgeV300(state, text, detail){
+  const holder = document.getElementById("calendarInfo");
+  if(!holder) return;
+
+  let badge = holder.querySelector(".eduBadgeLockV89");
+  if(!badge){
+    badge = document.createElement("div");
+    badge.className = "eduBadgeLockV89";
+    badge.innerHTML = '<span class="dot"></span><span class="txt"></span>';
+    holder.replaceChildren(badge);
+  }
+
+  badge.className = `eduBadgeLockV89 ${state || "connected"}`;
+  const label = badge.querySelector(".txt");
+  if(label) label.textContent = text || "EduPage připojeno";
+  if(detail) badge.title = detail;
+}
+
+function calendarSignature(eventsList){
+  return (eventsList || [])
+    .map(e => [
+      e.uid || "",
+      e.startDate || "",
+      e.endDate || "",
+      e.startTime || "",
+      e.endTime || "",
+      e.summary || "",
+      e.teachers || "",
+      e.classes || ""
+    ].join("|"))
+    .sort()
+    .join("\n");
 }
 
 function importWeekFromCalendar(){
@@ -830,8 +865,9 @@ function setNearestWeekWithEvents(){
 
 async function loadCalendarFromUrl(){
   try{
-    const info = document.getElementById("calendarInfo");
-    if(info) info.textContent = "Načítám živý kalendář z EduPage…";
+    if(!calendarEvents.length){
+      setCalendarBadgeV300("loading", "EduPage načítání", "Aktualizuji živý kalendář.");
+    }
 
     const res = await fetch("/calendar.ics?t=" + Date.now(), { cache: "no-store" });
     const text = await res.text();
@@ -844,17 +880,23 @@ async function loadCalendarFromUrl(){
       throw new Error("Načtená odpověď nevypadá jako kalendář. Pravděpodobně se nepoužil Netlify redirect.");
     }
 
-    calendarEvents = parseIcs(text);
+    const nextCalendarEvents = parseIcs(text);
+    const nextSignature = calendarSignature(nextCalendarEvents);
+    if(nextSignature === calendarSignatureV300){
+      setCalendarInfo();
+      return;
+    }
+
+    calendarEvents = nextCalendarEvents;
+    calendarSignatureV300 = nextSignature;
     setCalendarInfo();
     importWeekFromCalendar();
   }catch(err){
     console.error(err);
-    const info = document.getElementById("calendarInfo");
-    if(info){
-      info.textContent = "Živý EduPage kalendář není dostupný. Zobrazuji poslední uložená data.";
-    }
+    setCalendarBadgeV300("connected", "EduPage připojeno", "Živý kalendář není dostupný, zobrazuji poslední uložená data.");
     if(!events.length){
       calendarEvents = embeddedCalendarEvents;
+      calendarSignatureV300 = calendarSignature(calendarEvents);
       setCalendarInfo();
       importWeekFromCalendar();
     }
@@ -865,6 +907,7 @@ initDisplayOptionsV300();
 initWeekNoteV300();
 initResponsibleEditingV300();
 setDefaultWeek();
+calendarSignatureV300 = calendarSignature(calendarEvents);
 setCalendarInfo();
 importWeekFromCalendar();
 loadCalendarFromUrl();
