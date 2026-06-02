@@ -545,6 +545,103 @@ function loadWeekNoteIntoInputV300(){
   if(status) status.textContent = "Poznámka se ukládá automaticky k aktuálnímu týdnu.";
 }
 
+const RESPONSIBLE_STORE_V300 = "tydenni_plan_responsible_overrides_v213";
+const RESPONSIBLE_ORIG_V300 = "tydenni_plan_responsible_originals_v213";
+
+function loadJsonMapV300(key){
+  try{
+    const data = JSON.parse(localStorage.getItem(key) || "{}");
+    return data && typeof data === "object" ? data : {};
+  }catch(e){
+    return {};
+  }
+}
+
+function saveJsonMapV300(key, data){
+  try{ localStorage.setItem(key, JSON.stringify(data || {})); }catch(e){}
+}
+
+function responsibleKeyV300(e, dateKey, index){
+  return [
+    dateKey || "",
+    e?.from || "celý den",
+    e?.to || "",
+    stableTextKeyV300(e?.title || ""),
+    index
+  ].join("||");
+}
+
+function renderResponsibleCellV300(e, dateKey, index){
+  const key = responsibleKeyV300(e, dateKey, index);
+  const originals = loadJsonMapV300(RESPONSIBLE_ORIG_V300);
+  const overrides = loadJsonMapV300(RESPONSIBLE_STORE_V300);
+  const original = String(e?.person || "").trim();
+  const value = Object.prototype.hasOwnProperty.call(overrides, key) ? overrides[key] : original;
+
+  if(!(key in originals)){
+    originals[key] = original;
+    saveJsonMapV300(RESPONSIBLE_ORIG_V300, originals);
+  }
+
+  const edited = Object.prototype.hasOwnProperty.call(overrides, key);
+  return `<td class="personCell responsibleCellV213${edited ? " responsibleEditedV213" : ""}" contenteditable="true" spellcheck="false" data-responsible-key-v213="${escapeHtml(key)}">${escapeHtml(value).replace(/\n/g,"<br>")}</td>`;
+}
+
+function cellTextV300(cell){
+  return String(cell?.textContent || "").replace(/\s+/g," ").trim();
+}
+
+function initResponsibleEditingV300(){
+  const preview = document.getElementById("preview");
+  if(!preview || preview.__responsibleStableV300) return;
+
+  preview.__responsibleStableV300 = true;
+
+  preview.addEventListener("focusin", event=>{
+    const cell = event.target.closest(".responsibleCellV213");
+    if(cell) cell.dataset.beforeV300 = cellTextV300(cell);
+  });
+
+  preview.addEventListener("keydown", event=>{
+    const cell = event.target.closest(".responsibleCellV213");
+    if(!cell) return;
+
+    if(event.key === "Enter"){
+      event.preventDefault();
+      cell.blur();
+    }
+
+    if(event.key === "Escape"){
+      event.preventDefault();
+      cell.textContent = cell.dataset.beforeV300 || "";
+      cell.blur();
+    }
+  });
+
+  preview.addEventListener("focusout", event=>{
+    const cell = event.target.closest(".responsibleCellV213");
+    if(!cell) return;
+
+    const key = cell.dataset.responsibleKeyV213;
+    if(!key) return;
+
+    const overrides = loadJsonMapV300(RESPONSIBLE_STORE_V300);
+    const originals = loadJsonMapV300(RESPONSIBLE_ORIG_V300);
+    const value = cellTextV300(cell);
+    const original = originals[key] || "";
+
+    if(value === original){
+      delete overrides[key];
+      cell.classList.remove("responsibleEditedV213");
+    }else{
+      overrides[key] = value;
+      cell.classList.add("responsibleEditedV213");
+    }
+
+    saveJsonMapV300(RESPONSIBLE_STORE_V300, overrides);
+  });
+}
+
 
 function renderPlanNoteFinalV193(message){
   const txt = String(message || "").trim();
@@ -563,6 +660,7 @@ function renderPreview(){
   const repeatClasses = repeatClassMapV300(events);
 
   const rows=[];
+  let rowIndex = 0;
   weekDates.forEach(d=>{
     const dateKey=dateToInput(d);
     const dayEvents=sortEvents(events.filter(e=>e.date===dateKey));
@@ -576,8 +674,9 @@ function renderPreview(){
           ${idx===0?`<td class="dayCell" rowspan="${dayEvents.length}"><div class="dayName">${dayNames[d.getDay()]}</div><div class="dayDate">${formatDate(dateKey)}</div></td>`:""}
           <td class="timeCell">${renderTimeCellV161(e.from,e.to)}</td>
           <td class="eventCell">${escapeHtml(e.title).replace(/\n/g,"<br>")}</td>
-          <td class="personCell">${escapeHtml(e.person).replace(/\n/g,"<br>")}</td>
+          ${renderResponsibleCellV300(e, dateKey, rowIndex)}
         </tr>`);
+        rowIndex++;
       });
     }
   });
@@ -714,7 +813,8 @@ async function loadCalendarFromUrl(){
 
 initDisplayOptionsV300();
 initWeekNoteV300();
+initResponsibleEditingV300();
 setDefaultWeek();
 setCalendarInfo();
-renderAll();
+importWeekFromCalendar();
 loadCalendarFromUrl();

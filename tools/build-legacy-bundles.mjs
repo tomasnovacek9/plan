@@ -26,7 +26,8 @@ const runtimeSkippedScripts = new Set([
   "27-multiline-note-page-align-v186-js.js",
   "28-final-polish-v188-js.js",
   "29-restore-controls-note-v190-js.js",
-  "30-note-source-final-v193-js.js"
+  "30-note-source-final-v193-js.js",
+  "32-clean-responsible-core-v213-js.js"
 ]);
 
 async function bundleCss() {

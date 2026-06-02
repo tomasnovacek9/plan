@@ -546,6 +546,103 @@ function loadWeekNoteIntoInputV300(){
   if(status) status.textContent = "Poznámka se ukládá automaticky k aktuálnímu týdnu.";
 }
 
+const RESPONSIBLE_STORE_V300 = "tydenni_plan_responsible_overrides_v213";
+const RESPONSIBLE_ORIG_V300 = "tydenni_plan_responsible_originals_v213";
+
+function loadJsonMapV300(key){
+  try{
+    const data = JSON.parse(localStorage.getItem(key) || "{}");
+    return data && typeof data === "object" ? data : {};
+  }catch(e){
+    return {};
+  }
+}
+
+function saveJsonMapV300(key, data){
+  try{ localStorage.setItem(key, JSON.stringify(data || {})); }catch(e){}
+}
+
+function responsibleKeyV300(e, dateKey, index){
+  return [
+    dateKey || "",
+    e?.from || "celý den",
+    e?.to || "",
+    stableTextKeyV300(e?.title || ""),
+    index
+  ].join("||");
+}
+
+function renderResponsibleCellV300(e, dateKey, index){
+  const key = responsibleKeyV300(e, dateKey, index);
+  const originals = loadJsonMapV300(RESPONSIBLE_ORIG_V300);
+  const overrides = loadJsonMapV300(RESPONSIBLE_STORE_V300);
+  const original = String(e?.person || "").trim();
+  const value = Object.prototype.hasOwnProperty.call(overrides, key) ? overrides[key] : original;
+
+  if(!(key in originals)){
+    originals[key] = original;
+    saveJsonMapV300(RESPONSIBLE_ORIG_V300, originals);
+  }
+
+  const edited = Object.prototype.hasOwnProperty.call(overrides, key);
+  return `<td class="personCell responsibleCellV213${edited ? " responsibleEditedV213" : ""}" contenteditable="true" spellcheck="false" data-responsible-key-v213="${escapeHtml(key)}">${escapeHtml(value).replace(/\n/g,"<br>")}</td>`;
+}
+
+function cellTextV300(cell){
+  return String(cell?.textContent || "").replace(/\s+/g," ").trim();
+}
+
+function initResponsibleEditingV300(){
+  const preview = document.getElementById("preview");
+  if(!preview || preview.__responsibleStableV300) return;
+
+  preview.__responsibleStableV300 = true;
+
+  preview.addEventListener("focusin", event=>{
+    const cell = event.target.closest(".responsibleCellV213");
+    if(cell) cell.dataset.beforeV300 = cellTextV300(cell);
+  });
+
+  preview.addEventListener("keydown", event=>{
+    const cell = event.target.closest(".responsibleCellV213");
+    if(!cell) return;
+
+    if(event.key === "Enter"){
+      event.preventDefault();
+      cell.blur();
+    }
+
+    if(event.key === "Escape"){
+      event.preventDefault();
+      cell.textContent = cell.dataset.beforeV300 || "";
+      cell.blur();
+    }
+  });
+
+  preview.addEventListener("focusout", event=>{
+    const cell = event.target.closest(".responsibleCellV213");
+    if(!cell) return;
+
+    const key = cell.dataset.responsibleKeyV213;
+    if(!key) return;
+
+    const overrides = loadJsonMapV300(RESPONSIBLE_STORE_V300);
+    const originals = loadJsonMapV300(RESPONSIBLE_ORIG_V300);
+    const value = cellTextV300(cell);
+    const original = originals[key] || "";
+
+    if(value === original){
+      delete overrides[key];
+      cell.classList.remove("responsibleEditedV213");
+    }else{
+      overrides[key] = value;
+      cell.classList.add("responsibleEditedV213");
+    }
+
+    saveJsonMapV300(RESPONSIBLE_STORE_V300, overrides);
+  });
+}
+
 
 function renderPlanNoteFinalV193(message){
   const txt = String(message || "").trim();
@@ -564,6 +661,7 @@ function renderPreview(){
   const repeatClasses = repeatClassMapV300(events);
 
   const rows=[];
+  let rowIndex = 0;
   weekDates.forEach(d=>{
     const dateKey=dateToInput(d);
     const dayEvents=sortEvents(events.filter(e=>e.date===dateKey));
@@ -577,8 +675,9 @@ function renderPreview(){
           ${idx===0?`<td class="dayCell" rowspan="${dayEvents.length}"><div class="dayName">${dayNames[d.getDay()]}</div><div class="dayDate">${formatDate(dateKey)}</div></td>`:""}
           <td class="timeCell">${renderTimeCellV161(e.from,e.to)}</td>
           <td class="eventCell">${escapeHtml(e.title).replace(/\n/g,"<br>")}</td>
-          <td class="personCell">${escapeHtml(e.person).replace(/\n/g,"<br>")}</td>
+          ${renderResponsibleCellV300(e, dateKey, rowIndex)}
         </tr>`);
+        rowIndex++;
       });
     }
   });
@@ -715,9 +814,10 @@ async function loadCalendarFromUrl(){
 
 initDisplayOptionsV300();
 initWeekNoteV300();
+initResponsibleEditingV300();
 setDefaultWeek();
 setCalendarInfo();
-renderAll();
+importWeekFromCalendar();
 loadCalendarFromUrl();
 
 ;
@@ -2064,31 +2164,5 @@ window.addEventListener("load",()=>{
   setTimeout(hookButton,1200);
 });
 
-})();
-
-;
-// 32-clean-responsible-core-v213-js.js
-(function(){
-const STORE="tydenni_plan_responsible_overrides_v213", ORIG="tydenni_plan_responsible_originals_v213";
-let busy=false, timer=null;
-const norm=v=>String(v||"").replace(/\s+/g," ").trim();
-function load(k){try{let d=JSON.parse(localStorage.getItem(k)||"{}");return d&&typeof d==="object"?d:{}}catch(e){return {}}}
-function save(k,d){try{localStorage.setItem(k,JSON.stringify(d||{}))}catch(e){}}
-function headerInfo(table){for(const row of [...table.querySelectorAll("tr")].slice(0,4)){let cells=[...row.children], idx=cells.findIndex(c=>norm(c.textContent).toLowerCase().includes("zodpov")); if(idx>=0)return{idx,count:cells.length}}return{idx:-1,count:0}}
-function rowDate(row){let r=row;while(r){let text=norm(r.children[0]?.textContent||"");if(text&&!/^\d{1,2}:\d{2}/.test(text))return text;r=r.previousElementSibling}return""}
-function respCell(row,idx,count){let cells=[...row.children], miss=Math.max(0,count-cells.length), i=idx-miss;if(i<0||i>=cells.length)i=cells.length-(count-idx);return i>=0&&i<cells.length?cells[i]:null}
-function rowKey(row,cell){let cells=[...row.children], date=rowDate(row), timeCell=row.querySelector(".timeCell")||cells.find(c=>/\d{1,2}:\d{2}/.test(norm(c.textContent))), eventCell=row.querySelector(".eventCell")||cells.find(c=>c!==timeCell&&c!==cell&&norm(c.textContent).length>0), rowIndex=[...row.parentElement.children].indexOf(row); return [date,norm(timeCell?.textContent||""),norm(eventCell?.textContent||""),rowIndex].join("||")}
-function rows(){let out=[];document.querySelectorAll(".previewPage table").forEach(table=>{let h=headerInfo(table);if(h.idx<0)return;table.querySelectorAll("tbody tr").forEach(row=>{if(!norm(row.textContent))return;let cell=respCell(row,h.idx,h.count);if(cell&&cell.tagName==="TD")out.push({row,cell})})});return out}
-function text(cell){let c=cell.cloneNode(true);c.querySelectorAll("button,.responsibleUndoV213").forEach(e=>e.remove());return norm(c.textContent)}
-function setText(cell,t){cell.textContent=t||""}
-function clearArrows(){document.querySelectorAll(".responsibleUndoV213,.responsibleUndoOutsideV200,.responsibleUndoOutsideV199,.responsibleUndoOutsideV198,.responsibleUndoOutsideV197,.responsibleUndoBtnV196").forEach(e=>e.remove())}
-function arrow(cell,key){let page=cell.closest(".previewPage");if(!page)return;let b=document.createElement("button");b.type="button";b.className="responsibleUndoV213";b.textContent="↩";b.title="Vrátit původní hodnotu z kalendáře";b.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();let o=load(STORE), orig=load(ORIG);delete o[key];save(STORE,o);setText(cell,orig[key]||"");cell.classList.remove("responsibleEditedV213");b.remove()});page.appendChild(b);let pr=page.getBoundingClientRect(),cr=cell.getBoundingClientRect();b.style.left=(cr.right-pr.left+6)+"px";b.style.top=(cr.top-pr.top+cr.height/2-9)+"px"}
-function apply(){if(busy)return;busy=true;try{clearArrows();let o=load(STORE), orig=load(ORIG);rows().forEach(({row,cell})=>{let key=rowKey(row,cell);if(!key||key.split("||").some(x=>!x))return;let current=text(cell);if(!(key in orig))orig[key]=current;cell.classList.add("responsibleCellV213");cell.setAttribute("contenteditable","true");cell.setAttribute("spellcheck","false");cell.dataset.responsibleKeyV213=key;if(Object.prototype.hasOwnProperty.call(o,key)){if(text(cell)!==o[key])setText(cell,o[key]);cell.classList.add("responsibleEditedV213");arrow(cell,key)}else{cell.classList.remove("responsibleEditedV213")}if(!cell.__r213){cell.__r213=1;cell.addEventListener("focus",()=>cell.dataset.beforeV213=text(cell));cell.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();cell.blur()}if(e.key==="Escape"){e.preventDefault();setText(cell,cell.dataset.beforeV213||"");cell.blur()}});cell.addEventListener("blur",()=>{let key=cell.dataset.responsibleKeyV213,value=text(cell),orig=load(ORIG),o=load(STORE),base=orig[key]||"";if(value===base){delete o[key];cell.classList.remove("responsibleEditedV213")}else{o[key]=value;cell.classList.add("responsibleEditedV213")}save(STORE,o);clearTimeout(timer);timer=setTimeout(apply,50)})}});save(ORIG,orig)}finally{busy=false}}
-function schedule(){clearTimeout(timer);timer=setTimeout(apply,80)}
-function hint(){document.querySelectorAll(".responsibleHintV213,.responsibleHintV196,.responsibleHintV198,.responsibleHintSubtleV199,.responsibleHintSubtleV200,.responsibleHintSubtleV212").forEach(e=>e.remove());let panel=document.querySelector(".panel");if(panel){let box=document.createElement("div");box.className="responsibleHintV213";box.innerHTML="<strong>Zodpovídá:</strong> buňku lze upravit přímo v náhledu. Šipka ↩ vrátí původní hodnotu z kalendáře.";panel.appendChild(box)}}
-function patch(){if(typeof window.renderPreview==="function"&&!window.renderPreview.__r213){let old=window.renderPreview;window.renderPreview=function(){let r=old.apply(this,arguments);schedule();return r};window.renderPreview.__r213=1}if(typeof window.renderAll==="function"&&!window.renderAll.__r213){let old=window.renderAll;window.renderAll=function(){let r=old.apply(this,arguments);schedule();return r};window.renderAll.__r213=1}}
-function run(){patch();hint();schedule()}
-window.addEventListener("load",()=>{setTimeout(run,250);setTimeout(run,900)});
-window.addEventListener("resize",schedule);window.addEventListener("scroll",schedule,true);
 })();
 
