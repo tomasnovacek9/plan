@@ -759,7 +759,7 @@ function renderDayCellV302(dateKey, d, rowspan){
   return `<td class="dayCell planEditableCellV302${edited ? " planEditedCellV302" : ""}" rowspan="${rowspan}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="day" data-plan-original-v302="${escapeHtml(original)}"${title}>${content}</td>`;
 }
 
-function renderResponsibleCellV300(e, dateKey, index, rowKey){
+function renderResponsibleCellV300(e, dateKey, index, rowKey, suffixHtml = ""){
   const key = rowKey || responsibleKeyV300(e, dateKey, index);
   const originals = loadJsonMapV300(RESPONSIBLE_ORIG_V300);
   const original = String(e?.person || "").trim();
@@ -772,7 +772,7 @@ function renderResponsibleCellV300(e, dateKey, index, rowKey){
 
   const edited = String(value) !== original;
   const title = edited ? ` title="${escapeHtml(planEditedTitleV303("person", original))}"` : "";
-  return `<td class="personCell planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="person" data-plan-original-v302="${escapeHtml(original)}"${title}>${escapeHtml(value).replace(/\n/g,"<br>")}</td>`;
+  return `<td class="personCell planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="person" data-plan-original-v302="${escapeHtml(original)}"${title}>${escapeHtml(value).replace(/\n/g,"<br>")}${suffixHtml}</td>`;
 }
 
 function cellTextV300(cell){
@@ -784,10 +784,10 @@ function cellTextV300(cell){
 function syncRowChangeControlsV304(preview, key){
   const rowCells = Array.from(preview.querySelectorAll(".planEditableCellV302"))
     .filter(cell=>cell.dataset.planRowKeyV302 === key);
-  const eventCell = rowCells.find(cell=>cell.dataset.planFieldV302 === "title");
-  if(!eventCell) return;
+  const personCell = rowCells.find(cell=>cell.dataset.planFieldV302 === "person");
+  if(!personCell) return;
 
-  eventCell.querySelectorAll(".planRowChangeToolsV304").forEach(el=>el.remove());
+  personCell.querySelectorAll(".planRowChangeToolsV304").forEach(el=>el.remove());
 
   const fields = rowCells
     .map(cell=>({field:cell.dataset.planFieldV302, original:cell.dataset.planOriginalV302 || ""}))
@@ -798,7 +798,7 @@ function syncRowChangeControlsV304(preview, key){
   const holder = document.createElement("div");
   holder.innerHTML = html;
   const tools = holder.firstElementChild;
-  if(tools) eventCell.insertBefore(tools, eventCell.querySelector(".planRowDeleteV302") || null);
+  if(tools) personCell.appendChild(tools);
 }
 
 function resetPlanFieldV304(button){
@@ -999,8 +999,8 @@ function renderPreview(){
         rows.push(`<tr class="${idx===0?'dayBreak ':''}${repeated}${weekendClass}">
           ${idx===0 ? renderDayCellV302(dateKey,d,dayItems.length) : ""}
           ${renderTimeCellEditableV302(e, rowKey)}
-          ${renderEditableCellV302("eventCell", rowKey, "title", String(e.title || ""), escapeHtml(e.title).replace(/\n/g,"<br>"), `${rowChangeControls}${renderRowDeleteButtonV302(rowKey)}`)}
-          ${renderResponsibleCellV300(e, dateKey, rowIndex, rowKey)}
+          ${renderEditableCellV302("eventCell", rowKey, "title", String(e.title || ""), escapeHtml(e.title).replace(/\n/g,"<br>"), renderRowDeleteButtonV302(rowKey))}
+          ${renderResponsibleCellV300(e, dateKey, rowIndex, rowKey, rowChangeControls)}
         </tr>`);
         rowIndex++;
       });

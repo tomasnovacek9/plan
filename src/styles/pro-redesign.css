@@ -714,6 +714,7 @@ body{
 
 .previewPage .personCell{
   color:#334155!important;
+  position:relative!important;
 }
 
 .previewPage .dayBreak td{
@@ -728,11 +729,14 @@ body{
 
 .previewPage .timeCellSplitV302{
   vertical-align:top!important;
+  white-space:normal!important;
 }
 
 .previewPage .timeRangeEditV302,
 .previewPage .lessonEditV302{
   display:block!important;
+  width:max-content!important;
+  max-width:100%!important;
   min-height:1em!important;
   padding:1px 2px!important;
   border-radius:4px!important;
@@ -776,15 +780,24 @@ body{
 
 .previewPage .planRowChangeToolsV304{
   position:absolute!important;
-  top:3px!important;
-  right:48px!important;
+  top:50%!important;
+  left:calc(100% + 7px)!important;
   z-index:4!important;
   display:flex!important;
   align-items:center!important;
-  justify-content:flex-end!important;
+  justify-content:flex-start!important;
   gap:3px!important;
-  max-width:42mm!important;
+  max-width:none!important;
   pointer-events:auto!important;
+  opacity:0!important;
+  transform:translateY(-50%) translateX(-2px)!important;
+  transition:opacity .14s ease, transform .14s ease!important;
+}
+
+.previewPage .planTable tr:hover .planRowChangeToolsV304,
+.previewPage .planTable tr:focus-within .planRowChangeToolsV304{
+  opacity:1!important;
+  transform:translateY(-50%) translateX(0)!important;
 }
 
 .previewPage .planFieldResetV304{
