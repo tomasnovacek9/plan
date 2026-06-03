@@ -699,14 +699,10 @@ function planCellValueV302(key, field, original){
     : original;
 }
 
-function renderPlanEditResetV303(key, field){
-  return `<button type="button" class="planCellResetV303" contenteditable="false" title="Vrátit tuto změnu" aria-label="Vrátit tuto změnu" data-plan-reset-key-v303="${escapeHtml(key)}" data-plan-reset-field-v303="${escapeHtml(field)}">↺</button>`;
-}
-
 function renderEditableCellV302(className, key, field, original, html, suffixHtml = ""){
   const value = planCellValueV302(key, field, original);
   const edited = String(value) !== String(original);
-  const content = (html && !edited ? html : escapeHtml(value).replace(/\n/g,"<br>")) + (edited ? renderPlanEditResetV303(key, field) : "") + suffixHtml;
+  const content = (html && !edited ? html : escapeHtml(value).replace(/\n/g,"<br>")) + suffixHtml;
   return `<td class="${className} planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="${escapeHtml(field)}" data-plan-original-v302="${escapeHtml(original)}">${content}</td>`;
 }
 
@@ -714,7 +710,7 @@ function renderEditablePartV302(className, key, field, original, fallback){
   const value = planCellValueV302(key, field, original);
   const edited = String(value) !== String(original);
   const shown = value || fallback || "";
-  return `<span class="${className} planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="${escapeHtml(field)}" data-plan-original-v302="${escapeHtml(original)}">${escapeHtml(shown)}${edited ? renderPlanEditResetV303(key, field) : ""}</span>`;
+  return `<span class="${className} planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="${escapeHtml(field)}" data-plan-original-v302="${escapeHtml(original)}">${escapeHtml(shown)}</span>`;
 }
 
 function renderTimeCellEditableV302(e, key){
@@ -740,7 +736,7 @@ function renderDayCellV302(dateKey, d, rowspan){
   const value = planCellValueV302(key, "day", original);
   const edited = String(value) !== original;
   const content = edited
-    ? escapeHtml(value).replace(/\n/g,"<br>") + renderPlanEditResetV303(key, "day")
+    ? escapeHtml(value).replace(/\n/g,"<br>")
     : `<div class="dayName">${dayNames[d.getDay()]}</div><div class="dayDate">${formatDate(dateKey)}</div>`;
   return `<td class="dayCell planEditableCellV302${edited ? " planEditedCellV302" : ""}" rowspan="${rowspan}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="day" data-plan-original-v302="${escapeHtml(original)}">${content}</td>`;
 }
@@ -757,12 +753,12 @@ function renderResponsibleCellV300(e, dateKey, index, rowKey){
   }
 
   const edited = String(value) !== original;
-  return `<td class="personCell planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="person" data-plan-original-v302="${escapeHtml(original)}">${escapeHtml(value).replace(/\n/g,"<br>")}${edited ? renderPlanEditResetV303(key, "person") : ""}</td>`;
+  return `<td class="personCell planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="person" data-plan-original-v302="${escapeHtml(original)}">${escapeHtml(value).replace(/\n/g,"<br>")}</td>`;
 }
 
 function cellTextV300(cell){
   const clone = cell?.cloneNode(true);
-  clone?.querySelectorAll("button,.planRowDeleteV302,.planCellResetV303").forEach(el=>el.remove());
+  clone?.querySelectorAll("button,.planRowDeleteV302").forEach(el=>el.remove());
   return String(clone?.textContent || "").replace(/\s+/g," ").trim();
 }
 
@@ -870,25 +866,6 @@ function initPlanEditingV302(){
   });
 
   preview.addEventListener("click", event=>{
-    const resetButton = event.target.closest(".planCellResetV303");
-    if(resetButton){
-      event.preventDefault();
-      event.stopPropagation();
-
-      const key = resetButton.dataset.planResetKeyV303;
-      const field = resetButton.dataset.planResetFieldV303;
-      if(!key || !field) return;
-
-      const overrides = loadJsonMapV300(PLAN_CELL_STORE_V302);
-      if(overrides[key]){
-        delete overrides[key][field];
-        if(!Object.keys(overrides[key]).length) delete overrides[key];
-        saveJsonMapV300(PLAN_CELL_STORE_V302, overrides);
-      }
-      renderPreview();
-      return;
-    }
-
     const button = event.target.closest(".planRowDeleteV302");
     if(!button) return;
 
