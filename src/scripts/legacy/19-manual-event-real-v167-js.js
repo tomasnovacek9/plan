@@ -94,7 +94,10 @@
   }
 
   function ensureManualModule(){
-    if(document.querySelector(".manualEventV167")) return;
+    if(document.querySelector(".manualEventV167")){
+      setupManualControls();
+      return;
+    }
 
     const panel = document.querySelector(".panel");
     if(!panel) return;
@@ -153,12 +156,28 @@
     refreshDaySelect();
     fillTimeSelects();
 
-    document.getElementById("manualTypeV167")?.addEventListener("change", ()=>{
-      const allDay = document.getElementById("manualTypeV167").value === "allDay";
-      document.getElementById("manualTimeRowV167").style.display = allDay ? "none" : "grid";
-    });
+    setupManualControls();
+  }
 
-    document.getElementById("manualAddV167")?.addEventListener("click", addManualEvent);
+  function setupManualControls(){
+    refreshDaySelect();
+    fillTimeSelects();
+
+    const type = document.getElementById("manualTypeV167");
+    if(type && !type.__manualTypeV167){
+      type.__manualTypeV167 = true;
+      type.addEventListener("change", ()=>{
+        const allDay = document.getElementById("manualTypeV167").value === "allDay";
+        const row = document.getElementById("manualTimeRowV167");
+        if(row) row.style.display = allDay ? "none" : "grid";
+      });
+    }
+
+    const add = document.getElementById("manualAddV167");
+    if(add && !add.__manualAddV167){
+      add.__manualAddV167 = true;
+      add.addEventListener("click", addManualEvent);
+    }
   }
 
   function minutes(v){

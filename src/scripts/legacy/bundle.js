@@ -1081,7 +1081,10 @@ hookPrintPdfButtonV115();
   }
 
   function ensureManualModule(){
-    if(document.querySelector(".manualEventV167")) return;
+    if(document.querySelector(".manualEventV167")){
+      setupManualControls();
+      return;
+    }
 
     const panel = document.querySelector(".panel");
     if(!panel) return;
@@ -1140,12 +1143,28 @@ hookPrintPdfButtonV115();
     refreshDaySelect();
     fillTimeSelects();
 
-    document.getElementById("manualTypeV167")?.addEventListener("change", ()=>{
-      const allDay = document.getElementById("manualTypeV167").value === "allDay";
-      document.getElementById("manualTimeRowV167").style.display = allDay ? "none" : "grid";
-    });
+    setupManualControls();
+  }
 
-    document.getElementById("manualAddV167")?.addEventListener("click", addManualEvent);
+  function setupManualControls(){
+    refreshDaySelect();
+    fillTimeSelects();
+
+    const type = document.getElementById("manualTypeV167");
+    if(type && !type.__manualTypeV167){
+      type.__manualTypeV167 = true;
+      type.addEventListener("change", ()=>{
+        const allDay = document.getElementById("manualTypeV167").value === "allDay";
+        const row = document.getElementById("manualTimeRowV167");
+        if(row) row.style.display = allDay ? "none" : "grid";
+      });
+    }
+
+    const add = document.getElementById("manualAddV167");
+    if(add && !add.__manualAddV167){
+      add.__manualAddV167 = true;
+      add.addEventListener("click", addManualEvent);
+    }
   }
 
   function minutes(v){
@@ -1599,7 +1618,7 @@ hookPrintPdfButtonV115();
     if(!grid) return;
 
     enhanceTimeInputs();
-    ensureDatePicker();
+    removeDatePicker();
     ensureTimeWheel();
     document.querySelector(".manualTimeSummaryV301")?.remove();
 
@@ -1651,9 +1670,13 @@ hookPrintPdfButtonV115();
     document.querySelector(".manualTimeHintV169")?.remove();
 
     setTimeMode(currentTimeMode());
-    syncDatePicker();
     syncTimeWheel();
     patchAddCommit();
+  }
+
+  function removeDatePicker(){
+    document.querySelector(".manualDatePickerV301")?.remove();
+    document.getElementById("manualDayV167")?.closest("div")?.classList.remove("manualDateNativeV301");
   }
 
   function timeValuesV301(){

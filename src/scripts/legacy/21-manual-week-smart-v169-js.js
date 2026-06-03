@@ -68,7 +68,7 @@
     if(!grid) return;
 
     enhanceTimeInputs();
-    ensureDatePicker();
+    removeDatePicker();
     ensureTimeWheel();
     document.querySelector(".manualTimeSummaryV301")?.remove();
 
@@ -120,9 +120,13 @@
     document.querySelector(".manualTimeHintV169")?.remove();
 
     setTimeMode(currentTimeMode());
-    syncDatePicker();
     syncTimeWheel();
     patchAddCommit();
+  }
+
+  function removeDatePicker(){
+    document.querySelector(".manualDatePickerV301")?.remove();
+    document.getElementById("manualDayV167")?.closest("div")?.classList.remove("manualDateNativeV301");
   }
 
   function timeValuesV301(){
