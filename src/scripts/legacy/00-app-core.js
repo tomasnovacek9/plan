@@ -687,6 +687,10 @@ function timePlainV302(e){
   return `${displayTimeV161(from)}${to ? " - " + displayTimeV161(to) : ""}`;
 }
 
+function lessonPlainV302(e){
+  return lessonLabelV161(e?.from, e?.to) || "";
+}
+
 function planCellValueV302(key, field, original){
   const overrides = loadJsonMapV300(PLAN_CELL_STORE_V302);
   return overrides[key] && Object.prototype.hasOwnProperty.call(overrides[key], field)
@@ -699,6 +703,22 @@ function renderEditableCellV302(className, key, field, original, html, suffixHtm
   const edited = String(value) !== String(original);
   const content = (html && !edited ? html : escapeHtml(value).replace(/\n/g,"<br>")) + suffixHtml;
   return `<td class="${className} planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="${escapeHtml(field)}" data-plan-original-v302="${escapeHtml(original)}">${content}</td>`;
+}
+
+function renderEditablePartV302(className, key, field, original, fallback){
+  const value = planCellValueV302(key, field, original);
+  const edited = String(value) !== String(original);
+  const shown = value || fallback || "";
+  return `<span class="${className} planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="${escapeHtml(field)}" data-plan-original-v302="${escapeHtml(original)}">${escapeHtml(shown)}</span>`;
+}
+
+function renderTimeCellEditableV302(e, key){
+  const timeOriginal = timePlainV302(e);
+  const lessonOriginal = lessonPlainV302(e);
+  return `<td class="timeCell timeCellSplitV302">
+    ${renderEditablePartV302("timeRangeEditV302", key, "time", timeOriginal, "čas")}
+    ${renderEditablePartV302("lessonEditV302", key, "lesson", lessonOriginal, "hodina")}
+  </td>`;
 }
 
 function isRowDeletedV302(key){
@@ -897,7 +917,7 @@ function renderPreview(){
         const repeated = repeatClasses.get(e) || "";
         rows.push(`<tr class="${idx===0?'dayBreak ':''}${repeated}${weekendClass}">
           ${idx===0 ? renderDayCellV302(dateKey,d,dayItems.length) : ""}
-          ${renderEditableCellV302("timeCell", rowKey, "time", timePlainV302(e), renderTimeCellV161(e.from,e.to))}
+          ${renderTimeCellEditableV302(e, rowKey)}
           ${renderEditableCellV302("eventCell", rowKey, "title", String(e.title || ""), escapeHtml(e.title).replace(/\n/g,"<br>"), renderRowDeleteButtonV302(rowKey))}
           ${renderResponsibleCellV300(e, dateKey, rowIndex, rowKey)}
         </tr>`);
