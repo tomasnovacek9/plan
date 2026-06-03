@@ -739,6 +739,10 @@ body{
   color:inherit!important;
 }
 
+.previewPage .timeRangeEditV302{
+  white-space:nowrap!important;
+}
+
 .previewPage .lessonEditV302{
   margin-top:2px!important;
   color:#64748b!important;
@@ -768,6 +772,52 @@ body{
 
 .previewPage .eventCell{
   position:relative!important;
+}
+
+.previewPage .planRowChangeToolsV304{
+  position:absolute!important;
+  top:3px!important;
+  right:48px!important;
+  z-index:4!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:3px!important;
+  max-width:42mm!important;
+  pointer-events:auto!important;
+}
+
+.previewPage .planFieldResetV304{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:3px!important;
+  height:15px!important;
+  min-height:15px!important;
+  padding:0 4px!important;
+  border:1px solid rgba(217,154,0,.36)!important;
+  border-radius:999px!important;
+  background:#fffaf0!important;
+  color:#8a4b00!important;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
+  font-size:7.8pt!important;
+  font-weight:750!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  cursor:pointer!important;
+  box-shadow:0 1px 3px rgba(15,23,42,.05)!important;
+}
+
+.previewPage .planFieldResetV304 b{
+  font-size:8.5pt!important;
+  line-height:1!important;
+}
+
+.previewPage .planFieldResetV304:hover,
+.previewPage .planFieldResetV304:focus-visible{
+  border-color:rgba(180,83,9,.66)!important;
+  background:#fff3d6!important;
+  color:#7c2d12!important;
+  outline:none!important;
 }
 
 .previewPage .planRowDeleteV302{

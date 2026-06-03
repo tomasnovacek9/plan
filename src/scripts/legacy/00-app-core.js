@@ -719,6 +719,16 @@ function renderEditablePartV302(className, key, field, original, fallback){
   return `<span class="${className} planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="${escapeHtml(field)}" data-plan-original-v302="${escapeHtml(original)}"${title}>${escapeHtml(shown)}</span>`;
 }
 
+function renderRowChangeControlsV304(key, fields){
+  const labels = {time:"čas", lesson:"hodina", title:"akce", person:"osoba"};
+  const buttons = fields
+    .filter(item=>String(planCellValueV302(key, item.field, item.original)) !== String(item.original))
+    .map(item=>`<button type="button" class="planFieldResetV304" contenteditable="false" title="Vrátit změnu: ${escapeHtml(labels[item.field] || item.field)}" data-plan-reset-key-v304="${escapeHtml(key)}" data-plan-reset-field-v304="${escapeHtml(item.field)}"><span>${escapeHtml(labels[item.field] || item.field)}</span><b>↩</b></button>`);
+
+  if(!buttons.length) return "";
+  return `<div class="planRowChangeToolsV304" contenteditable="false" aria-label="Ruční změny v řádku">${buttons.join("")}</div>`;
+}
+
 function renderTimeCellEditableV302(e, key){
   const timeOriginal = timePlainV302(e);
   const lessonOriginal = lessonPlainV302(e);
@@ -766,8 +776,43 @@ function renderResponsibleCellV300(e, dateKey, index, rowKey){
 
 function cellTextV300(cell){
   const clone = cell?.cloneNode(true);
-  clone?.querySelectorAll("button,.planRowDeleteV302").forEach(el=>el.remove());
+  clone?.querySelectorAll("button,.planRowDeleteV302,.planRowChangeToolsV304,.planFieldResetV304").forEach(el=>el.remove());
   return String(clone?.textContent || "").replace(/\s+/g," ").trim();
+}
+
+function syncRowChangeControlsV304(preview, key){
+  const rowCells = Array.from(preview.querySelectorAll(".planEditableCellV302"))
+    .filter(cell=>cell.dataset.planRowKeyV302 === key);
+  const eventCell = rowCells.find(cell=>cell.dataset.planFieldV302 === "title");
+  if(!eventCell) return;
+
+  eventCell.querySelectorAll(".planRowChangeToolsV304").forEach(el=>el.remove());
+
+  const fields = rowCells
+    .map(cell=>({field:cell.dataset.planFieldV302, original:cell.dataset.planOriginalV302 || ""}))
+    .filter(item=>["time","lesson","title","person"].includes(item.field));
+  const html = renderRowChangeControlsV304(key, fields);
+  if(!html) return;
+
+  const holder = document.createElement("div");
+  holder.innerHTML = html;
+  const tools = holder.firstElementChild;
+  if(tools) eventCell.insertBefore(tools, eventCell.querySelector(".planRowDeleteV302") || null);
+}
+
+function resetPlanFieldV304(button){
+  const key = button?.dataset.planResetKeyV304;
+  const field = button?.dataset.planResetFieldV304;
+  if(!key || !field) return;
+
+  const overrides = loadJsonMapV300(PLAN_CELL_STORE_V302);
+  if(overrides[key]){
+    delete overrides[key][field];
+    if(!Object.keys(overrides[key]).length) delete overrides[key];
+    saveJsonMapV300(PLAN_CELL_STORE_V302, overrides);
+  }
+
+  renderPreview();
 }
 
 function initResponsibleEditingV300(){
@@ -795,6 +840,15 @@ function initResponsibleEditingV300(){
       cell.textContent = cell.dataset.beforeV300 || "";
       cell.blur();
     }
+  });
+
+  preview.addEventListener("mousedown", event=>{
+    const resetButton = event.target.closest(".planFieldResetV304");
+    if(!resetButton) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    resetPlanFieldV304(resetButton);
   });
 
   preview.addEventListener("focusout", event=>{
@@ -873,9 +927,18 @@ function initPlanEditingV302(){
     }
 
     saveJsonMapV300(PLAN_CELL_STORE_V302, overrides);
+    syncRowChangeControlsV304(preview, key);
   });
 
   preview.addEventListener("click", event=>{
+    const resetButton = event.target.closest(".planFieldResetV304");
+    if(resetButton){
+      event.preventDefault();
+      event.stopPropagation();
+      resetPlanFieldV304(resetButton);
+      return;
+    }
+
     const button = event.target.closest(".planRowDeleteV302");
     if(!button) return;
 
@@ -926,10 +989,16 @@ function renderPreview(){
         const e = item.event;
         const rowKey = planRowKeyV302(e, dateKey, item.originalIndex);
         const repeated = repeatClasses.get(e) || "";
+        const rowChangeControls = renderRowChangeControlsV304(rowKey, [
+          {field:"time", original:timePlainV302(e)},
+          {field:"lesson", original:lessonPlainV302(e)},
+          {field:"title", original:String(e.title || "")},
+          {field:"person", original:String(e.person || "").trim()}
+        ]);
         rows.push(`<tr class="${idx===0?'dayBreak ':''}${repeated}${weekendClass}">
           ${idx===0 ? renderDayCellV302(dateKey,d,dayItems.length) : ""}
           ${renderTimeCellEditableV302(e, rowKey)}
-          ${renderEditableCellV302("eventCell", rowKey, "title", String(e.title || ""), escapeHtml(e.title).replace(/\n/g,"<br>"), renderRowDeleteButtonV302(rowKey))}
+          ${renderEditableCellV302("eventCell", rowKey, "title", String(e.title || ""), escapeHtml(e.title).replace(/\n/g,"<br>"), `${rowChangeControls}${renderRowDeleteButtonV302(rowKey)}`)}
           ${renderResponsibleCellV300(e, dateKey, rowIndex, rowKey)}
         </tr>`);
         rowIndex++;
