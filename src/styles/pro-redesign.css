@@ -728,9 +728,6 @@ body{
 }
 
 .previewPage .timeCellSplitV302{
-  display:flex!important;
-  align-items:flex-start!important;
-  gap:4px!important;
   vertical-align:top!important;
   white-space:nowrap!important;
 }
@@ -747,6 +744,7 @@ body{
 }
 
 .previewPage .timeRangeEditV302{
+  margin-right:4px!important;
   white-space:nowrap!important;
 }
 
