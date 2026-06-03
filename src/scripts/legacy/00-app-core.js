@@ -698,18 +698,25 @@ function planCellValueV302(key, field, original){
     : original;
 }
 
+function planEditedTitleV303(field, original){
+  const labels = {day:"datum", time:"čas", lesson:"vyučovací hodina", title:"akce", person:"zodpovídá"};
+  return `Upraveno ručně: ${labels[field] || field}. Původně: ${original || "prázdné"}`;
+}
+
 function renderEditableCellV302(className, key, field, original, html, suffixHtml = ""){
   const value = planCellValueV302(key, field, original);
   const edited = String(value) !== String(original);
   const content = (html && !edited ? html : escapeHtml(value).replace(/\n/g,"<br>")) + suffixHtml;
-  return `<td class="${className} planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="${escapeHtml(field)}" data-plan-original-v302="${escapeHtml(original)}">${content}</td>`;
+  const title = edited ? ` title="${escapeHtml(planEditedTitleV303(field, original))}"` : "";
+  return `<td class="${className} planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="${escapeHtml(field)}" data-plan-original-v302="${escapeHtml(original)}"${title}>${content}</td>`;
 }
 
 function renderEditablePartV302(className, key, field, original, fallback){
   const value = planCellValueV302(key, field, original);
   const edited = String(value) !== String(original);
   const shown = value || fallback || "";
-  return `<span class="${className} planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="${escapeHtml(field)}" data-plan-original-v302="${escapeHtml(original)}">${escapeHtml(shown)}</span>`;
+  const title = edited ? ` title="${escapeHtml(planEditedTitleV303(field, original))}"` : "";
+  return `<span class="${className} planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="${escapeHtml(field)}" data-plan-original-v302="${escapeHtml(original)}"${title}>${escapeHtml(shown)}</span>`;
 }
 
 function renderTimeCellEditableV302(e, key){
@@ -737,7 +744,8 @@ function renderDayCellV302(dateKey, d, rowspan){
   const content = edited
     ? escapeHtml(value).replace(/\n/g,"<br>")
     : `<div class="dayName">${dayNames[d.getDay()]}</div><div class="dayDate">${formatDate(dateKey)}</div>`;
-  return `<td class="dayCell planEditableCellV302${edited ? " planEditedCellV302" : ""}" rowspan="${rowspan}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="day" data-plan-original-v302="${escapeHtml(original)}">${content}</td>`;
+  const title = edited ? ` title="${escapeHtml(planEditedTitleV303("day", original))}"` : "";
+  return `<td class="dayCell planEditableCellV302${edited ? " planEditedCellV302" : ""}" rowspan="${rowspan}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="day" data-plan-original-v302="${escapeHtml(original)}"${title}>${content}</td>`;
 }
 
 function renderResponsibleCellV300(e, dateKey, index, rowKey){
@@ -752,7 +760,8 @@ function renderResponsibleCellV300(e, dateKey, index, rowKey){
   }
 
   const edited = String(value) !== original;
-  return `<td class="personCell planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="person" data-plan-original-v302="${escapeHtml(original)}">${escapeHtml(value).replace(/\n/g,"<br>")}</td>`;
+  const title = edited ? ` title="${escapeHtml(planEditedTitleV303("person", original))}"` : "";
+  return `<td class="personCell planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="person" data-plan-original-v302="${escapeHtml(original)}"${title}>${escapeHtml(value).replace(/\n/g,"<br>")}</td>`;
 }
 
 function cellTextV300(cell){
@@ -856,9 +865,11 @@ function initPlanEditingV302(){
       delete overrides[key][field];
       if(!Object.keys(overrides[key]).length) delete overrides[key];
       cell.classList.remove("planEditedCellV302");
+      cell.removeAttribute("title");
     }else{
       overrides[key][field] = value;
       cell.classList.add("planEditedCellV302");
+      cell.setAttribute("title", planEditedTitleV303(field, original));
     }
 
     saveJsonMapV300(PLAN_CELL_STORE_V302, overrides);

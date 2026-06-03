@@ -723,7 +723,7 @@ body{
 .previewPage .planEditableCellV302{
   cursor:text!important;
   outline:none!important;
-  transition:none!important;
+  transition:background-color .12s ease, box-shadow .12s ease!important;
 }
 
 .previewPage .timeCellSplitV302{
@@ -757,8 +757,13 @@ body{
 }
 
 .previewPage .planEditedCellV302{
-  background:#fffdf4!important;
+  background:#fffaf0!important;
   color:#172033!important;
+  box-shadow:inset 3px 0 0 rgba(217,154,0,.45), inset 0 0 0 1px rgba(217,154,0,.18)!important;
+}
+
+.previewPage .planEditedCellV302:hover{
+  box-shadow:inset 3px 0 0 rgba(217,154,0,.62), inset 0 0 0 1px rgba(217,154,0,.32)!important;
 }
 
 .previewPage .eventCell{
