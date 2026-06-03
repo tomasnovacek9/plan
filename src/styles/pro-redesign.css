@@ -758,23 +758,18 @@ body{
 
 .previewPage .planEditedCellV302{
   position:relative!important;
-  background:#fffdf4!important;
+  background:linear-gradient(90deg, rgba(255,247,214,.9) 0 3px, #fffdf4 3px)!important;
   color:#172033!important;
-  box-shadow:inset 3px 0 0 rgba(217,154,0,.48)!important;
 }
 
 .previewPage .planCellResetV303{
-  position:absolute!important;
-  top:3px!important;
-  right:3px!important;
-  z-index:3!important;
-  display:grid!important;
+  display:inline-grid!important;
   place-items:center!important;
   width:14px!important;
   height:14px!important;
   min-width:14px!important;
   min-height:14px!important;
-  margin:0!important;
+  margin:0 0 0 5px!important;
   padding:0!important;
   border:1px solid rgba(217,154,0,.42)!important;
   border-radius:50%!important;
@@ -784,19 +779,11 @@ body{
   font-size:9px!important;
   font-weight:800!important;
   line-height:1!important;
+  vertical-align:1px!important;
   cursor:pointer!important;
-  opacity:0!important;
-  pointer-events:none!important;
   box-shadow:none!important;
   transform:none!important;
-  transition:opacity .12s ease, background-color .12s ease, border-color .12s ease, color .12s ease!important;
-}
-
-.previewPage .planEditedCellV302:hover > .planCellResetV303,
-.previewPage .planEditedCellV302:focus-within > .planCellResetV303,
-.previewPage .planCellResetV303:focus{
-  opacity:1!important;
-  pointer-events:auto!important;
+  transition:background-color .12s ease, border-color .12s ease, color .12s ease!important;
 }
 
 .previewPage .planCellResetV303:hover{
