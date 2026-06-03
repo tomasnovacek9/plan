@@ -658,7 +658,7 @@ body{
   border-radius:14px!important;
   border-collapse:separate!important;
   border-spacing:0!important;
-  overflow:hidden!important;
+  overflow:visible!important;
   background:#fff!important;
   box-shadow:0 1px 0 rgba(15,23,42,.04),0 12px 30px rgba(15,23,42,.06)!important;
 }
@@ -729,14 +729,11 @@ body{
 
 .previewPage .timeCellSplitV302{
   vertical-align:top!important;
-  white-space:nowrap!important;
 }
 
 .previewPage .timeRangeEditV302,
 .previewPage .lessonEditV302{
-  display:inline-block!important;
-  width:max-content!important;
-  max-width:100%!important;
+  display:block!important;
   min-height:1em!important;
   padding:1px 2px!important;
   border-radius:4px!important;
@@ -744,12 +741,11 @@ body{
 }
 
 .previewPage .timeRangeEditV302{
-  margin-right:4px!important;
   white-space:nowrap!important;
 }
 
 .previewPage .lessonEditV302{
-  margin-top:0!important;
+  margin-top:2px!important;
   color:#64748b!important;
   font-size:.92em!important;
   font-weight:650!important;
