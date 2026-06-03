@@ -728,13 +728,16 @@ body{
 }
 
 .previewPage .timeCellSplitV302{
+  display:flex!important;
+  align-items:flex-start!important;
+  gap:4px!important;
   vertical-align:top!important;
-  white-space:normal!important;
+  white-space:nowrap!important;
 }
 
 .previewPage .timeRangeEditV302,
 .previewPage .lessonEditV302{
-  display:block!important;
+  display:inline-block!important;
   width:max-content!important;
   max-width:100%!important;
   min-height:1em!important;
@@ -748,7 +751,7 @@ body{
 }
 
 .previewPage .lessonEditV302{
-  margin-top:2px!important;
+  margin-top:0!important;
   color:#64748b!important;
   font-size:.92em!important;
   font-weight:650!important;
