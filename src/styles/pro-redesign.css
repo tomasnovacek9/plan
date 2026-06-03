@@ -228,7 +228,7 @@ body{
   background:#fff!important;
   color:#0f172a!important;
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
-  font-size:12px!important;
+  font-size:11.5px!important;
   font-weight:720!important;
   box-shadow:0 5px 16px rgba(15,23,42,.05)!important;
   transition:transform .16s ease, background-color .16s ease, border-color .16s ease, box-shadow .16s ease!important;
@@ -260,6 +260,12 @@ body{
   border-color:var(--brand-blue)!important;
   color:#fff!important;
   background:linear-gradient(180deg,var(--brand-blue-2),var(--brand-blue))!important;
+}
+
+#manualAddV167,
+.manualEventBtnV167{
+  min-height:34px!important;
+  padding:7px 10px!important;
 }
 
 #weekButtonsWrapperV7 > div{
@@ -365,6 +371,7 @@ body{
   text-align:center!important;
   white-space:normal!important;
   line-height:1.12!important;
+  box-shadow:none!important;
 }
 
 .manualModeBtnV300.active{
@@ -711,6 +718,53 @@ body{
 
 .previewPage .dayBreak td{
   border-top-color:#b7c9dc!important;
+}
+
+.previewPage .planEditableCellV302{
+  cursor:text!important;
+  outline:none!important;
+  transition:none!important;
+}
+
+.previewPage .planEditableCellV302:hover{
+  box-shadow:inset 0 0 0 1px rgba(21,90,148,.18)!important;
+}
+
+.previewPage .planEditableCellV302:focus{
+  background:#fffdf4!important;
+  box-shadow:inset 0 0 0 1px rgba(217,154,0,.42)!important;
+}
+
+.previewPage .planEditedCellV302{
+  background:#fffdf4!important;
+}
+
+.previewPage .eventCell{
+  position:relative!important;
+}
+
+.previewPage .planRowDeleteV302{
+  float:right!important;
+  margin:0 0 2px 6px!important;
+  padding:2px 6px!important;
+  min-height:0!important;
+  border:1px solid rgba(185,28,28,.25)!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  color:#991b1b!important;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
+  font-size:8.5pt!important;
+  font-weight:750!important;
+  line-height:1.2!important;
+  cursor:pointer!important;
+  box-shadow:none!important;
+}
+
+.previewPage .planRowDeleteV302:hover,
+.previewPage .planRowDeleteV302:focus-visible{
+  background:#fff5f5!important;
+  border-color:rgba(185,28,28,.46)!important;
+  outline:none!important;
 }
 
 .previewPage .podpisFinal41{

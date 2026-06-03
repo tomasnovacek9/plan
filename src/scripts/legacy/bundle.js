@@ -183,6 +183,8 @@ function importWeekFromCalendar(){
       const dayKey = dateToInput(d);
       events.push({
         id: uid(),
+        uid: e.uid || "",
+        source: "calendar",
         date: dayKey,
         from: e.allDay ? "" : (e.startTime || ""),
         to: e.allDay ? "" : (e.endTime || ""),
@@ -641,6 +643,8 @@ function loadWeekNoteIntoInputV300(){
 
 const RESPONSIBLE_STORE_V300 = "tydenni_plan_responsible_overrides_v213";
 const RESPONSIBLE_ORIG_V300 = "tydenni_plan_responsible_originals_v213";
+const PLAN_CELL_STORE_V302 = "tydenni_plan_cell_overrides_v302";
+const PLAN_DELETE_STORE_V302 = "tydenni_plan_deleted_rows_v302";
 
 function loadJsonMapV300(key){
   try{
@@ -665,24 +669,77 @@ function responsibleKeyV300(e, dateKey, index){
   ].join("||");
 }
 
-function renderResponsibleCellV300(e, dateKey, index){
-  const key = responsibleKeyV300(e, dateKey, index);
+function planRowKeyV302(e, dateKey, index){
+  return [
+    dateKey || "",
+    e?.uid || e?.id || "",
+    e?.source || "",
+    e?.from || "celý den",
+    e?.to || "",
+    stableTextKeyV300(e?.title || ""),
+    index
+  ].join("||");
+}
+
+function timePlainV302(e){
+  const from = String(e?.from || "").trim();
+  const to = String(e?.to || "").trim();
+  if(!from || /celý den|cely den/i.test(from)) return "celý den";
+  return `${displayTimeV161(from)}${to ? " - " + displayTimeV161(to) : ""}`;
+}
+
+function planCellValueV302(key, field, original){
+  const overrides = loadJsonMapV300(PLAN_CELL_STORE_V302);
+  return overrides[key] && Object.prototype.hasOwnProperty.call(overrides[key], field)
+    ? overrides[key][field]
+    : original;
+}
+
+function renderEditableCellV302(className, key, field, original, html, suffixHtml = ""){
+  const value = planCellValueV302(key, field, original);
+  const edited = String(value) !== String(original);
+  const content = (html && !edited ? html : escapeHtml(value).replace(/\n/g,"<br>")) + suffixHtml;
+  return `<td class="${className} planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="${escapeHtml(field)}" data-plan-original-v302="${escapeHtml(original)}">${content}</td>`;
+}
+
+function isRowDeletedV302(key){
+  return !!loadJsonMapV300(PLAN_DELETE_STORE_V302)[key];
+}
+
+function renderRowDeleteButtonV302(key){
+  return `<button type="button" class="planRowDeleteV302" contenteditable="false" title="Smazat řádek z náhledu" data-plan-delete-key-v302="${escapeHtml(key)}">Smazat</button>`;
+}
+
+function renderDayCellV302(dateKey, d, rowspan){
+  const key = `day||${dateKey}`;
+  const original = `${dayNames[d.getDay()]} ${formatDate(dateKey)}`;
+  const value = planCellValueV302(key, "day", original);
+  const edited = String(value) !== original;
+  const content = edited
+    ? escapeHtml(value).replace(/\n/g,"<br>")
+    : `<div class="dayName">${dayNames[d.getDay()]}</div><div class="dayDate">${formatDate(dateKey)}</div>`;
+  return `<td class="dayCell planEditableCellV302${edited ? " planEditedCellV302" : ""}" rowspan="${rowspan}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="day" data-plan-original-v302="${escapeHtml(original)}">${content}</td>`;
+}
+
+function renderResponsibleCellV300(e, dateKey, index, rowKey){
+  const key = rowKey || responsibleKeyV300(e, dateKey, index);
   const originals = loadJsonMapV300(RESPONSIBLE_ORIG_V300);
-  const overrides = loadJsonMapV300(RESPONSIBLE_STORE_V300);
   const original = String(e?.person || "").trim();
-  const value = Object.prototype.hasOwnProperty.call(overrides, key) ? overrides[key] : original;
+  const value = planCellValueV302(key, "person", original);
 
   if(!(key in originals)){
     originals[key] = original;
     saveJsonMapV300(RESPONSIBLE_ORIG_V300, originals);
   }
 
-  const edited = Object.prototype.hasOwnProperty.call(overrides, key);
-  return `<td class="personCell responsibleCellV213${edited ? " responsibleEditedV213" : ""}" contenteditable="true" spellcheck="false" data-responsible-key-v213="${escapeHtml(key)}">${escapeHtml(value).replace(/\n/g,"<br>")}</td>`;
+  const edited = String(value) !== original;
+  return `<td class="personCell planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="person" data-plan-original-v302="${escapeHtml(original)}">${escapeHtml(value).replace(/\n/g,"<br>")}</td>`;
 }
 
 function cellTextV300(cell){
-  return String(cell?.textContent || "").replace(/\s+/g," ").trim();
+  const clone = cell?.cloneNode(true);
+  clone?.querySelectorAll("button,.planRowDeleteV302").forEach(el=>el.remove());
+  return String(clone?.textContent || "").replace(/\s+/g," ").trim();
 }
 
 function initResponsibleEditingV300(){
@@ -736,6 +793,77 @@ function initResponsibleEditingV300(){
   });
 }
 
+function initPlanEditingV302(){
+  const preview = document.getElementById("preview");
+  if(!preview || preview.__planEditingV302) return;
+
+  preview.__planEditingV302 = true;
+
+  preview.addEventListener("focusin", event=>{
+    const cell = event.target.closest(".planEditableCellV302");
+    if(cell) cell.dataset.beforeV302 = cellTextV300(cell);
+  });
+
+  preview.addEventListener("keydown", event=>{
+    const cell = event.target.closest(".planEditableCellV302");
+    if(!cell) return;
+
+    if(event.key === "Enter"){
+      event.preventDefault();
+      cell.blur();
+    }
+
+    if(event.key === "Escape"){
+      event.preventDefault();
+      cell.textContent = cell.dataset.beforeV302 || "";
+      cell.blur();
+    }
+  });
+
+  preview.addEventListener("focusout", event=>{
+    const cell = event.target.closest(".planEditableCellV302");
+    if(!cell) return;
+
+    const key = cell.dataset.planRowKeyV302;
+    const field = cell.dataset.planFieldV302;
+    if(!key || !field) return;
+
+    const original = cell.dataset.planOriginalV302 || "";
+    const value = cellTextV300(cell);
+    const overrides = loadJsonMapV300(PLAN_CELL_STORE_V302);
+    if(!overrides[key]) overrides[key] = {};
+
+    if(value === original){
+      delete overrides[key][field];
+      if(!Object.keys(overrides[key]).length) delete overrides[key];
+      cell.classList.remove("planEditedCellV302");
+    }else{
+      overrides[key][field] = value;
+      cell.classList.add("planEditedCellV302");
+    }
+
+    saveJsonMapV300(PLAN_CELL_STORE_V302, overrides);
+  });
+
+  preview.addEventListener("click", event=>{
+    const button = event.target.closest(".planRowDeleteV302");
+    if(!button) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    if(!confirm("Opravdu chceš smazat tento řádek z náhledu plánu?")) return;
+
+    const key = button.dataset.planDeleteKeyV302;
+    if(!key) return;
+
+    const deleted = loadJsonMapV300(PLAN_DELETE_STORE_V302);
+    deleted[key] = true;
+    saveJsonMapV300(PLAN_DELETE_STORE_V302, deleted);
+    renderPreview();
+  });
+}
+
 
 function renderPlanNoteFinalV193(message){
   const txt = String(message || "").trim();
@@ -757,18 +885,22 @@ function renderPreview(){
   let rowIndex = 0;
   weekDates.forEach(d=>{
     const dateKey=dateToInput(d);
-    const dayEvents=sortEvents(events.filter(e=>e.date===dateKey));
+    const dayItems=sortEvents(events.filter(e=>e.date===dateKey))
+      .map((event, originalIndex)=>({event, originalIndex}))
+      .filter(item=>!isRowDeletedV302(planRowKeyV302(item.event,dateKey,item.originalIndex)));
     const weekendClass = (d.getDay() === 0 || d.getDay() === 6) ? " weekendRowV184" : "";
-    if(dayEvents.length===0){
-      rows.push(`<tr class="dayBreak emptyDayV162${weekendClass}"><td class="dayCell"><div class="dayName">${dayNames[d.getDay()]}</div><div class="dayDate">${formatDate(dateKey)}</div></td><td class="timeCell"></td><td class="eventCell"></td><td class="personCell"></td></tr>`);
+    if(dayItems.length===0){
+      rows.push(`<tr class="dayBreak emptyDayV162${weekendClass}">${renderDayCellV302(dateKey,d,1)}<td class="timeCell"></td><td class="eventCell"></td><td class="personCell"></td></tr>`);
     }else{
-      dayEvents.forEach((e,idx)=>{
+      dayItems.forEach((item,idx)=>{
+        const e = item.event;
+        const rowKey = planRowKeyV302(e, dateKey, item.originalIndex);
         const repeated = repeatClasses.get(e) || "";
         rows.push(`<tr class="${idx===0?'dayBreak ':''}${repeated}${weekendClass}">
-          ${idx===0?`<td class="dayCell" rowspan="${dayEvents.length}"><div class="dayName">${dayNames[d.getDay()]}</div><div class="dayDate">${formatDate(dateKey)}</div></td>`:""}
-          <td class="timeCell">${renderTimeCellV161(e.from,e.to)}</td>
-          <td class="eventCell">${escapeHtml(e.title).replace(/\n/g,"<br>")}</td>
-          ${renderResponsibleCellV300(e, dateKey, rowIndex)}
+          ${idx===0 ? renderDayCellV302(dateKey,d,dayItems.length) : ""}
+          ${renderEditableCellV302("timeCell", rowKey, "time", timePlainV302(e), renderTimeCellV161(e.from,e.to))}
+          ${renderEditableCellV302("eventCell", rowKey, "title", String(e.title || ""), escapeHtml(e.title).replace(/\n/g,"<br>"), renderRowDeleteButtonV302(rowKey))}
+          ${renderResponsibleCellV300(e, dateKey, rowIndex, rowKey)}
         </tr>`);
         rowIndex++;
       });
@@ -925,6 +1057,7 @@ async function loadCalendarFromUrl(options = {}){
 initDisplayOptionsV300();
 initWeekNoteV300();
 initResponsibleEditingV300();
+initPlanEditingV302();
 setDefaultWeek();
 calendarEvents = [];
 calendarSignatureV300 = "";
