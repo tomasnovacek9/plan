@@ -743,19 +743,11 @@ function isRowDeletedV302(key){
 }
 
 function renderRowDeleteButtonV302(key){
-  return `<button type="button" class="planRowDeleteV302" contenteditable="false" title="Smazat řádek z náhledu" data-plan-delete-key-v302="${escapeHtml(key)}">Smazat</button>`;
+  return `<button type="button" class="planRowDeleteV302" contenteditable="false" title="Odstranit celý řádek" aria-label="Odstranit celý řádek" data-plan-delete-key-v302="${escapeHtml(key)}">×</button>`;
 }
 
 function renderDayCellV302(dateKey, d, rowspan){
-  const key = `day||${dateKey}`;
-  const original = `${dayNames[d.getDay()]} ${formatDate(dateKey)}`;
-  const value = planCellValueV302(key, "day", original);
-  const edited = String(value) !== original;
-  const content = edited
-    ? escapeHtml(value).replace(/\n/g,"<br>")
-    : `<div class="dayName">${dayNames[d.getDay()]}</div><div class="dayDate">${formatDate(dateKey)}</div>`;
-  const title = edited ? ` title="${escapeHtml(planEditedTitleV303("day", original))}"` : "";
-  return `<td class="dayCell planEditableCellV302${edited ? " planEditedCellV302" : ""}" rowspan="${rowspan}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="day" data-plan-original-v302="${escapeHtml(original)}"${title}>${content}</td>`;
+  return `<td class="dayCell" rowspan="${rowspan}"><div class="dayName">${dayNames[d.getDay()]}</div><div class="dayDate">${formatDate(dateKey)}</div></td>`;
 }
 
 function renderResponsibleCellV300(e, dateKey, index, rowKey, suffixHtml = ""){
@@ -998,8 +990,8 @@ function renderPreview(){
         rows.push(`<tr class="${idx===0?'dayBreak ':''}${repeated}${weekendClass}">
           ${idx===0 ? renderDayCellV302(dateKey,d,dayItems.length) : ""}
           ${renderTimeCellEditableV302(e, rowKey)}
-          ${renderEditableCellV302("eventCell", rowKey, "title", String(e.title || ""), escapeHtml(e.title).replace(/\n/g,"<br>"), renderRowDeleteButtonV302(rowKey))}
-          ${renderResponsibleCellV300(e, dateKey, rowIndex, rowKey, rowChangeControls)}
+          ${renderEditableCellV302("eventCell", rowKey, "title", String(e.title || ""), escapeHtml(e.title).replace(/\n/g,"<br>"))}
+          ${renderResponsibleCellV300(e, dateKey, rowIndex, rowKey, `${renderRowDeleteButtonV302(rowKey)}${rowChangeControls}`)}
         </tr>`);
         rowIndex++;
       });

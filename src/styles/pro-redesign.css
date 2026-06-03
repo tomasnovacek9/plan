@@ -729,25 +729,27 @@ body{
 
 .previewPage .timeCellSplitV302{
   vertical-align:top!important;
+  white-space:nowrap!important;
 }
 
 .previewPage .timeRangeEditV302,
 .previewPage .lessonEditV302{
-  display:block!important;
+  display:inline!important;
   min-height:1em!important;
-  padding:1px 2px!important;
-  border-radius:4px!important;
+  padding:0 1px!important;
+  border-radius:3px!important;
   color:inherit!important;
 }
 
 .previewPage .timeRangeEditV302{
+  margin-right:4px!important;
   white-space:nowrap!important;
 }
 
 .previewPage .lessonEditV302{
-  margin-top:2px!important;
+  margin-top:0!important;
   color:#64748b!important;
-  font-size:.92em!important;
+  font-size:.88em!important;
   font-weight:650!important;
 }
 
@@ -778,7 +780,7 @@ body{
 .previewPage .planRowChangeToolsV304{
   position:absolute!important;
   top:50%!important;
-  left:calc(100% + 7px)!important;
+  left:calc(100% + 25px)!important;
   z-index:4!important;
   display:flex!important;
   align-items:center!important;
@@ -786,13 +788,6 @@ body{
   gap:3px!important;
   max-width:none!important;
   pointer-events:auto!important;
-  opacity:0!important;
-  transform:translateY(-50%) translateX(-2px)!important;
-  transition:opacity .14s ease, transform .14s ease!important;
-}
-
-.previewPage .planTable tr:hover .planRowChangeToolsV304,
-.previewPage .planTable tr:focus-within .planRowChangeToolsV304{
   opacity:1!important;
   transform:translateY(-50%) translateX(0)!important;
 }
@@ -801,15 +796,15 @@ body{
   display:inline-flex!important;
   align-items:center!important;
   gap:3px!important;
-  height:15px!important;
-  min-height:15px!important;
-  padding:0 4px!important;
+  height:14px!important;
+  min-height:14px!important;
+  padding:0 3px!important;
   border:1px solid rgba(217,154,0,.36)!important;
   border-radius:999px!important;
   background:#fffaf0!important;
   color:#8a4b00!important;
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
-  font-size:7.8pt!important;
+  font-size:7.2pt!important;
   font-weight:750!important;
   line-height:1!important;
   white-space:nowrap!important;
@@ -831,20 +826,37 @@ body{
 }
 
 .previewPage .planRowDeleteV302{
-  float:right!important;
-  margin:0 0 2px 6px!important;
-  padding:2px 6px!important;
-  min-height:0!important;
-  border:1px solid rgba(185,28,28,.25)!important;
-  border-radius:999px!important;
-  background:#fff!important;
+  position:absolute!important;
+  top:50%!important;
+  left:calc(100% + 7px)!important;
+  z-index:5!important;
+  display:grid!important;
+  place-items:center!important;
+  width:16px!important;
+  height:16px!important;
+  min-width:16px!important;
+  min-height:16px!important;
+  margin:0!important;
+  padding:0!important;
+  border:1px solid rgba(185,28,28,.26)!important;
+  border-radius:50%!important;
+  background:#fff7f7!important;
   color:#991b1b!important;
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
-  font-size:8.5pt!important;
+  font-size:12px!important;
   font-weight:750!important;
-  line-height:1.2!important;
+  line-height:1!important;
   cursor:pointer!important;
   box-shadow:none!important;
+  opacity:0!important;
+  transform:translateY(-50%) scale(.96)!important;
+  transition:opacity .14s ease, transform .14s ease, background-color .12s ease, border-color .12s ease!important;
+}
+
+.previewPage .planTable tr:hover .planRowDeleteV302,
+.previewPage .planTable tr:focus-within .planRowDeleteV302{
+  opacity:1!important;
+  transform:translateY(-50%) scale(1)!important;
 }
 
 .previewPage .planRowDeleteV302:hover,
