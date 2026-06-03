@@ -1601,7 +1601,7 @@ hookPrintPdfButtonV115();
     enhanceTimeInputs();
     ensureDatePicker();
     ensureTimeWheel();
-    ensureTimeSummary();
+    document.querySelector(".manualTimeSummaryV301")?.remove();
 
     let mode = document.querySelector(".manualQuickV169");
     if(!mode){
@@ -1653,7 +1653,7 @@ hookPrintPdfButtonV115();
     setTimeMode(currentTimeMode());
     syncDatePicker();
     syncTimeWheel();
-    syncTimeSummary();
+    patchAddCommit();
   }
 
   function timeValuesV301(){
@@ -1777,15 +1777,6 @@ hookPrintPdfButtonV115();
     });
   }
 
-  function ensureTimeSummary(){
-    if(document.querySelector(".manualTimeSummaryV301")) return;
-    const mode = document.querySelector(".manualTimeModeV300");
-    const summary = document.createElement("div");
-    summary.className = "manualTimeSummaryV301";
-    summary.textContent = "Vybraný čas: doplň čas záznamu";
-    if(mode) mode.insertAdjacentElement("afterend", summary);
-  }
-
   function attachModeButtons(){
     document.querySelectorAll(".manualModeBtnV300[data-time-mode]").forEach(btn=>{
       if(btn.dataset.modeBoundV300 === "1") return;
@@ -1822,7 +1813,6 @@ hookPrintPdfButtonV115();
   function setVal(id,v){
     const el = document.getElementById(id);
     if(el) el.value = v;
-    syncTimeSummary();
   }
 
   function escapeForHtml(value){
@@ -1870,6 +1860,21 @@ hookPrintPdfButtonV115();
     syncTimeWheel();
   }
 
+  function commitVisibleWheel(){
+    document.querySelectorAll(".manualTimeWheelListV301").forEach(list=>{
+      if(list.offsetParent !== null) selectCenteredTime(list);
+    });
+  }
+
+  function patchAddCommit(){
+    const btn = document.getElementById("manualAddV167");
+    if(!btn || btn.dataset.commitUiV302 === "1") return;
+    btn.dataset.commitUiV302 = "1";
+    btn.addEventListener("click",()=>{
+      if(currentTimeMode() === "time") commitVisibleWheel();
+    }, true);
+  }
+
   function syncTimeWheel(){
     ["manualFromV167","manualToV167"].forEach(id=>{
       const value = document.getElementById(id)?.value || "";
@@ -1888,22 +1893,6 @@ hookPrintPdfButtonV115();
         setTimeout(()=>{ list.__syncingV301 = false; }, 140);
       }
     });
-    syncTimeSummary();
-  }
-
-  function syncTimeSummary(){
-    const summary = document.querySelector(".manualTimeSummaryV301");
-    if(!summary) return;
-    const mode = currentTimeMode();
-    const from = document.getElementById("manualFromV167")?.value || "";
-    const to = document.getElementById("manualToV167")?.value || "";
-    if(mode === "allDay"){
-      summary.textContent = "Vybraný čas: celý den";
-    }else if(from && to){
-      summary.textContent = `Vybraný čas: ${from} - ${to}`;
-    }else{
-      summary.textContent = "Vybraný čas: doplň čas záznamu";
-    }
   }
 
   function currentTimeMode(){
@@ -1949,7 +1938,6 @@ hookPrintPdfButtonV115();
     document.querySelectorAll(".manualModeBtnV300[data-time-mode]").forEach(btn=>{
       btn.classList.toggle("active", btn.dataset.timeMode === mode);
     });
-    syncTimeSummary();
   }
 
   function applyLessonRange(){
