@@ -385,6 +385,34 @@ function loadManualEventsV300(){
   }
 }
 
+function saveManualEventsV308(list){
+  try{ localStorage.setItem(MANUAL_EVENTS_STORE_V300, JSON.stringify(Array.isArray(list) ? list : [])); }catch(e){}
+}
+
+function addPreviewManualRowV308(dateKey){
+  const uid = "manual-inline-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+  const list = loadManualEventsV300();
+  list.push({
+    uid,
+    date: dateKey,
+    from: "08:00",
+    to: "08:45",
+    title: "",
+    person: "",
+    classes: "",
+    style: {size:"10pt", color:"#172033", bold:false},
+    manual: true
+  });
+  saveManualEventsV308(list);
+  window.manualEventsV167 = list;
+  mergeManualEventsV300();
+  renderPreview();
+  requestAnimationFrame(()=>{
+    const timeCell = document.querySelector(`[data-plan-row-key-v302*="${CSS.escape(uid)}"][data-plan-field-v302="time"]`);
+    if(timeCell) showTimeChoicePopoverV307(timeCell);
+  });
+}
+
 function eventSortMinutesV300(value){
   if(!value || /celý den|cely den/i.test(value)) return -1;
   const match = String(value).match(/(\d{1,2}):(\d{2})/);
@@ -404,6 +432,7 @@ function mergeManualEventsV300(){
       title: e.title,
       person: e.person,
       classes: e.classes || "",
+      style: e.style || e.manualStyle || null,
       manualV167: true,
       source: "manual"
     });
@@ -646,6 +675,7 @@ const RESPONSIBLE_ORIG_V300 = "tydenni_plan_responsible_originals_v213";
 const PLAN_CELL_STORE_V302 = "tydenni_plan_cell_overrides_v302";
 const PLAN_DELETE_STORE_V302 = "tydenni_plan_deleted_rows_v302";
 const PLAN_STYLE_STORE_V307 = "tydenni_plan_cell_styles_v307";
+const PLAN_RICH_STORE_V308 = "tydenni_plan_rich_html_v308";
 
 function loadJsonMapV300(key){
   try{
@@ -714,6 +744,78 @@ function planStyleAttrV307(key, field){
   return parts.length ? ` style="${escapeHtml(parts.join(";"))}"` : "";
 }
 
+function planRichHtmlValueV308(key, field){
+  const rich = loadJsonMapV300(PLAN_RICH_STORE_V308);
+  return rich[key]?.[field] || "";
+}
+
+function cleanEditableHtmlV308(cell){
+  const clone = cell?.cloneNode(true);
+  clone?.querySelectorAll("button,.planStylePopoverV307,.timeChoicePopoverV307,.planRowDeleteV302,.planRowChangeToolsV304,.planFieldResetV304").forEach(el=>el.remove());
+  clone?.querySelectorAll("*").forEach(el=>{
+    if(el.tagName === "BR") return;
+    if(el.tagName !== "SPAN"){
+      el.replaceWith(document.createTextNode(el.textContent || ""));
+      return;
+    }
+    const allowed = [];
+    const size = el.style?.fontSize || "";
+    const color = el.style?.color || "";
+    const weight = el.style?.fontWeight || "";
+    if(/^\d{1,2}pt$/.test(size)) allowed.push(`font-size:${size}`);
+    if(color) allowed.push(`color:${color}`);
+    if(weight && (Number(weight) >= 700 || /bold/i.test(weight))) allowed.push("font-weight:850");
+    if(allowed.length) el.setAttribute("style", allowed.join(";"));
+    else el.removeAttribute("style");
+    el.removeAttribute("class");
+  });
+  return String(clone?.innerHTML || "").trim();
+}
+
+function saveRichHtmlV308(key, field, html){
+  const rich = loadJsonMapV300(PLAN_RICH_STORE_V308);
+  if(!rich[key]) rich[key] = {};
+  if(/<span[^>]+style=/i.test(html)) rich[key][field] = html;
+  else delete rich[key][field];
+  if(rich[key] && !Object.keys(rich[key]).length) delete rich[key];
+  saveJsonMapV300(PLAN_RICH_STORE_V308, rich);
+}
+
+function selectionInCellV308(cell){
+  const selection = window.getSelection?.();
+  if(selection && selection.rangeCount > 0 && !selection.isCollapsed){
+    const range = selection.getRangeAt(0);
+    if(cell.contains(range.commonAncestorContainer)){
+      cell.__savedStyleRangeV308 = range.cloneRange();
+      return range;
+    }
+  }
+  const saved = cell.__savedStyleRangeV308;
+  return saved && cell.contains(saved.commonAncestorContainer) ? saved : null;
+}
+
+function applyStyleToSelectionV308(cell, style){
+  const range = selectionInCellV308(cell);
+  if(!range) return false;
+  const span = document.createElement("span");
+  if(style.size) span.style.fontSize = style.size;
+  if(style.color) span.style.color = style.color;
+  if(style.bold) span.style.fontWeight = "850";
+  try{
+    span.appendChild(range.extractContents());
+    range.insertNode(span);
+    const selection = window.getSelection?.();
+    selection?.removeAllRanges();
+    const after = document.createRange();
+    after.selectNodeContents(span);
+    after.collapse(false);
+    selection?.addRange(after);
+    return true;
+  }catch(e){
+    return false;
+  }
+}
+
 function planEditedTitleV303(field, original){
   const labels = {day:"datum", hour:"hodina", time:"čas", lesson:"vyučovací hodina", title:"akce", person:"zodpovídá"};
   return `Upraveno ručně: ${labels[field] || field}. Původně: ${original || "prázdné"}`;
@@ -722,7 +824,7 @@ function planEditedTitleV303(field, original){
 function renderEditableCellV302(className, key, field, original, html, suffixHtml = ""){
   const value = planCellValueV302(key, field, original);
   const edited = String(value) !== String(original);
-  const rawContent = html && !edited ? html : escapeHtml(value).replace(/\n/g,"<br>");
+  const rawContent = planRichHtmlValueV308(key, field) || (html && !edited ? html : escapeHtml(value).replace(/\n/g,"<br>"));
   const content = (rawContent || `<span class="emptyEditableV307">&nbsp;</span>`) + suffixHtml;
   const title = edited ? ` title="${escapeHtml(planEditedTitleV303(field, original))}"` : "";
   return `<td class="${className} planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="${escapeHtml(field)}" data-plan-original-v302="${escapeHtml(original)}"${title}${planStyleAttrV307(key, field)}>${content}</td>`;
@@ -780,7 +882,11 @@ function renderRowDeleteButtonV302(key){
 }
 
 function renderDayCellV302(dateKey, d, rowspan){
-  return `<td class="dayCell" rowspan="${rowspan}"><div class="dayName">${dayNames[d.getDay()]}</div><div class="dayDate">${formatDate(dateKey)}</div></td>`;
+  return `<td class="dayCell" rowspan="${rowspan}">
+    <button type="button" class="dayAddRowV308" title="Přidat řádek k tomuto dni" aria-label="Přidat řádek k tomuto dni" data-add-day-v308="${escapeHtml(dateKey)}">+</button>
+    <div class="dayName">${dayNames[d.getDay()]}</div>
+    <div class="dayDate">${formatDate(dateKey)}</div>
+  </td>`;
 }
 
 function renderResponsibleCellV300(e, dateKey, index, rowKey, suffixHtml = ""){
@@ -796,7 +902,7 @@ function renderResponsibleCellV300(e, dateKey, index, rowKey, suffixHtml = ""){
 
   const edited = String(value) !== original;
   const title = edited ? ` title="${escapeHtml(planEditedTitleV303("person", original))}"` : "";
-  const content = escapeHtml(value).replace(/\n/g,"<br>") || `<span class="emptyEditableV307">&nbsp;</span>`;
+  const content = planRichHtmlValueV308(key, "person") || escapeHtml(value).replace(/\n/g,"<br>") || `<span class="emptyEditableV307">&nbsp;</span>`;
   return `<td class="personCell planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="person" data-plan-original-v302="${escapeHtml(original)}"${title}${planStyleAttrV307(key, "person")}>${content}${suffixHtml}</td>`;
 }
 
@@ -873,6 +979,7 @@ function showPlanStylePopoverV307(cell){
   if(!cell?.dataset?.planRowKeyV302 || !cell.dataset.planFieldV302) return;
   if(cell.getAttribute("contenteditable") !== "true") return;
   const pop = ensurePlanStylePopoverV307();
+  selectionInCellV308(cell);
   const style = planStyleValueV307(cell.dataset.planRowKeyV302, cell.dataset.planFieldV302);
   pop.dataset.keyV307 = cell.dataset.planRowKeyV302;
   pop.dataset.fieldV307 = cell.dataset.planFieldV302;
@@ -887,22 +994,26 @@ function savePlanStyleFromPopoverV307(pop){
   const key = pop.dataset.keyV307;
   const field = pop.dataset.fieldV307;
   if(!key || !field) return;
-  const styles = loadJsonMapV300(PLAN_STYLE_STORE_V307);
-  if(!styles[key]) styles[key] = {};
   const style = {
     size: pop.querySelector("[data-style-size-v307]")?.value || "",
     color: pop.querySelector("[data-style-color-v307]")?.value || "",
     bold: pop.querySelector("[data-style-bold-v307]")?.classList.contains("active") || false
   };
-  if(!style.size && !style.color && !style.bold){
-    delete styles[key][field];
-  }else{
-    styles[key][field] = style;
-  }
-  if(styles[key] && !Object.keys(styles[key]).length) delete styles[key];
-  saveJsonMapV300(PLAN_STYLE_STORE_V307, styles);
   const cell = document.querySelector(`[data-plan-row-key-v302="${CSS.escape(key)}"][data-plan-field-v302="${CSS.escape(field)}"]`);
   if(cell){
+    if(applyStyleToSelectionV308(cell, style)){
+      saveRichHtmlV308(key, field, cleanEditableHtmlV308(cell));
+      return;
+    }
+    const styles = loadJsonMapV300(PLAN_STYLE_STORE_V307);
+    if(!styles[key]) styles[key] = {};
+    if(!style.size && !style.color && !style.bold){
+      delete styles[key][field];
+    }else{
+      styles[key][field] = style;
+    }
+    if(styles[key] && !Object.keys(styles[key]).length) delete styles[key];
+    saveJsonMapV300(PLAN_STYLE_STORE_V307, styles);
     cell.style.fontSize = style.size || "";
     cell.style.color = style.color || "";
     cell.style.fontWeight = style.bold ? "850" : "";
@@ -967,7 +1078,10 @@ function setChoiceListValueV307(pop, selector, attr, value){
     if(isActive) active = btn;
   });
   if(active){
-    requestAnimationFrame(()=>active.scrollIntoView({block:"center", inline:"nearest"}));
+    requestAnimationFrame(()=>{
+      const top = active.offsetTop - (list.clientHeight / 2) + (active.offsetHeight / 2);
+      list.scrollTop = Math.max(0, top);
+    });
   }
 }
 
@@ -1228,14 +1342,19 @@ function initPlanEditingV302(){
     }
   });
 
+  stylePopover.addEventListener("mouseenter", ()=>clearTimeout(stylePopover.__hideTimerV307));
   stylePopover.addEventListener("mouseleave", ()=>{
     clearTimeout(stylePopover.__hideTimerV307);
-    stylePopover.__hideTimerV307 = setTimeout(()=>{ stylePopover.hidden = true; }, 220);
+    stylePopover.__hideTimerV307 = setTimeout(()=>{
+      if(document.activeElement?.matches?.("[data-style-color-v307]")) return;
+      stylePopover.hidden = true;
+    }, 260);
   });
 
+  timePopover.addEventListener("mouseenter", ()=>clearTimeout(timePopover.__hideTimerV307));
   timePopover.addEventListener("mouseleave", ()=>{
     clearTimeout(timePopover.__hideTimerV307);
-    timePopover.__hideTimerV307 = setTimeout(()=>{ timePopover.hidden = true; }, 220);
+    timePopover.__hideTimerV307 = setTimeout(()=>{ timePopover.hidden = true; }, 260);
   });
 
   preview.addEventListener("focusin", event=>{
@@ -1272,6 +1391,7 @@ function initPlanEditingV302(){
 
     const original = cell.dataset.planOriginalV302 || "";
     const value = cellTextV300(cell);
+    saveRichHtmlV308(key, field, cleanEditableHtmlV308(cell));
     const overrides = loadJsonMapV300(PLAN_CELL_STORE_V302);
     if(!overrides[key]) overrides[key] = {};
 
@@ -1291,6 +1411,16 @@ function initPlanEditingV302(){
   });
 
   preview.addEventListener("click", event=>{
+    const addDay = event.target.closest("[data-add-day-v308]");
+    if(addDay){
+      event.preventDefault();
+      event.stopPropagation();
+      stylePopover.hidden = true;
+      timePopover.hidden = true;
+      addPreviewManualRowV308(addDay.dataset.addDayV308);
+      return;
+    }
+
     const timeCell = event.target.closest(".timeCellSplitV302");
     const timePart = event.target.closest(".timeRangeEditV302,.lessonEditV302") || timeCell?.querySelector(".timeRangeEditV302");
     if(timePart){
@@ -1410,6 +1540,12 @@ function renderPreview(){
     </div>
     ${messageHtml}
 <table class="planTable">
+      <colgroup>
+        <col class="dateColV308">
+        <col class="timeColV308">
+        <col class="eventColV308">
+        <col class="personColV308">
+      </colgroup>
       <thead>
         <tr><th>Datum</th><th>Hodina</th><th>Akce</th><th>Zodpovídá</th></tr>
       </thead>
