@@ -701,12 +701,44 @@ function loadWeekNoteIntoInputV300(){
   if(status) status.textContent = "Ukládá se automaticky.";
 }
 
+function saveInlineWeekNoteV310(value){
+  const input = document.getElementById("weeklyNoteInput");
+  if(input) input.value = value;
+  const key = weekNoteKeyV174();
+  if(!key) return;
+  const notes = loadWeekNotesV174();
+  const text = String(value || "").trim();
+  if(text) notes[key] = text;
+  else delete notes[key];
+  saveWeekNotesV174(notes);
+}
+
+function renderPlanNoteSlotV310(message){
+  const txt = String(message || "").trim();
+  if(txt){
+    return `<div class="planNoteFinalV193 planNoteInlineV310" contenteditable="true" spellcheck="false" data-inline-note-v310="1">${escapeHtml(txt).replace(/\n/g,"<br>")}</div>`;
+  }
+  return `<button type="button" class="planNoteAddV310" data-add-note-v310="1">+ Poznámka do plánu</button>`;
+}
+
+function signaturePositionV310(){
+  const value = localStorage.getItem(SIGNATURE_POS_STORE_V310) || "right";
+  return /^(left|center|right)$/.test(value) ? value : "right";
+}
+
+function setSignaturePositionV310(value){
+  if(!/^(left|center|right)$/.test(value)) return;
+  localStorage.setItem(SIGNATURE_POS_STORE_V310, value);
+  renderPreview();
+}
+
 const RESPONSIBLE_STORE_V300 = "tydenni_plan_responsible_overrides_v213";
 const RESPONSIBLE_ORIG_V300 = "tydenni_plan_responsible_originals_v213";
 const PLAN_CELL_STORE_V302 = "tydenni_plan_cell_overrides_v302";
 const PLAN_DELETE_STORE_V302 = "tydenni_plan_deleted_rows_v302";
 const PLAN_STYLE_STORE_V307 = "tydenni_plan_cell_styles_v307";
 const PLAN_RICH_STORE_V308 = "tydenni_plan_rich_html_v308";
+const SIGNATURE_POS_STORE_V310 = "tydenni_plan_signature_position_v310";
 
 function loadJsonMapV300(key){
   try{
@@ -976,6 +1008,14 @@ function timeChoiceValuesV307(){
   return out;
 }
 
+function timeChoiceHourValuesV310(){
+  return Array.from({length:24}, (_, h)=>String(h).padStart(2,"0"));
+}
+
+function timeChoiceMinuteValuesV310(){
+  return Array.from({length:12}, (_, i)=>String(i * 5).padStart(2,"0"));
+}
+
 function planStyleSizeOptionsV307(selected = ""){
   const sizes = ["", "7pt", "8pt", "9pt", "10pt", "11pt", "12pt", "13pt", "14pt", "15pt", "16pt", "18pt"];
   return sizes.map(size=>{
@@ -1063,8 +1103,8 @@ function savePlanStyleFromPopoverV307(pop){
 function ensureTimeChoicePopoverV307(){
   let pop = document.querySelector(".timeChoicePopoverV307");
   if(pop) return pop;
-  const times = timeChoiceValuesV307();
-  const timeButtons = times.map(t=>`<button type="button" data-time-choice-v307="${escapeHtml(t)}">${escapeHtml(t)}</button>`).join("");
+  const hours = timeChoiceHourValuesV310().map(h=>`<button type="button" data-time-hour-choice-v310="${h}">${h}</button>`).join("");
+  const minutes = timeChoiceMinuteValuesV310().map(m=>`<button type="button" data-time-minute-choice-v310="${m}">${m}</button>`).join("");
   const lessonButtons = LESSON_TABLE_V161.map(h=>`<button type="button" data-lesson-choice-v307="${h.n}">${h.n}.</button>`).join("");
   pop = document.createElement("div");
   pop.className = "timeChoicePopoverV307";
@@ -1076,13 +1116,19 @@ function ensureTimeChoicePopoverV307(){
       <button type="button" data-time-all-day-v307>Celý den</button>
     </div>
     <div class="timeChoicePanelV307" data-time-panel-v307="time">
-      <div class="timeChoiceListGroupV307">
+      <div class="timeSplitGroupV310">
         <label>Od</label>
-        <div class="timeChoiceListV307" data-time-list-v307="from">${timeButtons}</div>
+        <div class="timeSplitListsV310">
+          <div class="timeChoiceListV307" data-time-hour-v310="from">${hours}</div>
+          <div class="timeChoiceListV307 minuteChoiceListV310" data-time-minute-v310="from">${minutes}</div>
+        </div>
       </div>
-      <div class="timeChoiceListGroupV307">
+      <div class="timeSplitGroupV310">
         <label>Do</label>
-        <div class="timeChoiceListV307" data-time-list-v307="to">${timeButtons}</div>
+        <div class="timeSplitListsV310">
+          <div class="timeChoiceListV307" data-time-hour-v310="to">${hours}</div>
+          <div class="timeChoiceListV307 minuteChoiceListV310" data-time-minute-v310="to">${minutes}</div>
+        </div>
       </div>
       <button type="button" data-time-apply-v307>Vybrat čas</button>
     </div>
@@ -1100,6 +1146,34 @@ function ensureTimeChoicePopoverV307(){
   `;
   document.body.appendChild(pop);
   return pop;
+}
+
+function ensureRowInspectorV310(){
+  let pop = document.querySelector(".rowInspectorV310");
+  if(pop) return pop;
+  pop = document.createElement("div");
+  pop.className = "rowInspectorV310";
+  pop.hidden = true;
+  pop.innerHTML = `
+    <button type="button" data-inspector-action-v310="time">Čas</button>
+    <button type="button" data-inspector-action-v310="title">Akce</button>
+    <button type="button" data-inspector-action-v310="person">Osoba</button>
+    <button type="button" data-inspector-action-v310="delete">−</button>
+  `;
+  document.body.appendChild(pop);
+  return pop;
+}
+
+function showRowInspectorV310(row){
+  if(!row || row.closest(".timeChoicePopoverV307,.planStylePopoverV307")) return;
+  const key = row.querySelector("[data-plan-row-key-v302]")?.dataset.planRowKeyV302 || "";
+  if(!key) return;
+  const pop = ensureRowInspectorV310();
+  pop.dataset.keyV310 = key;
+  const rect = row.getBoundingClientRect();
+  pop.style.left = `${Math.min(window.scrollX + window.innerWidth - 210, Math.max(8, rect.left + window.scrollX + rect.width - 190))}px`;
+  pop.style.top = `${Math.max(8, rect.top + window.scrollY - 30)}px`;
+  pop.hidden = false;
 }
 
 function setTimeChoiceModeV307(pop, mode){
@@ -1129,9 +1203,21 @@ function getChoiceListValueV307(pop, selector, fallback = ""){
   return pop.querySelector(selector)?.dataset.valueV307 || fallback;
 }
 
+function setTimeSplitValueV310(pop, side, value){
+  const [hour, minute] = String(value || "08:00").split(":");
+  setChoiceListValueV307(pop, `[data-time-hour-v310='${side}']`, "data-time-hour-choice-v310", String(hour || "08").padStart(2, "0"));
+  setChoiceListValueV307(pop, `[data-time-minute-v310='${side}']`, "data-time-minute-choice-v310", String(minute || "00").padStart(2, "0"));
+}
+
+function getTimeSplitValueV310(pop, side){
+  const hour = getChoiceListValueV307(pop, `[data-time-hour-v310='${side}']`, "08");
+  const minute = getChoiceListValueV307(pop, `[data-time-minute-v310='${side}']`, "00");
+  return `${String(hour).padStart(2,"0")}:${String(minute).padStart(2,"0")}`;
+}
+
 function syncTimeChoiceLessonsFromTimeV307(pop){
-  const from = getChoiceListValueV307(pop, "[data-time-list-v307='from']");
-  const to = getChoiceListValueV307(pop, "[data-time-list-v307='to']");
+  const from = getTimeSplitValueV310(pop, "from");
+  const to = getTimeSplitValueV310(pop, "to");
   const first = LESSON_TABLE_V161.find(h=>h.start === from);
   const last = LESSON_TABLE_V161.find(h=>h.end === to);
   if(!first || !last || last.n < first.n) return;
@@ -1147,8 +1233,8 @@ function syncTimeChoiceTimeFromLessonsV307(pop){
   const to = LESSON_TABLE_V161.find(h=>h.n === toN);
   if(!from || !to) return;
   setChoiceListValueV307(pop, "[data-lesson-list-v307='to']", "data-lesson-choice-v307", to.n);
-  setChoiceListValueV307(pop, "[data-time-list-v307='from']", "data-time-choice-v307", from.start);
-  setChoiceListValueV307(pop, "[data-time-list-v307='to']", "data-time-choice-v307", to.end);
+  setTimeSplitValueV310(pop, "from", from.start);
+  setTimeSplitValueV310(pop, "to", to.end);
 }
 
 function showTimeChoicePopoverV307(cell){
@@ -1160,19 +1246,19 @@ function showTimeChoicePopoverV307(cell){
   const timeValue = planCellValueV302(key, "time", timeSource?.dataset.planOriginalV302 || "");
   const match = String(timeValue).match(/(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})/);
   if(/celý den|cely den/i.test(String(timeValue))){
-    setChoiceListValueV307(pop, "[data-time-list-v307='from']", "data-time-choice-v307", "08:00");
-    setChoiceListValueV307(pop, "[data-time-list-v307='to']", "data-time-choice-v307", "08:45");
+    setTimeSplitValueV310(pop, "from", "08:00");
+    setTimeSplitValueV310(pop, "to", "08:45");
     setChoiceListValueV307(pop, "[data-lesson-list-v307='from']", "data-lesson-choice-v307", "1");
     setChoiceListValueV307(pop, "[data-lesson-list-v307='to']", "data-lesson-choice-v307", "1");
     setTimeChoiceModeV307(pop, "time");
   }else if(match){
-    setChoiceListValueV307(pop, "[data-time-list-v307='from']", "data-time-choice-v307", match[1].padStart(5,"0"));
-    setChoiceListValueV307(pop, "[data-time-list-v307='to']", "data-time-choice-v307", match[2].padStart(5,"0"));
+    setTimeSplitValueV310(pop, "from", match[1].padStart(5,"0"));
+    setTimeSplitValueV310(pop, "to", match[2].padStart(5,"0"));
     syncTimeChoiceLessonsFromTimeV307(pop);
     setTimeChoiceModeV307(pop, cell.dataset.planFieldV302 === "lesson" ? "lesson" : "time");
   }else{
-    setChoiceListValueV307(pop, "[data-time-list-v307='from']", "data-time-choice-v307", "08:00");
-    setChoiceListValueV307(pop, "[data-time-list-v307='to']", "data-time-choice-v307", "08:45");
+    setTimeSplitValueV310(pop, "from", "08:00");
+    setTimeSplitValueV310(pop, "to", "08:45");
     syncTimeChoiceLessonsFromTimeV307(pop);
     setTimeChoiceModeV307(pop, "time");
   }
@@ -1313,6 +1399,7 @@ function initPlanEditingV302(){
   preview.__planEditingV302 = true;
   const stylePopover = ensurePlanStylePopoverV307();
   const timePopover = ensureTimeChoicePopoverV307();
+  const rowInspector = ensureRowInspectorV310();
 
   stylePopover.addEventListener("input", event=>{
     if(event.target.closest("[data-style-size-v307]")) savePlanStyleFromPopoverV307(stylePopover);
@@ -1339,11 +1426,21 @@ function initPlanEditingV302(){
   });
 
   timePopover.addEventListener("click", event=>{
-    const timeChoice = event.target.closest("[data-time-choice-v307]");
-    if(timeChoice){
-      const list = timeChoice.closest("[data-time-list-v307]");
+    const hourChoice = event.target.closest("[data-time-hour-choice-v310]");
+    if(hourChoice){
+      const list = hourChoice.closest("[data-time-hour-v310]");
       if(list){
-        setChoiceListValueV307(timePopover, `[data-time-list-v307='${list.dataset.timeListV307}']`, "data-time-choice-v307", timeChoice.dataset.timeChoiceV307);
+        setChoiceListValueV307(timePopover, `[data-time-hour-v310='${list.dataset.timeHourV310}']`, "data-time-hour-choice-v310", hourChoice.dataset.timeHourChoiceV310);
+        syncTimeChoiceLessonsFromTimeV307(timePopover);
+      }
+      return;
+    }
+
+    const minuteChoice = event.target.closest("[data-time-minute-choice-v310]");
+    if(minuteChoice){
+      const list = minuteChoice.closest("[data-time-minute-v310]");
+      if(list){
+        setChoiceListValueV307(timePopover, `[data-time-minute-v310='${list.dataset.timeMinuteV310}']`, "data-time-minute-choice-v310", minuteChoice.dataset.timeMinuteChoiceV310);
         syncTimeChoiceLessonsFromTimeV307(timePopover);
       }
       return;
@@ -1376,8 +1473,8 @@ function initPlanEditingV302(){
     const timeApply = event.target.closest("[data-time-apply-v307]");
     if(timeApply){
       const key = timePopover.dataset.keyV307;
-      const from = getChoiceListValueV307(timePopover, "[data-time-list-v307='from']");
-      const to = getChoiceListValueV307(timePopover, "[data-time-list-v307='to']");
+      const from = getTimeSplitValueV310(timePopover, "from");
+      const to = getTimeSplitValueV310(timePopover, "to");
       if(!key) return;
       const time = `${from} - ${to}`;
       saveTimeChoiceV307(key, time, lessonLabelV161(from, to));
@@ -1400,6 +1497,24 @@ function initPlanEditingV302(){
       }
       timePopover.hidden = true;
     }
+  });
+
+  rowInspector.addEventListener("click", event=>{
+    const action = event.target.closest("[data-inspector-action-v310]")?.dataset.inspectorActionV310;
+    const key = rowInspector.dataset.keyV310;
+    if(!action || !key) return;
+    const rowCells = Array.from(preview.querySelectorAll(`[data-plan-row-key-v302="${CSS.escape(key)}"]`));
+    if(action === "time"){
+      const timeCell = rowCells.find(cell=>cell.dataset.planFieldV302 === "time");
+      if(timeCell) showTimeChoicePopoverV307(timeCell);
+    }else if(action === "title" || action === "person"){
+      const cell = rowCells.find(item=>item.dataset.planFieldV302 === action);
+      cell?.focus();
+    }else if(action === "delete"){
+      const deleteButton = preview.querySelector(`[data-plan-delete-key-v302="${CSS.escape(key)}"]`);
+      deleteButton?.click();
+    }
+    if(action !== "time") rowInspector.hidden = true;
   });
 
   stylePopover.addEventListener("mouseenter", ()=>clearTimeout(stylePopover.__hideTimerV307));
@@ -1449,6 +1564,20 @@ function initPlanEditingV302(){
   });
 
   preview.addEventListener("focusout", event=>{
+    const inlineNote = event.target.closest("[data-inline-note-v310]");
+    if(inlineNote){
+      saveInlineWeekNoteV310(cellTextV300(inlineNote));
+      return;
+    }
+
+    const signatureName = event.target.closest("[data-signature-name-v310]");
+    if(signatureName){
+      const input = document.getElementById("signature");
+      if(input) input.value = cellTextV300(signatureName);
+      renderPreview();
+      return;
+    }
+
     const cell = event.target.closest(".planEditableCellV302");
     if(!cell) return;
 
@@ -1478,6 +1607,33 @@ function initPlanEditingV302(){
   });
 
   preview.addEventListener("click", event=>{
+    if(!event.target.closest(".planStylePopoverV307,.timeChoicePopoverV307,.rowInspectorV310")){
+      const row = event.target.closest(".planTable tbody tr");
+      if(row && !event.target.closest("button")) showRowInspectorV310(row);
+    }
+
+    const noteAdd = event.target.closest("[data-add-note-v310]");
+    if(noteAdd){
+      event.preventDefault();
+      event.stopPropagation();
+      const note = document.createElement("div");
+      note.className = "planNoteFinalV193 planNoteInlineV310";
+      note.contentEditable = "true";
+      note.spellcheck = false;
+      note.dataset.inlineNoteV310 = "1";
+      noteAdd.replaceWith(note);
+      note.focus();
+      return;
+    }
+
+    const signaturePos = event.target.closest("[data-signature-pos-v310]");
+    if(signaturePos){
+      event.preventDefault();
+      event.stopPropagation();
+      setSignaturePositionV310(signaturePos.dataset.signaturePosV310);
+      return;
+    }
+
     const addDay = event.target.closest("[data-add-day-v308]");
     if(addDay){
       event.preventDefault();
@@ -1554,8 +1710,9 @@ function renderPreview(){
   const signature=document.getElementById("signature").value;
   const weekDates=getWeekDates();
   const planMessage=currentWeekNoteV174();
-  const messageHtml = planMessage ? `${renderPlanNoteFinalV193(planMessage)}` : "";
+  const messageHtml = renderPlanNoteSlotV310(planMessage);
   const repeatClasses = repeatClassMapV300(events);
+  const signaturePos = signaturePositionV310();
 
   const rows=[];
   let rowIndex = 0;
@@ -1623,9 +1780,14 @@ function renderPreview(){
       </thead>
       <tbody>${rows.join("")}</tbody>
     </table>
-    <div class="podpisFinal41">
+    <div class="podpisFinal41 podpisPos-${escapeHtml(signaturePos)}V310">
+      <div class="signatureToolsV310" contenteditable="false">
+        <button type="button" data-signature-pos-v310="left" title="Podpis vlevo">↤</button>
+        <button type="button" data-signature-pos-v310="center" title="Podpis na střed">↔</button>
+        <button type="button" data-signature-pos-v310="right" title="Podpis vpravo">↦</button>
+      </div>
       <div class="podpisFinal41Box">
-        <span class="podpisFinal41Name">${escapeHtml(signature || "Mgr. MgA. Bc. Michal Jančík")}</span><span class="podpisFinal41Role">, ředitel školy</span>
+        <span class="podpisFinal41Name" contenteditable="true" spellcheck="false" data-signature-name-v310="1">${escapeHtml(signature || "Mgr. MgA. Bc. Michal Jančík")}</span><span class="podpisFinal41Role">, ředitel školy</span>
       </div>
     </div>
     <div class="createdDateV184">Vytvořeno: ${todayTextV300()}</div>
@@ -1634,6 +1796,15 @@ function renderPreview(){
 }
 
 function renderAll(){ renderLists(); renderPreview(); }
+
+function initTopWeekControlsV310(){
+  const actions = document.querySelector(".top .actions");
+  const wrapper = document.getElementById("weekButtonsWrapperV7");
+  if(!actions || !wrapper || wrapper.dataset.topWeekV310 === "1") return;
+  wrapper.dataset.topWeekV310 = "1";
+  wrapper.classList.add("topWeekControlsV310");
+  actions.insertAdjacentElement("afterbegin", wrapper);
+}
 
 function saveData(){
   const data={
@@ -1759,6 +1930,8 @@ initWeekNoteV300();
 initResponsibleEditingV300();
 initPlanEditingV302();
 setDefaultWeek();
+initTopWeekControlsV310();
+setTimeout(initTopWeekControlsV310, 0);
 calendarEvents = [];
 calendarSignatureV300 = "";
 loadCalendarFromUrl({ initial: true });
