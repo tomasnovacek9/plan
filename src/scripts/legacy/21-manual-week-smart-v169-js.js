@@ -139,11 +139,17 @@
       <label>Vzhled textu akce</label>
       <div class="manualStyleGridV306">
         <select id="manualStyleSizeV306" aria-label="Velikost textu">
+          <option value="7pt">7 b</option>
+          <option value="8pt">8 b</option>
           <option value="9pt">9 b</option>
           <option value="10pt" selected>10 b</option>
           <option value="11pt">11 b</option>
           <option value="12pt">12 b</option>
           <option value="13pt">13 b</option>
+          <option value="14pt">14 b</option>
+          <option value="15pt">15 b</option>
+          <option value="16pt">16 b</option>
+          <option value="18pt">18 b</option>
         </select>
         <label class="manualColorPickV307"><input id="manualStyleColorV306" type="color" value="#172033" aria-label="Barva textu"><span>A</span></label>
         <label class="manualStyleBoldV306"><input id="manualStyleBoldV306" type="checkbox"> <span>B</span></label>

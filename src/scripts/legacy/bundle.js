@@ -829,11 +829,19 @@ function cellTextV300(cell){
 }
 
 function timeChoiceValuesV307(){
-  const out = ["celý den"];
+  const out = [];
   for(let h=0; h<=23; h++){
     for(let m=0; m<60; m+=5) out.push(`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`);
   }
   return out;
+}
+
+function planStyleSizeOptionsV307(selected = ""){
+  const sizes = ["", "7pt", "8pt", "9pt", "10pt", "11pt", "12pt", "13pt", "14pt", "15pt", "16pt", "18pt"];
+  return sizes.map(size=>{
+    const label = size ? size.replace("pt", " b") : "Velikost";
+    return `<option value="${escapeHtml(size)}"${size === selected ? " selected" : ""}>${escapeHtml(label)}</option>`;
+  }).join("");
 }
 
 function ensurePlanStylePopoverV307(){
@@ -844,12 +852,7 @@ function ensurePlanStylePopoverV307(){
   pop.hidden = true;
   pop.innerHTML = `
     <select data-style-size-v307 aria-label="Velikost textu">
-      <option value="">Velikost</option>
-      <option value="9pt">9 b</option>
-      <option value="10pt">10 b</option>
-      <option value="11pt">11 b</option>
-      <option value="12pt">12 b</option>
-      <option value="13pt">13 b</option>
+      ${planStyleSizeOptionsV307()}
     </select>
     <input data-style-color-v307 type="color" value="#172033" aria-label="Barva textu">
     <button type="button" data-style-bold-v307 aria-label="Tučné">B</button>
@@ -860,7 +863,9 @@ function ensurePlanStylePopoverV307(){
 
 function positionPopoverV307(pop, target){
   const rect = target.getBoundingClientRect();
-  pop.style.left = `${Math.max(8, rect.left + window.scrollX)}px`;
+  const width = pop.offsetWidth || 280;
+  const left = Math.min(Math.max(8, rect.left + window.scrollX), window.scrollX + window.innerWidth - width - 8);
+  pop.style.left = `${left}px`;
   pop.style.top = `${Math.max(8, rect.bottom + window.scrollY + 6)}px`;
 }
 
@@ -908,6 +913,8 @@ function ensureTimeChoicePopoverV307(){
   let pop = document.querySelector(".timeChoicePopoverV307");
   if(pop) return pop;
   const times = timeChoiceValuesV307();
+  const timeButtons = times.map(t=>`<button type="button" data-time-choice-v307="${escapeHtml(t)}">${escapeHtml(t)}</button>`).join("");
+  const lessonButtons = LESSON_TABLE_V161.map(h=>`<button type="button" data-lesson-choice-v307="${h.n}">${h.n}.</button>`).join("");
   pop = document.createElement("div");
   pop.className = "timeChoicePopoverV307";
   pop.hidden = true;
@@ -918,13 +925,25 @@ function ensureTimeChoicePopoverV307(){
       <button type="button" data-time-all-day-v307>Celý den</button>
     </div>
     <div class="timeChoicePanelV307" data-time-panel-v307="time">
-      <label>Od <select data-time-from-v307>${times.map(t=>`<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("")}</select></label>
-      <label>Do <select data-time-to-v307>${times.map(t=>`<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("")}</select></label>
+      <div class="timeChoiceListGroupV307">
+        <label>Od</label>
+        <div class="timeChoiceListV307" data-time-list-v307="from">${timeButtons}</div>
+      </div>
+      <div class="timeChoiceListGroupV307">
+        <label>Do</label>
+        <div class="timeChoiceListV307" data-time-list-v307="to">${timeButtons}</div>
+      </div>
       <button type="button" data-time-apply-v307>Vybrat čas</button>
     </div>
     <div class="timeChoicePanelV307" data-time-panel-v307="lesson" hidden>
-      <label>Od <select data-lesson-from-v307>${LESSON_TABLE_V161.map(h=>`<option value="${h.n}">${h.n}. hodina</option>`).join("")}</select></label>
-      <label>Do <select data-lesson-to-v307>${LESSON_TABLE_V161.map(h=>`<option value="${h.n}">${h.n}. hodina</option>`).join("")}</select></label>
+      <div class="timeChoiceListGroupV307">
+        <label>Od hodiny</label>
+        <div class="timeChoiceListV307 lessonChoiceListV307" data-lesson-list-v307="from">${lessonButtons}</div>
+      </div>
+      <div class="timeChoiceListGroupV307">
+        <label>Do hodiny</label>
+        <div class="timeChoiceListV307 lessonChoiceListV307" data-lesson-list-v307="to">${lessonButtons}</div>
+      </div>
       <button type="button" data-lesson-apply-v307>Vybrat hodiny</button>
     </div>
   `;
@@ -937,26 +956,45 @@ function setTimeChoiceModeV307(pop, mode){
   pop.querySelectorAll("[data-time-panel-v307]").forEach(panel=>{ panel.hidden = panel.dataset.timePanelV307 !== mode; });
 }
 
+function setChoiceListValueV307(pop, selector, attr, value){
+  const list = pop.querySelector(selector);
+  if(!list) return;
+  list.dataset.valueV307 = String(value || "");
+  let active = null;
+  list.querySelectorAll(`[${attr}]`).forEach(btn=>{
+    const isActive = btn.getAttribute(attr) === String(value || "");
+    btn.classList.toggle("active", isActive);
+    if(isActive) active = btn;
+  });
+  if(active){
+    requestAnimationFrame(()=>active.scrollIntoView({block:"center", inline:"nearest"}));
+  }
+}
+
+function getChoiceListValueV307(pop, selector, fallback = ""){
+  return pop.querySelector(selector)?.dataset.valueV307 || fallback;
+}
+
 function syncTimeChoiceLessonsFromTimeV307(pop){
-  const from = pop.querySelector("[data-time-from-v307]")?.value || "";
-  const to = pop.querySelector("[data-time-to-v307]")?.value || "";
+  const from = getChoiceListValueV307(pop, "[data-time-list-v307='from']");
+  const to = getChoiceListValueV307(pop, "[data-time-list-v307='to']");
   const first = LESSON_TABLE_V161.find(h=>h.start === from);
   const last = LESSON_TABLE_V161.find(h=>h.end === to);
   if(!first || !last || last.n < first.n) return;
-  pop.querySelector("[data-lesson-from-v307]").value = String(first.n);
-  pop.querySelector("[data-lesson-to-v307]").value = String(last.n);
+  setChoiceListValueV307(pop, "[data-lesson-list-v307='from']", "data-lesson-choice-v307", first.n);
+  setChoiceListValueV307(pop, "[data-lesson-list-v307='to']", "data-lesson-choice-v307", last.n);
 }
 
 function syncTimeChoiceTimeFromLessonsV307(pop){
-  const fromN = Number(pop.querySelector("[data-lesson-from-v307]")?.value);
-  let toN = Number(pop.querySelector("[data-lesson-to-v307]")?.value);
+  const fromN = Number(getChoiceListValueV307(pop, "[data-lesson-list-v307='from']", "0"));
+  let toN = Number(getChoiceListValueV307(pop, "[data-lesson-list-v307='to']", String(fromN)));
   if(toN < fromN) toN = fromN;
   const from = LESSON_TABLE_V161.find(h=>h.n === fromN);
   const to = LESSON_TABLE_V161.find(h=>h.n === toN);
   if(!from || !to) return;
-  pop.querySelector("[data-lesson-to-v307]").value = String(to.n);
-  pop.querySelector("[data-time-from-v307]").value = from.start;
-  pop.querySelector("[data-time-to-v307]").value = to.end;
+  setChoiceListValueV307(pop, "[data-lesson-list-v307='to']", "data-lesson-choice-v307", to.n);
+  setChoiceListValueV307(pop, "[data-time-list-v307='from']", "data-time-choice-v307", from.start);
+  setChoiceListValueV307(pop, "[data-time-list-v307='to']", "data-time-choice-v307", to.end);
 }
 
 function showTimeChoicePopoverV307(cell){
@@ -968,15 +1006,20 @@ function showTimeChoicePopoverV307(cell){
   const timeValue = planCellValueV302(key, "time", timeSource?.dataset.planOriginalV302 || "");
   const match = String(timeValue).match(/(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})/);
   if(/celý den|cely den/i.test(String(timeValue))){
-    pop.querySelector("[data-time-from-v307]").value = "celý den";
-    pop.querySelector("[data-time-to-v307]").value = "celý den";
+    setChoiceListValueV307(pop, "[data-time-list-v307='from']", "data-time-choice-v307", "08:00");
+    setChoiceListValueV307(pop, "[data-time-list-v307='to']", "data-time-choice-v307", "08:45");
+    setChoiceListValueV307(pop, "[data-lesson-list-v307='from']", "data-lesson-choice-v307", "1");
+    setChoiceListValueV307(pop, "[data-lesson-list-v307='to']", "data-lesson-choice-v307", "1");
     setTimeChoiceModeV307(pop, "time");
   }else if(match){
-    pop.querySelector("[data-time-from-v307]").value = match[1].padStart(5,"0");
-    pop.querySelector("[data-time-to-v307]").value = match[2].padStart(5,"0");
+    setChoiceListValueV307(pop, "[data-time-list-v307='from']", "data-time-choice-v307", match[1].padStart(5,"0"));
+    setChoiceListValueV307(pop, "[data-time-list-v307='to']", "data-time-choice-v307", match[2].padStart(5,"0"));
     syncTimeChoiceLessonsFromTimeV307(pop);
     setTimeChoiceModeV307(pop, cell.dataset.planFieldV302 === "lesson" ? "lesson" : "time");
   }else{
+    setChoiceListValueV307(pop, "[data-time-list-v307='from']", "data-time-choice-v307", "08:00");
+    setChoiceListValueV307(pop, "[data-time-list-v307='to']", "data-time-choice-v307", "08:45");
+    syncTimeChoiceLessonsFromTimeV307(pop);
     setTimeChoiceModeV307(pop, "time");
   }
   pop.hidden = false;
@@ -1122,6 +1165,26 @@ function initPlanEditingV302(){
   });
 
   timePopover.addEventListener("click", event=>{
+    const timeChoice = event.target.closest("[data-time-choice-v307]");
+    if(timeChoice){
+      const list = timeChoice.closest("[data-time-list-v307]");
+      if(list){
+        setChoiceListValueV307(timePopover, `[data-time-list-v307='${list.dataset.timeListV307}']`, "data-time-choice-v307", timeChoice.dataset.timeChoiceV307);
+        syncTimeChoiceLessonsFromTimeV307(timePopover);
+      }
+      return;
+    }
+
+    const lessonChoice = event.target.closest("[data-lesson-choice-v307]");
+    if(lessonChoice){
+      const list = lessonChoice.closest("[data-lesson-list-v307]");
+      if(list){
+        setChoiceListValueV307(timePopover, `[data-lesson-list-v307='${list.dataset.lessonListV307}']`, "data-lesson-choice-v307", lessonChoice.dataset.lessonChoiceV307);
+        syncTimeChoiceTimeFromLessonsV307(timePopover);
+      }
+      return;
+    }
+
     const mode = event.target.closest("[data-time-mode-v307]");
     if(mode){
       setTimeChoiceModeV307(timePopover, mode.dataset.timeModeV307);
@@ -1139,15 +1202,11 @@ function initPlanEditingV302(){
     const timeApply = event.target.closest("[data-time-apply-v307]");
     if(timeApply){
       const key = timePopover.dataset.keyV307;
-      const from = timePopover.querySelector("[data-time-from-v307]")?.value || "";
-      const to = timePopover.querySelector("[data-time-to-v307]")?.value || "";
+      const from = getChoiceListValueV307(timePopover, "[data-time-list-v307='from']");
+      const to = getChoiceListValueV307(timePopover, "[data-time-list-v307='to']");
       if(!key) return;
-      if(/celý den|cely den/i.test(from) || /celý den|cely den/i.test(to)){
-        saveTimeChoiceV307(key, "celý den", "");
-      }else{
-        const time = `${from} - ${to}`;
-        saveTimeChoiceV307(key, time, lessonLabelV161(from, to));
-      }
+      const time = `${from} - ${to}`;
+      saveTimeChoiceV307(key, time, lessonLabelV161(from, to));
       timePopover.hidden = true;
       return;
     }
@@ -1155,8 +1214,8 @@ function initPlanEditingV302(){
     const lessonApply = event.target.closest("[data-lesson-apply-v307]");
     if(lessonApply){
       const key = timePopover.dataset.keyV307;
-      const fromN = Number(timePopover.querySelector("[data-lesson-from-v307]")?.value);
-      let toN = Number(timePopover.querySelector("[data-lesson-to-v307]")?.value);
+      const fromN = Number(getChoiceListValueV307(timePopover, "[data-lesson-list-v307='from']", "0"));
+      let toN = Number(getChoiceListValueV307(timePopover, "[data-lesson-list-v307='to']", String(fromN)));
       if(!key) return;
       if(toN < fromN) toN = fromN;
       const from = LESSON_TABLE_V161.find(h=>h.n === fromN);
@@ -1169,9 +1228,14 @@ function initPlanEditingV302(){
     }
   });
 
-  timePopover.addEventListener("change", event=>{
-    if(event.target.closest("[data-time-from-v307],[data-time-to-v307]")) syncTimeChoiceLessonsFromTimeV307(timePopover);
-    if(event.target.closest("[data-lesson-from-v307],[data-lesson-to-v307]")) syncTimeChoiceTimeFromLessonsV307(timePopover);
+  stylePopover.addEventListener("mouseleave", ()=>{
+    clearTimeout(stylePopover.__hideTimerV307);
+    stylePopover.__hideTimerV307 = setTimeout(()=>{ stylePopover.hidden = true; }, 220);
+  });
+
+  timePopover.addEventListener("mouseleave", ()=>{
+    clearTimeout(timePopover.__hideTimerV307);
+    timePopover.__hideTimerV307 = setTimeout(()=>{ timePopover.hidden = true; }, 220);
   });
 
   preview.addEventListener("focusin", event=>{
@@ -1227,7 +1291,8 @@ function initPlanEditingV302(){
   });
 
   preview.addEventListener("click", event=>{
-    const timePart = event.target.closest(".timeRangeEditV302,.lessonEditV302");
+    const timeCell = event.target.closest(".timeCellSplitV302");
+    const timePart = event.target.closest(".timeRangeEditV302,.lessonEditV302") || timeCell?.querySelector(".timeRangeEditV302");
     if(timePart){
       event.preventDefault();
       event.stopPropagation();
@@ -2270,11 +2335,17 @@ hookPrintPdfButtonV115();
       <label>Vzhled textu akce</label>
       <div class="manualStyleGridV306">
         <select id="manualStyleSizeV306" aria-label="Velikost textu">
+          <option value="7pt">7 b</option>
+          <option value="8pt">8 b</option>
           <option value="9pt">9 b</option>
           <option value="10pt" selected>10 b</option>
           <option value="11pt">11 b</option>
           <option value="12pt">12 b</option>
           <option value="13pt">13 b</option>
+          <option value="14pt">14 b</option>
+          <option value="15pt">15 b</option>
+          <option value="16pt">16 b</option>
+          <option value="18pt">18 b</option>
         </select>
         <label class="manualColorPickV307"><input id="manualStyleColorV306" type="color" value="#172033" aria-label="Barva textu"><span>A</span></label>
         <label class="manualStyleBoldV306"><input id="manualStyleBoldV306" type="checkbox"> <span>B</span></label>
