@@ -417,7 +417,22 @@ function updateManualEventTimeV309(key, time, lesson){
   saveManualEventsV308(list);
   window.manualEventsV167 = list;
   mergeManualEventsV300();
-  return true;
+  return uid;
+}
+
+function focusManualTitleByUidV310(uid){
+  if(!uid) return;
+  requestAnimationFrame(()=>{
+    const titleCell = document.querySelector(`[data-plan-row-key-v302*="${CSS.escape(uid)}"][data-plan-field-v302="title"]`);
+    if(!titleCell) return;
+    titleCell.focus();
+    const range = document.createRange();
+    range.selectNodeContents(titleCell);
+    range.collapse(false);
+    const selection = window.getSelection?.();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+  });
 }
 
 function addPreviewManualRowV308(dateKey){
@@ -641,6 +656,7 @@ function initDisplayOptionsV300(){
     weekend.addEventListener("change", ()=>{
       localStorage.setItem("tydenni_plan_hide_weekend_v184", weekend.checked ? "1" : "0");
       applyDisplayBodyClassesV300();
+      if(typeof syncTopViewButtonsV311 === "function") syncTopViewButtonsV311();
     });
   }
 
@@ -650,6 +666,7 @@ function initDisplayOptionsV300(){
     created.addEventListener("change", ()=>{
       localStorage.setItem("tydenni_plan_hide_created_v184", created.checked ? "1" : "0");
       applyDisplayBodyClassesV300();
+      if(typeof syncTopViewButtonsV311 === "function") syncTopViewButtonsV311();
     });
   }
 
@@ -716,7 +733,7 @@ function saveInlineWeekNoteV310(value){
 function renderPlanNoteSlotV310(message){
   const txt = String(message || "").trim();
   if(txt){
-    return `<div class="planNoteFinalV193 planNoteInlineV310" contenteditable="true" spellcheck="false" data-inline-note-v310="1">${escapeHtml(txt).replace(/\n/g,"<br>")}</div>`;
+    return `<div class="planNoteWrapV310"><div class="planNoteFinalV193 planNoteInlineV310" contenteditable="true" spellcheck="false" data-inline-note-v310="1">${escapeHtml(txt).replace(/\n/g,"<br>")}</div><button type="button" class="noteResetV310" title="Vrátit poznámku" data-note-reset-v310="1"><span>📝</span><b>↩</b></button></div>`;
   }
   return `<button type="button" class="planNoteAddV310" data-add-note-v310="1">+ Poznámka do plánu</button>`;
 }
@@ -732,6 +749,23 @@ function setSignaturePositionV310(value){
   renderPreview();
 }
 
+function cycleSignaturePositionV310(){
+  const order = ["right", "center", "left"];
+  const current = signaturePositionV310();
+  setSignaturePositionV310(order[(order.indexOf(current) + 1) % order.length] || "right");
+}
+
+function renderSignatureChangeControlsV310(signature){
+  const buttons = [];
+  if(String(signature || "") !== DEFAULT_SIGNATURE_V310){
+    buttons.push(`<button type="button" class="signatureResetV310" title="Vrátit podpis" data-signature-reset-v310="text"><span>✍</span><b>↩</b></button>`);
+  }
+  if(signaturePositionV310() !== "right"){
+    buttons.push(`<button type="button" class="signatureResetV310" title="Vrátit pozici podpisu" data-signature-reset-v310="position"><span>↔</span><b>↩</b></button>`);
+  }
+  return buttons.length ? `<div class="signatureChangeToolsV310" contenteditable="false">${buttons.join("")}</div>` : "";
+}
+
 const RESPONSIBLE_STORE_V300 = "tydenni_plan_responsible_overrides_v213";
 const RESPONSIBLE_ORIG_V300 = "tydenni_plan_responsible_originals_v213";
 const PLAN_CELL_STORE_V302 = "tydenni_plan_cell_overrides_v302";
@@ -739,6 +773,7 @@ const PLAN_DELETE_STORE_V302 = "tydenni_plan_deleted_rows_v302";
 const PLAN_STYLE_STORE_V307 = "tydenni_plan_cell_styles_v307";
 const PLAN_RICH_STORE_V308 = "tydenni_plan_rich_html_v308";
 const SIGNATURE_POS_STORE_V310 = "tydenni_plan_signature_position_v310";
+const DEFAULT_SIGNATURE_V310 = "Mgr. MgA. Bc. Michal Jančík";
 
 function loadJsonMapV300(key){
   try{
@@ -1000,14 +1035,6 @@ function cellTextV300(cell){
   return String(clone?.textContent || "").replace(/\s+/g," ").trim();
 }
 
-function timeChoiceValuesV307(){
-  const out = [];
-  for(let h=0; h<=23; h++){
-    for(let m=0; m<60; m+=5) out.push(`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`);
-  }
-  return out;
-}
-
 function timeChoiceHourValuesV310(){
   return Array.from({length:24}, (_, h)=>String(h).padStart(2,"0"));
 }
@@ -1148,34 +1175,6 @@ function ensureTimeChoicePopoverV307(){
   return pop;
 }
 
-function ensureRowInspectorV310(){
-  let pop = document.querySelector(".rowInspectorV310");
-  if(pop) return pop;
-  pop = document.createElement("div");
-  pop.className = "rowInspectorV310";
-  pop.hidden = true;
-  pop.innerHTML = `
-    <button type="button" data-inspector-action-v310="time">Čas</button>
-    <button type="button" data-inspector-action-v310="title">Akce</button>
-    <button type="button" data-inspector-action-v310="person">Osoba</button>
-    <button type="button" data-inspector-action-v310="delete">−</button>
-  `;
-  document.body.appendChild(pop);
-  return pop;
-}
-
-function showRowInspectorV310(row){
-  if(!row || row.closest(".timeChoicePopoverV307,.planStylePopoverV307")) return;
-  const key = row.querySelector("[data-plan-row-key-v302]")?.dataset.planRowKeyV302 || "";
-  if(!key) return;
-  const pop = ensureRowInspectorV310();
-  pop.dataset.keyV310 = key;
-  const rect = row.getBoundingClientRect();
-  pop.style.left = `${Math.min(window.scrollX + window.innerWidth - 210, Math.max(8, rect.left + window.scrollX + rect.width - 190))}px`;
-  pop.style.top = `${Math.max(8, rect.top + window.scrollY - 30)}px`;
-  pop.hidden = false;
-}
-
 function setTimeChoiceModeV307(pop, mode){
   pop.querySelectorAll("[data-time-mode-v307]").forEach(btn=>btn.classList.toggle("active", btn.dataset.timeModeV307 === mode));
   pop.querySelectorAll("[data-time-panel-v307]").forEach(panel=>{ panel.hidden = panel.dataset.timePanelV307 !== mode; });
@@ -1267,8 +1266,10 @@ function showTimeChoicePopoverV307(cell){
 }
 
 function saveTimeChoiceV307(key, time, lesson){
-  if(updateManualEventTimeV309(key, time, lesson)){
+  const manualUid = updateManualEventTimeV309(key, time, lesson);
+  if(manualUid){
     renderPreview();
+    focusManualTitleByUidV310(manualUid);
     return;
   }
   const overrides = loadJsonMapV300(PLAN_CELL_STORE_V302);
@@ -1399,7 +1400,6 @@ function initPlanEditingV302(){
   preview.__planEditingV302 = true;
   const stylePopover = ensurePlanStylePopoverV307();
   const timePopover = ensureTimeChoicePopoverV307();
-  const rowInspector = ensureRowInspectorV310();
 
   stylePopover.addEventListener("input", event=>{
     if(event.target.closest("[data-style-size-v307]")) savePlanStyleFromPopoverV307(stylePopover);
@@ -1499,24 +1499,6 @@ function initPlanEditingV302(){
     }
   });
 
-  rowInspector.addEventListener("click", event=>{
-    const action = event.target.closest("[data-inspector-action-v310]")?.dataset.inspectorActionV310;
-    const key = rowInspector.dataset.keyV310;
-    if(!action || !key) return;
-    const rowCells = Array.from(preview.querySelectorAll(`[data-plan-row-key-v302="${CSS.escape(key)}"]`));
-    if(action === "time"){
-      const timeCell = rowCells.find(cell=>cell.dataset.planFieldV302 === "time");
-      if(timeCell) showTimeChoicePopoverV307(timeCell);
-    }else if(action === "title" || action === "person"){
-      const cell = rowCells.find(item=>item.dataset.planFieldV302 === action);
-      cell?.focus();
-    }else if(action === "delete"){
-      const deleteButton = preview.querySelector(`[data-plan-delete-key-v302="${CSS.escape(key)}"]`);
-      deleteButton?.click();
-    }
-    if(action !== "time") rowInspector.hidden = true;
-  });
-
   stylePopover.addEventListener("mouseenter", ()=>clearTimeout(stylePopover.__hideTimerV307));
   stylePopover.addEventListener("mouseleave", ()=>{
     clearTimeout(stylePopover.__hideTimerV307);
@@ -1607,11 +1589,6 @@ function initPlanEditingV302(){
   });
 
   preview.addEventListener("click", event=>{
-    if(!event.target.closest(".planStylePopoverV307,.timeChoicePopoverV307,.rowInspectorV310")){
-      const row = event.target.closest(".planTable tbody tr");
-      if(row && !event.target.closest("button")) showRowInspectorV310(row);
-    }
-
     const noteAdd = event.target.closest("[data-add-note-v310]");
     if(noteAdd){
       event.preventDefault();
@@ -1626,11 +1603,34 @@ function initPlanEditingV302(){
       return;
     }
 
-    const signaturePos = event.target.closest("[data-signature-pos-v310]");
-    if(signaturePos){
+    const noteReset = event.target.closest("[data-note-reset-v310]");
+    if(noteReset){
       event.preventDefault();
       event.stopPropagation();
-      setSignaturePositionV310(signaturePos.dataset.signaturePosV310);
+      saveInlineWeekNoteV310("");
+      renderPreview();
+      return;
+    }
+
+    const signatureReset = event.target.closest("[data-signature-reset-v310]");
+    if(signatureReset){
+      event.preventDefault();
+      event.stopPropagation();
+      if(signatureReset.dataset.signatureResetV310 === "text"){
+        const input = document.getElementById("signature");
+        if(input) input.value = DEFAULT_SIGNATURE_V310;
+      }else{
+        localStorage.setItem(SIGNATURE_POS_STORE_V310, "right");
+      }
+      renderPreview();
+      return;
+    }
+
+    const signatureBox = event.target.closest(".podpisFinal41");
+    if(signatureBox && !event.target.closest("[data-signature-name-v310],button")){
+      event.preventDefault();
+      event.stopPropagation();
+      cycleSignaturePositionV310();
       return;
     }
 
@@ -1781,14 +1781,10 @@ function renderPreview(){
       <tbody>${rows.join("")}</tbody>
     </table>
     <div class="podpisFinal41 podpisPos-${escapeHtml(signaturePos)}V310">
-      <div class="signatureToolsV310" contenteditable="false">
-        <button type="button" data-signature-pos-v310="left" title="Podpis vlevo">↤</button>
-        <button type="button" data-signature-pos-v310="center" title="Podpis na střed">↔</button>
-        <button type="button" data-signature-pos-v310="right" title="Podpis vpravo">↦</button>
-      </div>
       <div class="podpisFinal41Box">
-        <span class="podpisFinal41Name" contenteditable="true" spellcheck="false" data-signature-name-v310="1">${escapeHtml(signature || "Mgr. MgA. Bc. Michal Jančík")}</span><span class="podpisFinal41Role">, ředitel školy</span>
+        <span class="podpisFinal41Name" contenteditable="true" spellcheck="false" data-signature-name-v310="1">${escapeHtml(signature || DEFAULT_SIGNATURE_V310)}</span><span class="podpisFinal41Role">, ředitel školy</span>
       </div>
+      ${renderSignatureChangeControlsV310(signature || DEFAULT_SIGNATURE_V310)}
     </div>
     <div class="createdDateV184">Vytvořeno: ${todayTextV300()}</div>
 
@@ -1804,6 +1800,47 @@ function initTopWeekControlsV310(){
   wrapper.dataset.topWeekV310 = "1";
   wrapper.classList.add("topWeekControlsV310");
   actions.insertAdjacentElement("afterbegin", wrapper);
+}
+
+function syncTopViewButtonsV311(){
+  document.querySelectorAll("[data-top-view-toggle-v311]").forEach(btn=>{
+    const key = btn.dataset.topViewToggleV311;
+    const active = key === "weekend"
+      ? localStorage.getItem("tydenni_plan_hide_weekend_v184") === "1"
+      : localStorage.getItem("tydenni_plan_hide_created_v184") === "1";
+    btn.classList.toggle("active", active);
+  });
+}
+
+function initTopViewControlsV311(){
+  const actions = document.querySelector(".top .actions");
+  if(!actions || document.querySelector(".topViewControlsV311")) return;
+  const wrap = document.createElement("div");
+  wrap.className = "topViewControlsV311";
+  wrap.innerHTML = `
+    <button type="button" data-top-view-toggle-v311="weekend" title="Skrýt / zobrazit víkend">So/Ne</button>
+    <button type="button" data-top-view-toggle-v311="created" title="Skrýt / zobrazit datum vytvoření">Datum</button>
+  `;
+  actions.insertAdjacentElement("afterbegin", wrap);
+  wrap.addEventListener("click", event=>{
+    const btn = event.target.closest("[data-top-view-toggle-v311]");
+    if(!btn) return;
+    const key = btn.dataset.topViewToggleV311;
+    if(key === "weekend"){
+      const next = localStorage.getItem("tydenni_plan_hide_weekend_v184") === "1" ? "0" : "1";
+      localStorage.setItem("tydenni_plan_hide_weekend_v184", next);
+      const input = document.getElementById("hideWeekendV184");
+      if(input) input.checked = next === "1";
+    }else{
+      const next = localStorage.getItem("tydenni_plan_hide_created_v184") === "1" ? "0" : "1";
+      localStorage.setItem("tydenni_plan_hide_created_v184", next);
+      const input = document.getElementById("hideCreatedDateV184");
+      if(input) input.checked = next === "1";
+    }
+    applyDisplayBodyClassesV300();
+    syncTopViewButtonsV311();
+  });
+  syncTopViewButtonsV311();
 }
 
 function saveData(){
@@ -1931,7 +1968,9 @@ initResponsibleEditingV300();
 initPlanEditingV302();
 setDefaultWeek();
 initTopWeekControlsV310();
+initTopViewControlsV311();
 setTimeout(initTopWeekControlsV310, 0);
+setTimeout(initTopViewControlsV311, 0);
 calendarEvents = [];
 calendarSignatureV300 = "";
 loadCalendarFromUrl({ initial: true });

@@ -93,8 +93,9 @@ body{
 }
 
 .layout{
-  grid-template-columns:390px minmax(0,1fr)!important;
-  gap:18px!important;
+  grid-template-columns:300px minmax(0,920px)!important;
+  justify-content:center!important;
+  gap:22px!important;
 }
 
 .panel{
@@ -812,11 +813,11 @@ body{
 }
 
 .previewPage .dateColV308{
-  width:18%!important;
+  width:21%!important;
 }
 
 .previewPage .timeColV308{
-  width:76px!important;
+  width:68px!important;
 }
 
 .previewPage .personColV308{
@@ -912,8 +913,8 @@ body{
 .previewPage .timeCell{
   color:#334155!important;
   font-variant-numeric:tabular-nums!important;
-  width:76px!important;
-  max-width:76px!important;
+  width:68px!important;
+  max-width:68px!important;
   padding-left:3px!important;
   padding-right:2px!important;
 }
@@ -1312,9 +1313,11 @@ body{
 }
 
 .timeChoiceListV307 button.active{
+  border:1px solid rgba(21,90,148,.62)!important;
   background:linear-gradient(180deg,#1f6faf,#155a94)!important;
   color:#fff!important;
-  box-shadow:0 5px 12px rgba(21,90,148,.18)!important;
+  box-shadow:0 5px 12px rgba(21,90,148,.22)!important;
+  transform:scale(1.02)!important;
 }
 
 .timeChoicePanelV307[hidden]{
@@ -1346,40 +1349,51 @@ body{
   justify-content:flex-end!important;
 }
 
-.signatureToolsV310{
-  position:absolute!important;
-  top:-22px!important;
-  right:0!important;
-  display:flex!important;
-  gap:3px!important;
-  opacity:0!important;
-  transition:opacity .12s ease!important;
-}
-
-.podpisFinal41:hover .signatureToolsV310,
-.podpisFinal41:focus-within .signatureToolsV310{
-  opacity:1!important;
-}
-
-.signatureToolsV310 button{
-  width:22px!important;
-  height:18px!important;
-  min-height:18px!important;
-  padding:0!important;
-  border:1px solid rgba(15,23,42,.12)!important;
-  border-radius:999px!important;
-  background:#fff!important;
-  color:#155a94!important;
-  font-size:11px!important;
-  font-weight:800!important;
-  cursor:pointer!important;
-}
-
 .previewPage .podpisFinal41Box{
   min-width:58mm!important;
   padding-top:0!important;
   border-top:0!important;
   text-align:center!important;
+}
+
+.signatureChangeToolsV310{
+  position:absolute!important;
+  top:50%!important;
+  left:calc(100% + 8px)!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:3px!important;
+  transform:translateY(-50%)!important;
+}
+
+.signatureResetV310{
+  display:grid!important;
+  grid-template-columns:14px 10px!important;
+  align-items:center!important;
+  gap:1px!important;
+  width:30px!important;
+  height:19px!important;
+  min-height:19px!important;
+  padding:0 2px!important;
+  border:1px solid rgba(217,154,0,.36)!important;
+  border-radius:999px!important;
+  background:#fffaf0!important;
+  color:#8a4b00!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  line-height:1!important;
+  cursor:pointer!important;
+}
+
+.signatureResetV310 span{
+  display:grid!important;
+  place-items:center!important;
+  width:14px!important;
+  height:14px!important;
+  border-radius:50%!important;
+  background:#fff!important;
+  color:#155a94!important;
+  font-size:10px!important;
 }
 
 .previewPage .podpisFinal41Name{
@@ -1421,6 +1435,23 @@ body{
   cursor:pointer!important;
 }
 
+.planNoteWrapV310{
+  position:relative!important;
+  margin:2.5mm 0 2mm!important;
+}
+
+.previewPage .planNoteFinalV193,
+.planNoteInlineV310{
+  border:1px solid rgba(15,23,42,.08)!important;
+  border-left:1px solid rgba(15,23,42,.08)!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#172033!important;
+  padding:5px 8px!important;
+  font-size:9pt!important;
+  line-height:1.35!important;
+}
+
 .planNoteInlineV310{
   outline:none!important;
 }
@@ -1449,41 +1480,62 @@ body{
   font-size:12px!important;
 }
 
-.rowInspectorV310{
-  position:absolute!important;
-  z-index:999!important;
+.topViewControlsV311{
   display:flex!important;
   align-items:center!important;
-  gap:4px!important;
-  padding:4px!important;
-  border:1px solid rgba(15,23,42,.12)!important;
-  border-radius:999px!important;
-  background:rgba(255,255,255,.98)!important;
-  box-shadow:0 10px 24px rgba(15,23,42,.14)!important;
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
+  gap:5px!important;
 }
 
-.rowInspectorV310[hidden]{
-  display:none!important;
-}
-
-.rowInspectorV310 button{
-  min-height:24px!important;
-  padding:0 8px!important;
-  border:1px solid rgba(15,23,42,.1)!important;
-  border-radius:999px!important;
+.topViewControlsV311 button{
+  min-height:30px!important;
+  padding:6px 9px!important;
+  border:1px solid rgba(15,23,42,.08)!important;
+  border-radius:9px!important;
   background:#fff!important;
-  color:#172033!important;
-  font-size:11px!important;
+  color:#334155!important;
+  font-size:12px!important;
   font-weight:800!important;
   cursor:pointer!important;
 }
 
-.rowInspectorV310 button[data-inspector-action-v310="delete"]{
-  width:24px!important;
-  padding:0!important;
-  color:#991b1b!important;
-  background:#fff7f7!important;
+.topViewControlsV311 button.active{
+  border-color:rgba(21,90,148,.32)!important;
+  background:#eef6ff!important;
+  color:#155a94!important;
+}
+
+.noteResetV310{
+  position:absolute!important;
+  top:50%!important;
+  left:calc(100% + 8px)!important;
+  display:grid!important;
+  grid-template-columns:14px 10px!important;
+  align-items:center!important;
+  gap:1px!important;
+  width:30px!important;
+  height:19px!important;
+  min-height:19px!important;
+  padding:0 2px!important;
+  border:1px solid rgba(217,154,0,.36)!important;
+  border-radius:999px!important;
+  background:#fffaf0!important;
+  color:#8a4b00!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  line-height:1!important;
+  cursor:pointer!important;
+  transform:translateY(-50%)!important;
+}
+
+.noteResetV310 span{
+  display:grid!important;
+  place-items:center!important;
+  width:14px!important;
+  height:14px!important;
+  border-radius:50%!important;
+  background:#fff!important;
+  color:#155a94!important;
+  font-size:10px!important;
 }
 
 .previewPage td.responsibleCellV213:focus{
