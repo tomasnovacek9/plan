@@ -115,7 +115,7 @@
     getEl("manualDayV167").value = e.date || "";
     getEl("manualTitleV167").value = e.title || "";
     getEl("manualPersonV167").value = e.person || "";
-    if(getEl("manualStyleSizeV306")) getEl("manualStyleSizeV306").value = e.style?.size || "normal";
+    if(getEl("manualStyleSizeV306")) getEl("manualStyleSizeV306").value = e.style?.size || "10pt";
     if(getEl("manualStyleColorV306")) getEl("manualStyleColorV306").value = e.style?.color || "#172033";
     if(getEl("manualStyleBoldV306")) getEl("manualStyleBoldV306").checked = !!e.style?.bold;
 
@@ -156,7 +156,7 @@
     if(getEl("manualPersonV167")) getEl("manualPersonV167").value = "";
     if(getEl("manualFromV167")) getEl("manualFromV167").value = "";
     if(getEl("manualToV167")) getEl("manualToV167").value = "";
-    if(getEl("manualStyleSizeV306")) getEl("manualStyleSizeV306").value = "normal";
+    if(getEl("manualStyleSizeV306")) getEl("manualStyleSizeV306").value = "10pt";
     if(getEl("manualStyleColorV306")) getEl("manualStyleColorV306").value = "#172033";
     if(getEl("manualStyleBoldV306")) getEl("manualStyleBoldV306").checked = false;
   }
@@ -225,7 +225,7 @@
       e.from = from;
       e.to = to;
       e.style = {
-        size: getEl("manualStyleSizeV306")?.value || "normal",
+        size: getEl("manualStyleSizeV306")?.value || "10pt",
         color: getEl("manualStyleColorV306")?.value || "",
         bold: !!getEl("manualStyleBoldV306")?.checked
       };

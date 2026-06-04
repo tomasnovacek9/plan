@@ -139,9 +139,11 @@
       <label>Vzhled textu akce</label>
       <div class="manualStyleGridV306">
         <select id="manualStyleSizeV306" aria-label="Velikost textu">
-          <option value="normal">Velikost</option>
-          <option value="large">Větší</option>
-          <option value="xlarge">Největší</option>
+          <option value="9pt">9 b</option>
+          <option value="10pt" selected>10 b</option>
+          <option value="11pt">11 b</option>
+          <option value="12pt">12 b</option>
+          <option value="13pt">13 b</option>
         </select>
         <input id="manualStyleColorV306" type="color" value="#172033" aria-label="Barva textu">
         <label class="manualStyleBoldV306"><input id="manualStyleBoldV306" type="checkbox"> <span>B</span></label>
@@ -487,7 +489,7 @@
     const size = document.getElementById("manualStyleSizeV306");
     const color = document.getElementById("manualStyleColorV306");
     const bold = document.getElementById("manualStyleBoldV306");
-    if(size) size.value = style.size || "normal";
+    if(size) size.value = style.size || "10pt";
     if(color) color.value = style.color || "#172033";
     if(bold) bold.checked = !!style.bold;
     if(ev.from === "celý den"){

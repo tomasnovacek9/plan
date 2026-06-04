@@ -653,25 +653,27 @@ body{
 
 .manualStyleGridV306{
   display:grid!important;
-  grid-template-columns:1fr 34px 34px!important;
-  gap:5px!important;
+  grid-template-columns:72px 30px 30px!important;
+  gap:4px!important;
   align-items:center!important;
+  justify-content:start!important;
 }
 
 .manualStyleGridV306 input[type="color"]{
-  width:34px!important;
-  height:30px!important;
-  min-height:30px!important;
-  padding:3px!important;
+  width:30px!important;
+  height:28px!important;
+  min-height:28px!important;
+  padding:2px!important;
+  border-radius:999px!important;
 }
 
 .manualStyleBoldV306{
   display:grid!important;
   place-items:center!important;
-  height:30px!important;
+  height:28px!important;
   margin:0!important;
   border:1px solid rgba(15,23,42,.12)!important;
-  border-radius:8px!important;
+  border-radius:999px!important;
   background:#fff!important;
   cursor:pointer!important;
 }
@@ -683,7 +685,7 @@ body{
 }
 
 .manualStyleBoldV306 span{
-  font-size:13px!important;
+  font-size:12px!important;
   font-weight:900!important;
   color:#334155!important;
 }
@@ -805,6 +807,8 @@ body{
   background:linear-gradient(180deg,#f7fbff 0%,#eef6fd 100%)!important;
   color:#164e85!important;
   border-right:1px solid #d8e5f0!important;
+  text-align:center!important;
+  vertical-align:middle!important;
 }
 
 .previewPage .dayName{
@@ -846,85 +850,23 @@ body{
   white-space:nowrap!important;
 }
 
-.previewPage .hourDisplayV305{
-  display:inline-block!important;
-  max-width:100%!important;
-  min-height:0!important;
-  margin:0!important;
-  padding:1px 3px!important;
-  border:1px solid transparent!important;
-  border-radius:5px!important;
-  background:transparent!important;
+.previewPage .timeRangeEditV302,
+.previewPage .lessonEditV302{
+  display:inline!important;
+  min-height:1em!important;
+  padding:0 1px!important;
+  border-radius:3px!important;
   color:inherit!important;
-  font:inherit!important;
-  font-size:.92em!important;
-  font-weight:760!important;
-  line-height:1.15!important;
-  text-align:left!important;
+}
+
+.previewPage .timeRangeEditV302{
+  margin-right:4px!important;
   white-space:nowrap!important;
-  cursor:pointer!important;
-  box-shadow:none!important;
 }
 
-.previewPage .hourDisplayV305:hover,
-.previewPage .hourDisplayV305:focus-visible{
-  border-color:rgba(21,90,148,.22)!important;
-  background:#f8fbff!important;
-  outline:none!important;
-}
-
-.previewPage .hourPickerV305{
-  position:absolute!important;
-  top:calc(100% + 4px)!important;
-  left:0!important;
-  z-index:20!important;
-  display:grid!important;
-  grid-template-columns:1fr!important;
-  gap:2px!important;
-  width:43mm!important;
-  max-height:52mm!important;
-  overflow:auto!important;
-  padding:5px!important;
-  border:1px solid rgba(15,23,42,.12)!important;
-  border-radius:9px!important;
-  background:#fff!important;
-  box-shadow:0 12px 30px rgba(15,23,42,.16)!important;
-}
-
-.previewPage .hourPickerV305[hidden]{
-  display:none!important;
-}
-
-.previewPage .hourPickerV305 button{
-  display:grid!important;
-  grid-template-columns:42px 1fr!important;
-  gap:5px!important;
-  align-items:center!important;
-  min-height:24px!important;
-  padding:3px 5px!important;
-  border:0!important;
-  border-radius:6px!important;
-  background:transparent!important;
-  color:#172033!important;
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
-  font-size:10px!important;
-  text-align:left!important;
-  cursor:pointer!important;
-}
-
-.previewPage .hourPickerV305 button:hover,
-.previewPage .hourPickerV305 button:focus-visible{
-  background:#f1f7ff!important;
-  outline:none!important;
-}
-
-.previewPage .hourPickerV305 span{
-  color:#155a94!important;
-  font-weight:850!important;
-}
-
-.previewPage .hourPickerV305 strong{
-  color:#334155!important;
+.previewPage .lessonEditV302{
+  color:#64748b!important;
+  font-size:.88em!important;
   font-weight:650!important;
 }
 
@@ -969,19 +911,19 @@ body{
 
 .previewPage .planFieldResetV304{
   display:grid!important;
-  grid-template-columns:12px 10px!important;
+  grid-template-columns:18px 13px!important;
   align-items:center!important;
   gap:1px!important;
-  width:27px!important;
-  height:18px!important;
-  min-height:18px!important;
+  width:38px!important;
+  height:24px!important;
+  min-height:24px!important;
   padding:0 2px!important;
   border:1px solid rgba(217,154,0,.36)!important;
   border-radius:999px!important;
   background:#fffaf0!important;
   color:#8a4b00!important;
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
-  font-size:9px!important;
+  font-size:12px!important;
   font-weight:750!important;
   line-height:1!important;
   white-space:nowrap!important;
@@ -990,19 +932,19 @@ body{
 }
 
 .previewPage .planFieldResetV304 b{
-  font-size:9px!important;
+  font-size:13px!important;
   line-height:1!important;
 }
 
 .previewPage .planResetIconV305{
   display:grid!important;
   place-items:center!important;
-  width:12px!important;
-  height:12px!important;
+  width:18px!important;
+  height:18px!important;
   border-radius:50%!important;
   background:#fff!important;
   color:#155a94!important;
-  font-size:8px!important;
+  font-size:13px!important;
   font-weight:900!important;
   line-height:1!important;
 }
@@ -1022,10 +964,10 @@ body{
   z-index:5!important;
   display:grid!important;
   place-items:center!important;
-  width:16px!important;
-  height:16px!important;
-  min-width:16px!important;
-  min-height:16px!important;
+  width:22px!important;
+  height:22px!important;
+  min-width:22px!important;
+  min-height:22px!important;
   margin:0!important;
   padding:0!important;
   border:1px solid rgba(185,28,28,.26)!important;
@@ -1033,7 +975,7 @@ body{
   background:#fff7f7!important;
   color:#991b1b!important;
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
-  font-size:12px!important;
+  font-size:16px!important;
   font-weight:750!important;
   line-height:1!important;
   cursor:pointer!important;
