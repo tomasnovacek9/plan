@@ -145,7 +145,7 @@
           <option value="12pt">12 b</option>
           <option value="13pt">13 b</option>
         </select>
-        <input id="manualStyleColorV306" type="color" value="#172033" aria-label="Barva textu">
+        <label class="manualColorPickV307"><input id="manualStyleColorV306" type="color" value="#172033" aria-label="Barva textu"><span>A</span></label>
         <label class="manualStyleBoldV306"><input id="manualStyleBoldV306" type="checkbox"> <span>B</span></label>
       </div>
     `;
