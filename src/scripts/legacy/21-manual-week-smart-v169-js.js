@@ -70,6 +70,7 @@
     enhanceTimeInputs();
     removeDatePicker();
     ensureTimeWheel();
+    ensureManualStyleControlsV306();
     document.querySelector(".manualTimeSummaryV301")?.remove();
 
     let mode = document.querySelector(".manualQuickV169");
@@ -127,6 +128,26 @@
   function removeDatePicker(){
     document.querySelector(".manualDatePickerV301")?.remove();
     document.getElementById("manualDayV167")?.closest("div")?.classList.remove("manualDateNativeV301");
+  }
+
+  function ensureManualStyleControlsV306(){
+    const title = document.getElementById("manualTitleV167");
+    if(!title || document.querySelector(".manualStyleControlsV306")) return;
+    const wrap = document.createElement("div");
+    wrap.className = "manualStyleControlsV306 manualEventWideV167";
+    wrap.innerHTML = `
+      <label>Vzhled textu akce</label>
+      <div class="manualStyleGridV306">
+        <select id="manualStyleSizeV306" aria-label="Velikost textu">
+          <option value="normal">Velikost</option>
+          <option value="large">Větší</option>
+          <option value="xlarge">Největší</option>
+        </select>
+        <input id="manualStyleColorV306" type="color" value="#172033" aria-label="Barva textu">
+        <label class="manualStyleBoldV306"><input id="manualStyleBoldV306" type="checkbox"> <span>B</span></label>
+      </div>
+    `;
+    title.closest(".manualEventWideV167")?.insertAdjacentElement("afterend", wrap);
   }
 
   function timeValuesV301(){
@@ -462,6 +483,13 @@
     if(day) day.value = ev.date || "";
     if(title) title.value = ev.title || "";
     if(person) person.value = ev.person || "";
+    const style = ev.style || {};
+    const size = document.getElementById("manualStyleSizeV306");
+    const color = document.getElementById("manualStyleColorV306");
+    const bold = document.getElementById("manualStyleBoldV306");
+    if(size) size.value = style.size || "normal";
+    if(color) color.value = style.color || "#172033";
+    if(bold) bold.checked = !!style.bold;
     if(ev.from === "celý den"){
       if(type) type.value = "allDay";
       if(row) row.style.display = "none";

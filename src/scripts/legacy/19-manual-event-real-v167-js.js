@@ -207,6 +207,7 @@
         title:e.title,
         person:e.person,
         classes:e.classes || "",
+        style:e.style || {},
         manualV167:true,
         source:"manual"
       });
@@ -225,6 +226,11 @@
     const type = document.getElementById("manualTypeV167")?.value;
     const title = document.getElementById("manualTitleV167")?.value.trim();
     const person = document.getElementById("manualPersonV167")?.value.trim();
+    const style = {
+      size: document.getElementById("manualStyleSizeV306")?.value || "normal",
+      color: document.getElementById("manualStyleColorV306")?.value || "",
+      bold: !!document.getElementById("manualStyleBoldV306")?.checked
+    };
 
     if(!date || !title){
       alert("Vyplň prosím den a název akce.");
@@ -259,6 +265,7 @@
       title,
       person:person || "",
       classes:"",
+      style,
       manual:true
     });
 
@@ -272,6 +279,9 @@
     document.getElementById("manualPersonV167").value = "";
     document.getElementById("manualFromV167").value = "";
     document.getElementById("manualToV167").value = "";
+    if(document.getElementById("manualStyleSizeV306")) document.getElementById("manualStyleSizeV306").value = "normal";
+    if(document.getElementById("manualStyleColorV306")) document.getElementById("manualStyleColorV306").value = "#172033";
+    if(document.getElementById("manualStyleBoldV306")) document.getElementById("manualStyleBoldV306").checked = false;
 
     run();
   }
