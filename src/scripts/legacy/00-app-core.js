@@ -452,10 +452,6 @@ function addPreviewManualRowV308(dateKey){
   window.manualEventsV167 = list;
   mergeManualEventsV300();
   renderPreview();
-  requestAnimationFrame(()=>{
-    const timeCell = document.querySelector(`[data-plan-row-key-v302*="${CSS.escape(uid)}"][data-plan-field-v302="time"]`);
-    if(timeCell) showTimeChoicePopoverV307(timeCell);
-  });
 }
 
 function eventSortMinutesV300(value){
@@ -737,30 +733,31 @@ function renderPlanNoteSlotV310(message){
   return `<button type="button" class="planNoteAddV310" data-add-note-v310="1">+ Poznámka do plánu</button>`;
 }
 
-function signaturePositionV310(){
-  const value = localStorage.getItem(SIGNATURE_POS_STORE_V310) || "right";
-  return /^(left|center|right)$/.test(value) ? value : "right";
+function signatureRoleInputV312(){
+  let input = document.getElementById("signatureRoleV312");
+  if(input) return input;
+
+  input = document.createElement("input");
+  input.type = "hidden";
+  input.id = "signatureRoleV312";
+  input.value = DEFAULT_SIGNATURE_ROLE_V312;
+  const signature = document.getElementById("signature");
+  if(signature?.parentElement) signature.insertAdjacentElement("afterend", input);
+  else document.body.appendChild(input);
+  return input;
 }
 
-function setSignaturePositionV310(value){
-  if(!/^(left|center|right)$/.test(value)) return;
-  localStorage.setItem(SIGNATURE_POS_STORE_V310, value);
-  renderPreview();
+function signatureRoleValueV312(){
+  return signatureRoleInputV312().value || DEFAULT_SIGNATURE_ROLE_V312;
 }
 
-function cycleSignaturePositionV310(){
-  const order = ["right", "center", "left"];
-  const current = signaturePositionV310();
-  setSignaturePositionV310(order[(order.indexOf(current) + 1) % order.length] || "right");
-}
-
-function renderSignatureChangeControlsV310(signature){
+function renderSignatureChangeControlsV310(signature, role){
   const buttons = [];
   if(String(signature || "") !== DEFAULT_SIGNATURE_V310){
     buttons.push(`<button type="button" class="signatureResetV310" title="Vrátit podpis" data-signature-reset-v310="text"><span>✍</span><b>↩</b></button>`);
   }
-  if(signaturePositionV310() !== "right"){
-    buttons.push(`<button type="button" class="signatureResetV310" title="Vrátit pozici podpisu" data-signature-reset-v310="position"><span>↔</span><b>↩</b></button>`);
+  if(String(role || "") !== DEFAULT_SIGNATURE_ROLE_V312){
+    buttons.push(`<button type="button" class="signatureResetV310" title="Vrátit pozici" data-signature-reset-v310="role"><span>⌂</span><b>↩</b></button>`);
   }
   return buttons.length ? `<div class="signatureChangeToolsV310" contenteditable="false">${buttons.join("")}</div>` : "";
 }
@@ -771,8 +768,8 @@ const PLAN_CELL_STORE_V302 = "tydenni_plan_cell_overrides_v302";
 const PLAN_DELETE_STORE_V302 = "tydenni_plan_deleted_rows_v302";
 const PLAN_STYLE_STORE_V307 = "tydenni_plan_cell_styles_v307";
 const PLAN_RICH_STORE_V308 = "tydenni_plan_rich_html_v308";
-const SIGNATURE_POS_STORE_V310 = "tydenni_plan_signature_position_v310";
 const DEFAULT_SIGNATURE_V310 = "Mgr. MgA. Bc. Michal Jančík";
+const DEFAULT_SIGNATURE_ROLE_V312 = "ředitel školy";
 
 function loadJsonMapV300(key){
   try{
@@ -1268,7 +1265,6 @@ function saveTimeChoiceV307(key, time, lesson){
   const manualUid = updateManualEventTimeV309(key, time, lesson);
   if(manualUid){
     renderPreview();
-    focusManualTitleByUidV310(manualUid);
     return;
   }
   const overrides = loadJsonMapV300(PLAN_CELL_STORE_V302);
@@ -1559,6 +1555,13 @@ function initPlanEditingV302(){
       return;
     }
 
+    const signatureRole = event.target.closest("[data-signature-role-v312]");
+    if(signatureRole){
+      signatureRoleInputV312().value = cellTextV300(signatureRole);
+      renderPreview();
+      return;
+    }
+
     const cell = event.target.closest(".planEditableCellV302");
     if(!cell) return;
 
@@ -1619,17 +1622,9 @@ function initPlanEditingV302(){
         const input = document.getElementById("signature");
         if(input) input.value = DEFAULT_SIGNATURE_V310;
       }else{
-        localStorage.setItem(SIGNATURE_POS_STORE_V310, "right");
+        signatureRoleInputV312().value = DEFAULT_SIGNATURE_ROLE_V312;
       }
       renderPreview();
-      return;
-    }
-
-    const signatureBox = event.target.closest(".podpisFinal41");
-    if(signatureBox && !event.target.closest("[data-signature-name-v310],button")){
-      event.preventDefault();
-      event.stopPropagation();
-      cycleSignaturePositionV310();
       return;
     }
 
@@ -1707,11 +1702,11 @@ function renderPreview(){
   const from=document.getElementById("weekFrom").value;
   const to=document.getElementById("weekTo").value;
   const signature=document.getElementById("signature").value;
+  const signatureRole=signatureRoleValueV312();
   const weekDates=getWeekDates();
   const planMessage=currentWeekNoteV174();
   const messageHtml = renderPlanNoteSlotV310(planMessage);
   const repeatClasses = repeatClassMapV300(events);
-  const signaturePos = signaturePositionV310();
 
   const rows=[];
   let rowIndex = 0;
@@ -1779,11 +1774,12 @@ function renderPreview(){
       </thead>
       <tbody>${rows.join("")}</tbody>
     </table>
-    <div class="podpisFinal41 podpisPos-${escapeHtml(signaturePos)}V310">
+    <div class="podpisFinal41">
       <div class="podpisFinal41Box">
-        <span class="podpisFinal41Name" contenteditable="true" spellcheck="false" data-signature-name-v310="1">${escapeHtml(signature || DEFAULT_SIGNATURE_V310)}</span><span class="podpisFinal41Role">, ředitel školy</span>
+        <span class="podpisFinal41Name" contenteditable="true" spellcheck="false" data-signature-name-v310="1">${escapeHtml(signature || DEFAULT_SIGNATURE_V310)}</span>
+        <span class="podpisFinal41Role" contenteditable="true" spellcheck="false" data-signature-role-v312="1">${escapeHtml(signatureRole || DEFAULT_SIGNATURE_ROLE_V312)}</span>
       </div>
-      ${renderSignatureChangeControlsV310(signature || DEFAULT_SIGNATURE_V310)}
+      ${renderSignatureChangeControlsV310(signature || DEFAULT_SIGNATURE_V310, signatureRole || DEFAULT_SIGNATURE_ROLE_V312)}
     </div>
     <div class="createdDateV184">Vytvořeno: ${todayTextV300()}</div>
 
@@ -1847,6 +1843,7 @@ function saveData(){
     weekFrom:document.getElementById("weekFrom").value,
     weekTo:document.getElementById("weekTo").value,
     signature:document.getElementById("signature").value,
+    signatureRole:signatureRoleValueV312(),
     events,longEvents
   };
   localStorage.setItem("tydenniPlanData",JSON.stringify(data));
@@ -1859,6 +1856,7 @@ function loadData(){
   document.getElementById("weekFrom").value=data.weekFrom||"";
   document.getElementById("weekTo").value=data.weekTo||"";
   document.getElementById("signature").value=data.signature||"";
+  signatureRoleInputV312().value=data.signatureRole||DEFAULT_SIGNATURE_ROLE_V312;
   events=data.events||[];
   longEvents=data.longEvents||[];
   renderAll();

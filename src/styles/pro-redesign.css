@@ -93,9 +93,13 @@ body{
 }
 
 .layout{
-  grid-template-columns:300px minmax(0,920px)!important;
+  grid-template-columns:minmax(0,980px)!important;
   justify-content:center!important;
-  gap:22px!important;
+  gap:0!important;
+}
+
+.layout > .panel{
+  display:none!important;
 }
 
 .panel{
@@ -772,6 +776,7 @@ body{
   border-radius:0!important;
   background:#fff!important;
   box-shadow:none!important;
+  padding:0!important;
 }
 
 .previewPage{
@@ -803,41 +808,41 @@ body{
 
 /* Modern table finish: keeps the original columns, row structure and fine type. */
 .previewPage .planTable{
-  border:1px solid #d7e3ee!important;
-  border-radius:14px!important;
+  table-layout:fixed!important;
+  border:1px solid #dfe7ef!important;
+  border-radius:10px!important;
   border-collapse:separate!important;
   border-spacing:0!important;
-  overflow:visible!important;
+  overflow:hidden!important;
   background:#fff!important;
-  box-shadow:0 1px 0 rgba(15,23,42,.04),0 12px 30px rgba(15,23,42,.06)!important;
+  box-shadow:0 1px 2px rgba(15,23,42,.04)!important;
 }
 
 .previewPage .dateColV308{
-  width:21%!important;
-}
-
-.previewPage .timeColV308{
-  width:68px!important;
-}
-
-.previewPage .personColV308{
   width:18%!important;
 }
 
+.previewPage .timeColV308{
+  width:23mm!important;
+}
+
+.previewPage .personColV308{
+  width:19%!important;
+}
+
 .previewPage .planTable th{
-  padding-top:7px!important;
-  padding-bottom:7px!important;
-  background:linear-gradient(180deg,#fbfdff,#f2f7fc)!important;
-  color:#155a94!important;
-  border-right:1px solid #e3edf6!important;
-  border-bottom:2px solid rgba(21,90,148,.24)!important;
+  padding:7px 8px!important;
+  background:#f8fafc!important;
+  color:#164e85!important;
+  border-right:0!important;
+  border-bottom:1px solid #dce7f1!important;
   font-weight:850!important;
   letter-spacing:0!important;
 }
 
 .previewPage .planTable td{
-  border-top:1px solid #edf3f8!important;
-  border-right:1px solid #f0f5f9!important;
+  border-top:1px solid #edf2f7!important;
+  border-right:0!important;
   color:#1f2937!important;
   background:#fff!important;
 }
@@ -856,9 +861,9 @@ body{
 
 .previewPage .dayCell{
   position:relative!important;
-  background:linear-gradient(180deg,#f7fbff 0%,#eef6fd 100%)!important;
+  background:#f8fbff!important;
   color:#164e85!important;
-  border-right:1px solid #d8e5f0!important;
+  border-right:1px solid #dde8f2!important;
   text-align:center!important;
   vertical-align:middle!important;
 }
@@ -913,10 +918,12 @@ body{
 .previewPage .timeCell{
   color:#334155!important;
   font-variant-numeric:tabular-nums!important;
-  width:68px!important;
-  max-width:68px!important;
-  padding-left:3px!important;
-  padding-right:2px!important;
+  width:23mm!important;
+  min-width:23mm!important;
+  max-width:23mm!important;
+  padding-left:4px!important;
+  padding-right:4px!important;
+  text-align:center!important;
 }
 
 .previewPage .eventCell{
@@ -1337,18 +1344,6 @@ body{
   position:relative!important;
 }
 
-.previewPage .podpisPos-leftV310{
-  justify-content:flex-start!important;
-}
-
-.previewPage .podpisPos-centerV310{
-  justify-content:center!important;
-}
-
-.previewPage .podpisPos-rightV310{
-  justify-content:flex-end!important;
-}
-
 .previewPage .podpisFinal41Box{
   min-width:58mm!important;
   padding-top:0!important;
@@ -1397,20 +1392,25 @@ body{
 }
 
 .previewPage .podpisFinal41Name{
+  display:block!important;
   color:#0f172a!important;
   font-size:10.5pt!important;
   font-weight:760!important;
   outline:none!important;
 }
 
-.previewPage .podpisFinal41Name:focus{
+.previewPage .podpisFinal41Name:focus,
+.previewPage .podpisFinal41Role:focus{
   box-shadow:inset 0 -1px 0 rgba(21,90,148,.35)!important;
 }
 
 .previewPage .podpisFinal41Role{
+  display:block!important;
+  margin-top:1mm!important;
   color:#64748b!important;
   font-size:10pt!important;
   font-weight:520!important;
+  outline:none!important;
 }
 
 .previewPage .createdDateV184{
