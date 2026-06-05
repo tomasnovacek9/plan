@@ -22,6 +22,7 @@ body{
 
 .top{
   grid-template-columns:auto minmax(0,1fr) auto!important;
+  align-items:start!important;
   gap:16px!important;
   width:100%!important;
   max-width:980px!important;
@@ -54,15 +55,40 @@ body{
 }
 
 .top .subtitle{
-  margin-top:4px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  margin-top:6px!important;
+  padding:4px 8px!important;
+  border:1px solid rgba(22,101,52,.12)!important;
+  border-radius:999px!important;
+  background:#ecfdf3!important;
   color:#64748b!important;
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
-  font-size:13px!important;
-  font-weight:560!important;
+  font-size:12px!important;
+  font-weight:720!important;
+}
+
+.top .subtitle::before{
+  content:"✓"!important;
+  display:grid!important;
+  place-items:center!important;
+  width:15px!important;
+  height:15px!important;
+  border-radius:50%!important;
+  background:#16a34a!important;
+  color:#fff!important;
+  font-size:10px!important;
+  font-weight:900!important;
+  line-height:1!important;
 }
 
 .actions{
-  gap:8px!important;
+  display:grid!important;
+  grid-template-columns:auto auto auto!important;
+  align-items:start!important;
+  justify-content:end!important;
+  gap:6px!important;
 }
 
 .actions .secondary,
@@ -835,7 +861,7 @@ body{
 }
 
 .previewPage .timeColV308{
-  width:27mm!important;
+  width:31mm!important;
 }
 
 .previewPage .personColV308{
@@ -939,9 +965,9 @@ body{
 .previewPage .timeCell{
   color:#334155!important;
   font-variant-numeric:tabular-nums!important;
-  width:27mm!important;
-  min-width:27mm!important;
-  max-width:27mm!important;
+  width:31mm!important;
+  min-width:31mm!important;
+  max-width:31mm!important;
   padding-left:5px!important;
   padding-right:4px!important;
   text-align:left!important;
@@ -1225,11 +1251,17 @@ body{
   color:#155a94!important;
 }
 
+.planStylePopoverV307 .planColorPresetsV309 button.active{
+  background:var(--preset)!important;
+  box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(15,23,42,.32)!important;
+  transform:scale(1.04)!important;
+}
+
 .timeChoicePopoverV307{
   flex-direction:column!important;
   align-items:stretch!important;
   gap:7px!important;
-  width:258px!important;
+  width:242px!important;
 }
 
 .timeChoiceTabsV307,
@@ -1259,7 +1291,7 @@ body{
 
 .timeSplitListsV310{
   display:grid!important;
-  grid-template-columns:1fr 1fr!important;
+  grid-template-columns:42px 48px!important;
   gap:5px!important;
   min-width:0!important;
 }
@@ -1512,6 +1544,9 @@ body{
   align-items:center!important;
   gap:5px!important;
   margin:0!important;
+  order:4!important;
+  grid-column:1 / -1!important;
+  justify-self:end!important;
 }
 
 .topWeekControlsV310 > div{
@@ -1528,11 +1563,14 @@ body{
 
 .topViewControlsV311{
   display:flex!important;
+  flex-direction:column!important;
   align-items:center!important;
   gap:5px!important;
+  order:1!important;
 }
 
 .topViewControlsV311 button{
+  width:64px!important;
   min-height:30px!important;
   padding:6px 9px!important;
   border:1px solid rgba(15,23,42,.08)!important;
@@ -1548,6 +1586,10 @@ body{
   border-color:rgba(21,90,148,.32)!important;
   background:#eef6ff!important;
   color:#155a94!important;
+}
+
+.actions > button{
+  order:2!important;
 }
 
 .webCopyrightV167{

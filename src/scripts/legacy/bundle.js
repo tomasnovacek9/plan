@@ -728,8 +728,11 @@ function saveInlineWeekNoteV310(value){
 
 function renderPlanNoteSlotV310(message){
   const txt = String(message || "").trim();
+  const key = weekNoteKeyV174() || "week-note";
+  const rich = planRichHtmlValueV308(`note||${key}`, "note");
+  const content = rich || escapeHtml(txt).replace(/\n/g,"<br>");
   if(txt){
-    return `<div class="planNoteWrapV310"><div class="planNoteFinalV193 planNoteInlineV310" contenteditable="true" spellcheck="false" data-inline-note-v310="1">${escapeHtml(txt).replace(/\n/g,"<br>")}</div><button type="button" class="noteResetV310" title="Vrátit poznámku" data-note-reset-v310="1"><span>📝</span><b>↩</b></button></div>`;
+    return `<div class="planNoteWrapV310"><div class="planNoteFinalV193 planNoteInlineV310 planEditableCellV302" contenteditable="true" spellcheck="false" data-inline-note-v310="1" data-plan-row-key-v302="note||${escapeHtml(key)}" data-plan-field-v302="note" data-plan-original-v302="${escapeHtml(txt)}">${content}</div><button type="button" class="noteResetV310" title="Vrátit poznámku" data-note-reset-v310="1"><span>📝</span><b>↩</b></button></div>`;
   }
   return `<button type="button" class="planNoteAddV310" data-add-note-v310="1">+ Poznámka do plánu</button>`;
 }
@@ -765,7 +768,7 @@ function renderSignatureChangeControlsV310(signature, role){
     buttons.push(`<button type="button" class="signatureResetV310" title="Vrátit podpis" data-signature-reset-v310="text"><span>✍</span><b>↩</b></button>`);
   }
   if(String(role || "") !== DEFAULT_SIGNATURE_ROLE_V312){
-    buttons.push(`<button type="button" class="signatureResetV310" title="Vrátit pozici" data-signature-reset-v310="role"><span>⌂</span><b>↩</b></button>`);
+    buttons.push(`<button type="button" class="signatureResetV310" title="Vrátit pozici" data-signature-reset-v310="role"><span>P</span><b>↩</b></button>`);
   }
   return buttons.length ? `<div class="signatureChangeToolsV310" contenteditable="false">${buttons.join("")}</div>` : "";
 }
@@ -915,6 +918,9 @@ function applyStyleToSelectionV308(cell, style){
     after.selectNodeContents(span);
     after.collapse(false);
     selection?.addRange(after);
+    const saved = document.createRange();
+    saved.selectNodeContents(span);
+    cell.__savedStyleRangeV308 = saved;
     return true;
   }catch(e){
     return false;
@@ -1409,6 +1415,10 @@ function initPlanEditingV302(){
   const stylePopover = ensurePlanStylePopoverV307();
   const timePopover = ensureTimeChoicePopoverV307();
 
+  stylePopover.addEventListener("mousedown", event=>{
+    if(!event.target.closest("select")) event.preventDefault();
+  });
+
   stylePopover.addEventListener("input", event=>{
     if(event.target.closest("[data-style-size-v307]")) savePlanStyleFromPopoverV307(stylePopover);
   });
@@ -1558,6 +1568,7 @@ function initPlanEditingV302(){
     const inlineNote = event.target.closest("[data-inline-note-v310]");
     if(inlineNote){
       saveInlineWeekNoteV310(cellTextV300(inlineNote));
+      saveRichHtmlV308(inlineNote.dataset.planRowKeyV302, "note", cleanEditableHtmlV308(inlineNote));
       return;
     }
 
@@ -1610,10 +1621,14 @@ function initPlanEditingV302(){
       event.preventDefault();
       event.stopPropagation();
       const note = document.createElement("div");
-      note.className = "planNoteFinalV193 planNoteInlineV310";
+      const key = weekNoteKeyV174() || "week-note";
+      note.className = "planNoteFinalV193 planNoteInlineV310 planEditableCellV302";
       note.contentEditable = "true";
       note.spellcheck = false;
       note.dataset.inlineNoteV310 = "1";
+      note.dataset.planRowKeyV302 = `note||${key}`;
+      note.dataset.planFieldV302 = "note";
+      note.dataset.planOriginalV302 = "";
       noteAdd.replaceWith(note);
       note.focus();
       return;
@@ -1623,6 +1638,8 @@ function initPlanEditingV302(){
     if(noteReset){
       event.preventDefault();
       event.stopPropagation();
+      const note = event.target.closest(".planNoteWrapV310")?.querySelector("[data-inline-note-v310]");
+      if(note?.dataset.planRowKeyV302) saveRichHtmlV308(note.dataset.planRowKeyV302, "note", "");
       saveInlineWeekNoteV310("");
       renderPreview();
       return;
