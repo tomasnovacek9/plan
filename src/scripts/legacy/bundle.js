@@ -1066,12 +1066,13 @@ function ensurePlanStylePopoverV307(){
     <select data-style-size-v307 aria-label="Velikost textu">
       ${planStyleSizeOptionsV307()}
     </select>
-    <input data-style-color-v307 type="color" value="#172033" aria-label="Barva textu">
     <div class="planColorPresetsV309" aria-label="Rychlé barvy">
       <button type="button" data-style-color-preset-v309="#172033" style="--preset:#172033" aria-label="Tmavá"></button>
       <button type="button" data-style-color-preset-v309="#155a94" style="--preset:#155a94" aria-label="Modrá"></button>
       <button type="button" data-style-color-preset-v309="#b91c1c" style="--preset:#b91c1c" aria-label="Červená"></button>
       <button type="button" data-style-color-preset-v309="#047857" style="--preset:#047857" aria-label="Zelená"></button>
+      <button type="button" data-style-color-preset-v309="#a16207" style="--preset:#a16207" aria-label="Žlutá"></button>
+      <button type="button" data-style-color-preset-v309="#6d28d9" style="--preset:#6d28d9" aria-label="Fialová"></button>
     </div>
     <button type="button" data-style-bold-v307 aria-label="Tučné">B</button>
   `;
@@ -1096,7 +1097,10 @@ function showPlanStylePopoverV307(cell){
   pop.dataset.keyV307 = cell.dataset.planRowKeyV302;
   pop.dataset.fieldV307 = cell.dataset.planFieldV302;
   pop.querySelector("[data-style-size-v307]").value = style.size || "";
-  pop.querySelector("[data-style-color-v307]").value = style.color || "#172033";
+  pop.dataset.colorV307 = style.color || "";
+  pop.querySelectorAll("[data-style-color-preset-v309]").forEach(btn=>{
+    btn.classList.toggle("active", !!style.color && btn.dataset.styleColorPresetV309 === style.color);
+  });
   pop.querySelector("[data-style-bold-v307]").classList.toggle("active", !!style.bold);
   pop.hidden = false;
   positionPopoverV307(pop, cell);
@@ -1108,7 +1112,7 @@ function savePlanStyleFromPopoverV307(pop){
   if(!key || !field) return;
   const style = {
     size: pop.querySelector("[data-style-size-v307]")?.value || "",
-    color: pop.querySelector("[data-style-color-v307]")?.value || "",
+    color: pop.dataset.colorV307 || "",
     bold: pop.querySelector("[data-style-bold-v307]")?.classList.contains("active") || false
   };
   const cell = document.querySelector(`[data-plan-row-key-v302="${CSS.escape(key)}"][data-plan-field-v302="${CSS.escape(field)}"]`);
@@ -1151,15 +1155,15 @@ function ensureTimeChoicePopoverV307(){
       <div class="timeSplitGroupV310">
         <label>Od</label>
         <div class="timeSplitListsV310">
-          <div class="timeChoiceListV307" data-time-hour-v310="from">${hours}</div>
-          <div class="timeChoiceListV307 minuteChoiceListV310" data-time-minute-v310="from">${minutes}</div>
+          <div class="timeChoiceMiniGroupV312"><span>hod.</span><div class="timeChoiceListV307 hourChoiceListV312" data-time-hour-v310="from">${hours}</div></div>
+          <div class="timeChoiceMiniGroupV312"><span>min.</span><div class="timeChoiceListV307 minuteChoiceListV310" data-time-minute-v310="from">${minutes}</div></div>
         </div>
       </div>
       <div class="timeSplitGroupV310">
         <label>Do</label>
         <div class="timeSplitListsV310">
-          <div class="timeChoiceListV307" data-time-hour-v310="to">${hours}</div>
-          <div class="timeChoiceListV307 minuteChoiceListV310" data-time-minute-v310="to">${minutes}</div>
+          <div class="timeChoiceMiniGroupV312"><span>hod.</span><div class="timeChoiceListV307 hourChoiceListV312" data-time-hour-v310="to">${hours}</div></div>
+          <div class="timeChoiceMiniGroupV312"><span>min.</span><div class="timeChoiceListV307 minuteChoiceListV310" data-time-minute-v310="to">${minutes}</div></div>
         </div>
       </div>
       <button type="button" data-time-apply-v307>Vybrat čas</button>
@@ -1410,15 +1414,17 @@ function initPlanEditingV302(){
   });
 
   stylePopover.addEventListener("change", event=>{
-    if(event.target.closest("[data-style-size-v307],[data-style-color-v307]")) savePlanStyleFromPopoverV307(stylePopover);
+    if(event.target.closest("[data-style-size-v307]")) savePlanStyleFromPopoverV307(stylePopover);
   });
 
   stylePopover.addEventListener("click", event=>{
     const preset = event.target.closest("[data-style-color-preset-v309]");
     if(preset){
       const color = preset.dataset.styleColorPresetV309 || "";
-      const input = stylePopover.querySelector("[data-style-color-v307]");
-      if(input) input.value = color;
+      stylePopover.dataset.colorV307 = color;
+      stylePopover.querySelectorAll("[data-style-color-preset-v309]").forEach(btn=>{
+        btn.classList.toggle("active", btn === preset);
+      });
       savePlanStyleFromPopoverV307(stylePopover);
       return;
     }
@@ -1507,7 +1513,6 @@ function initPlanEditingV302(){
   stylePopover.addEventListener("mouseleave", ()=>{
     clearTimeout(stylePopover.__hideTimerV307);
     stylePopover.__hideTimerV307 = setTimeout(()=>{
-      if(document.activeElement?.matches?.("[data-style-color-v307]")) return;
       stylePopover.hidden = true;
     }, 260);
   });
