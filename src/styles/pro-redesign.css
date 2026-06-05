@@ -777,6 +777,7 @@ body{
   background:#fff!important;
   box-shadow:none!important;
   padding:0!important;
+  overflow:visible!important;
 }
 
 .previewPage{
@@ -808,22 +809,21 @@ body{
 
 /* Modern table finish: keeps the original columns, row structure and fine type. */
 .previewPage .planTable{
-  table-layout:fixed!important;
   border:1px solid #dfe7ef!important;
   border-radius:10px!important;
   border-collapse:separate!important;
   border-spacing:0!important;
-  overflow:hidden!important;
+  overflow:visible!important;
   background:#fff!important;
   box-shadow:0 1px 2px rgba(15,23,42,.04)!important;
 }
 
 .previewPage .dateColV308{
-  width:18%!important;
+  width:28mm!important;
 }
 
 .previewPage .timeColV308{
-  width:23mm!important;
+  width:30mm!important;
 }
 
 .previewPage .personColV308{
@@ -918,12 +918,12 @@ body{
 .previewPage .timeCell{
   color:#334155!important;
   font-variant-numeric:tabular-nums!important;
-  width:23mm!important;
-  min-width:23mm!important;
-  max-width:23mm!important;
-  padding-left:4px!important;
-  padding-right:4px!important;
-  text-align:center!important;
+  width:30mm!important;
+  min-width:30mm!important;
+  max-width:30mm!important;
+  padding-left:5px!important;
+  padding-right:6px!important;
+  text-align:right!important;
 }
 
 .previewPage .eventCell{
@@ -950,6 +950,7 @@ body{
   vertical-align:top!important;
   white-space:nowrap!important;
   cursor:pointer!important;
+  text-align:right!important;
 }
 
 .previewPage .timeRangeEditV302,
@@ -1392,7 +1393,6 @@ body{
 }
 
 .previewPage .podpisFinal41Name{
-  display:block!important;
   color:#0f172a!important;
   font-size:10.5pt!important;
   font-weight:760!important;
@@ -1405,8 +1405,6 @@ body{
 }
 
 .previewPage .podpisFinal41Role{
-  display:block!important;
-  margin-top:1mm!important;
   color:#64748b!important;
   font-size:10pt!important;
   font-weight:520!important;
