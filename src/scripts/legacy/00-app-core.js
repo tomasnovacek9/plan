@@ -97,7 +97,10 @@ function updateTopEduStatusV312(state, text, detail){
   const applyStatus = () => {
     badge.classList.remove("eduState-connectedV312", "eduState-loadingV312", "eduState-errorV312");
     badge.classList.add(`eduState-${normalized}V312`);
-    badge.textContent = text || (normalized === "loading" ? "EduPage načítání" : normalized === "error" ? "EduPage nepřipojeno" : "EduPage připojeno");
+    const labelText = text || (normalized === "loading" ? "EduPage načítání" : normalized === "error" ? "EduPage nepřipojeno" : "EduPage připojeno");
+    badge.dataset.eduLabel = labelText;
+    badge.setAttribute("aria-label", labelText);
+    if(badge.textContent) badge.textContent = "";
     badge.title = detail || "";
     if(normalized !== "loading") topEduLoadingStartedV314 = 0;
   };

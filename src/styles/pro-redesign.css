@@ -67,7 +67,10 @@ body{
   box-sizing:border-box!important;
   width:152px!important;
   min-width:152px!important;
+  max-width:152px!important;
   height:23px!important;
+  min-height:23px!important;
+  max-height:23px!important;
   margin-top:3px!important;
   padding:2px 6px!important;
   border:1px solid rgba(22,101,52,.14)!important;
@@ -75,10 +78,12 @@ body{
   background:#ecfdf3!important;
   color:#166534!important;
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
-  font-size:12px!important;
+  font-size:0!important;
   font-weight:720!important;
   line-height:1!important;
   white-space:nowrap!important;
+  overflow:hidden!important;
+  contain:layout paint style!important;
 }
 
 .top .subtitle::before{
@@ -96,6 +101,20 @@ body{
   font-size:10px!important;
   font-weight:900!important;
   line-height:1!important;
+}
+
+.top .subtitle::after{
+  content:attr(data-edu-label)!important;
+  grid-column:2!important;
+  display:block!important;
+  min-width:0!important;
+  overflow:hidden!important;
+  color:inherit!important;
+  font-size:12px!important;
+  font-weight:720!important;
+  line-height:1!important;
+  text-overflow:clip!important;
+  white-space:nowrap!important;
 }
 
 @keyframes eduLoadingSpinV314{
