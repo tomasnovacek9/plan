@@ -166,15 +166,20 @@ body{
   contain:layout paint!important;
 }
 
+.top .actions button{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
+  font-size:11px!important;
+  font-weight:720!important;
+  line-height:1!important;
+  text-align:center!important;
+}
+
 .actions .secondary,
 .actions .primary,
 .actions .danger{
   min-height:26px!important;
   border-radius:8px!important;
   padding:3px 7px!important;
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
-  font-size:11px!important;
-  font-weight:720!important;
   box-shadow:none!important;
   transition:transform .16s ease, box-shadow .16s ease, background-color .16s ease, border-color .16s ease!important;
 }
@@ -1666,7 +1671,6 @@ body{
   min-height:28px!important;
   padding:3px 8px!important;
   border-radius:8px!important;
-  font-size:11px!important;
 }
 
 .topWeekControlsV310 > div:last-child button:first-child{
@@ -1693,8 +1697,6 @@ body{
   border-radius:8px!important;
   background:#fff!important;
   color:#334155!important;
-  font-size:11px!important;
-  font-weight:800!important;
   cursor:pointer!important;
 }
 
@@ -1794,8 +1796,10 @@ body{
   }
 
   .top .actions{
+    margin-left:auto!important;
     grid-column:1 / -1!important;
-    width:100%!important;
+    width:366px!important;
+    max-width:100%!important;
     justify-content:end!important;
   }
 
@@ -1835,7 +1839,13 @@ body{
     grid-template-columns:58px minmax(0,1fr) minmax(0,1fr)!important;
     grid-template-rows:28px 28px!important;
     width:100%!important;
+    margin-left:0!important;
     gap:3px!important;
+  }
+
+  .top .actions button{
+    font-size:10px!important;
+    font-weight:720!important;
   }
 
   .actions .outputPrintPdfV313,
@@ -1844,7 +1854,6 @@ body{
     min-width:0!important;
     padding-left:6px!important;
     padding-right:6px!important;
-    font-size:10px!important;
   }
 
   .topWeekControlsV310 > div:last-child button:first-child,
@@ -1853,6 +1862,6 @@ body{
     min-width:0!important;
     padding-left:3px!important;
     padding-right:3px!important;
-    font-size:9.5px!important;
+    font-size:10px!important;
   }
 }
