@@ -159,6 +159,13 @@ body{
   align-items:stretch!important;
   justify-content:end!important;
   gap:5px!important;
+  width:366px!important;
+  height:61px!important;
+  contain:layout paint!important;
+}
+
+body:not(.topControlsReadyV315) .top .actions{
+  visibility:hidden!important;
 }
 
 .actions .secondary,
@@ -1829,6 +1836,7 @@ body{
   .top .actions{
     grid-template-columns:58px minmax(0,1fr) minmax(0,1fr)!important;
     grid-template-rows:28px 28px!important;
+    width:100%!important;
     gap:3px!important;
   }
 

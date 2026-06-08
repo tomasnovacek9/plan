@@ -1891,7 +1891,11 @@ function syncTopViewButtonsV311(){
 
 function initTopViewControlsV311(){
   const actions = document.querySelector(".top .actions");
-  if(!actions || document.querySelector(".topViewControlsV311")) return;
+  if(!actions) return;
+  if(document.querySelector(".topViewControlsV311")){
+    document.body.classList.add("topControlsReadyV315");
+    return;
+  }
   const wrap = document.createElement("div");
   wrap.className = "topViewControlsV311";
   wrap.innerHTML = `
@@ -1918,6 +1922,7 @@ function initTopViewControlsV311(){
     syncTopViewButtonsV311();
   });
   syncTopViewButtonsV311();
+  document.body.classList.add("topControlsReadyV315");
 }
 
 function saveData(){
