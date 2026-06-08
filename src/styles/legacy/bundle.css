@@ -2083,11 +2083,11 @@ body.printingV113 .timeCell{
   font-size:12px!important;
 }
 
-/* Sloupec Hodina malinko širší */
+/* Sloupec Hodina pevně užší */
 .previewPage .timeCell{
-  width:32mm!important;
-  min-width:32mm!important;
-  max-width:32mm!important;
+  width:28mm!important;
+  min-width:28mm!important;
+  max-width:28mm!important;
 }
 
 /* Poznámka k týdnu */
@@ -3303,4 +3303,3 @@ body.pdfExportingV205 th:nth-child(3),body.pdfExportingV205 td:nth-child(3){widt
 body.pdfExportingV205 th:nth-child(4),body.pdfExportingV205 td:nth-child(4){width:25%!important}
 body.pdfExportingV205 td:nth-child(2),body.pdfExportingV205 th:nth-child(2){white-space:normal!important;overflow-wrap:break-word!important}
 @media print{.responsibleUndoV213,.responsibleHintV213{display:none!important}}
-

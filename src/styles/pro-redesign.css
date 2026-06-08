@@ -65,9 +65,9 @@ body{
   align-items:center!important;
   gap:6px!important;
   box-sizing:border-box!important;
-  width:152px!important;
-  min-width:152px!important;
-  max-width:152px!important;
+  width:94px!important;
+  min-width:94px!important;
+  max-width:94px!important;
   height:23px!important;
   min-height:23px!important;
   max-height:23px!important;
@@ -84,9 +84,8 @@ body{
   white-space:nowrap!important;
   overflow:hidden!important;
   contain:layout paint style!important;
-  opacity:0!important;
-  pointer-events:none!important;
-  transition:opacity .16s ease, background-color .16s ease, border-color .16s ease, color .16s ease!important;
+  opacity:1!important;
+  transition:background-color .16s ease, border-color .16s ease, color .16s ease!important;
 }
 
 .top .subtitle::before{
@@ -130,7 +129,6 @@ body{
   border-color:rgba(180,83,9,.22)!important;
   background:#fff7ed!important;
   color:#9a3412!important;
-  opacity:1!important;
 }
 
 .top .subtitle.eduState-loadingV312::before{
@@ -148,7 +146,6 @@ body{
   border-color:rgba(185,28,28,.22)!important;
   background:#fef2f2!important;
   color:#991b1b!important;
-  opacity:1!important;
 }
 
 .top .subtitle.eduState-errorV312::before{
@@ -167,10 +164,6 @@ body{
   width:366px!important;
   height:61px!important;
   contain:layout paint!important;
-}
-
-body:not(.topControlsReadyV315) .top .actions{
-  visibility:hidden!important;
 }
 
 .actions .secondary,
@@ -983,7 +976,7 @@ body:not(.topControlsReadyV315) .top .actions{
 }
 
 .previewPage .timeColV308{
-  width:34mm!important;
+  width:28mm!important;
 }
 
 .previewPage .personColV308{
@@ -1087,9 +1080,9 @@ body:not(.topControlsReadyV315) .top .actions{
 .previewPage .timeCell{
   color:#334155!important;
   font-variant-numeric:tabular-nums!important;
-  width:34mm!important;
-  min-width:34mm!important;
-  max-width:34mm!important;
+  width:28mm!important;
+  min-width:28mm!important;
+  max-width:28mm!important;
   padding-left:5px!important;
   padding-right:5px!important;
   text-align:left!important;
