@@ -84,6 +84,9 @@ body{
   white-space:nowrap!important;
   overflow:hidden!important;
   contain:layout paint style!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  transition:opacity .16s ease, background-color .16s ease, border-color .16s ease, color .16s ease!important;
 }
 
 .top .subtitle::before{
@@ -127,6 +130,7 @@ body{
   border-color:rgba(180,83,9,.22)!important;
   background:#fff7ed!important;
   color:#9a3412!important;
+  opacity:1!important;
 }
 
 .top .subtitle.eduState-loadingV312::before{
@@ -144,6 +148,7 @@ body{
   border-color:rgba(185,28,28,.22)!important;
   background:#fef2f2!important;
   color:#991b1b!important;
+  opacity:1!important;
 }
 
 .top .subtitle.eduState-errorV312::before{
