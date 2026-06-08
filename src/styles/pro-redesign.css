@@ -60,10 +60,10 @@ body{
   gap:6px!important;
   margin-top:6px!important;
   padding:4px 8px!important;
-  border:1px solid rgba(22,101,52,.12)!important;
+  border:1px solid rgba(22,101,52,.14)!important;
   border-radius:999px!important;
   background:#ecfdf3!important;
-  color:#64748b!important;
+  color:#166534!important;
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
   font-size:12px!important;
   font-weight:720!important;
@@ -81,6 +81,30 @@ body{
   font-size:10px!important;
   font-weight:900!important;
   line-height:1!important;
+}
+
+.top .subtitle.eduState-loadingV312{
+  border-color:rgba(180,83,9,.22)!important;
+  background:#fff7ed!important;
+  color:#9a3412!important;
+}
+
+.top .subtitle.eduState-loadingV312::before{
+  content:"↻"!important;
+  background:#f59e0b!important;
+  color:#fff!important;
+}
+
+.top .subtitle.eduState-errorV312{
+  border-color:rgba(185,28,28,.22)!important;
+  background:#fef2f2!important;
+  color:#991b1b!important;
+}
+
+.top .subtitle.eduState-errorV312::before{
+  content:"!"!important;
+  background:#dc2626!important;
+  color:#fff!important;
 }
 
 .actions{
@@ -857,11 +881,11 @@ body{
 }
 
 .previewPage .dateColV308{
-  width:24mm!important;
+  width:20mm!important;
 }
 
 .previewPage .timeColV308{
-  width:31mm!important;
+  width:28mm!important;
 }
 
 .previewPage .personColV308{
@@ -869,7 +893,7 @@ body{
 }
 
 .previewPage .planTable th{
-  padding:7px 8px!important;
+  padding:4px 6px!important;
   background:#f8fafc!important;
   color:#164e85!important;
   border-right:1px solid #e5edf5!important;
@@ -965,9 +989,9 @@ body{
 .previewPage .timeCell{
   color:#334155!important;
   font-variant-numeric:tabular-nums!important;
-  width:31mm!important;
-  min-width:31mm!important;
-  max-width:31mm!important;
+  width:28mm!important;
+  min-width:28mm!important;
+  max-width:28mm!important;
   padding-left:5px!important;
   padding-right:4px!important;
   text-align:left!important;
@@ -1565,19 +1589,19 @@ body{
   display:flex!important;
   flex-direction:column!important;
   align-items:center!important;
-  gap:5px!important;
+  gap:3px!important;
   order:1!important;
 }
 
 .topViewControlsV311 button{
-  width:64px!important;
-  min-height:30px!important;
-  padding:6px 9px!important;
+  width:44px!important;
+  min-height:24px!important;
+  padding:3px 6px!important;
   border:1px solid rgba(15,23,42,.08)!important;
-  border-radius:9px!important;
+  border-radius:8px!important;
   background:#fff!important;
   color:#334155!important;
-  font-size:12px!important;
+  font-size:11px!important;
   font-weight:800!important;
   cursor:pointer!important;
 }
@@ -1660,6 +1684,20 @@ body{
 }
 
 @media(max-width:1050px){
+  .top{
+    grid-template-columns:auto minmax(0,1fr)!important;
+  }
+
+  .top .actions{
+    grid-column:1 / -1!important;
+    width:100%!important;
+    justify-content:start!important;
+  }
+
+  .topWeekControlsV310{
+    justify-self:start!important;
+  }
+
   .panel{
     position:static!important;
     height:auto!important;

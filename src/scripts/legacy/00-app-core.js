@@ -69,6 +69,7 @@ function setCalendarInfo(){
 
 function setCalendarBadgeV300(state, text, detail){
   const holder = document.getElementById("calendarInfo");
+  updateTopEduStatusV312(state, text, detail);
   if(!holder) return;
 
   let badge = holder.querySelector(".eduBadgeLockV89");
@@ -85,9 +86,24 @@ function setCalendarBadgeV300(state, text, detail){
   if(detail) badge.title = detail;
 }
 
+function updateTopEduStatusV312(state, text, detail){
+  const badge = document.querySelector(".top .subtitle");
+  if(!badge) return;
+  const normalized = state || "connected";
+  badge.classList.remove("eduState-connectedV312", "eduState-loadingV312", "eduState-errorV312");
+  badge.classList.add(`eduState-${normalized}V312`);
+  badge.textContent = text || (normalized === "loading" ? "EduPage se načítá" : normalized === "error" ? "EduPage nepřipojeno" : "Živě propojeno s EduPage");
+  badge.title = detail || "";
+}
+
 function setPreviewStatusV300(title, detail){
   const preview = document.getElementById("preview");
   if(!preview) return;
+
+  if(/načítám|nacitam|loading/i.test(String(title || ""))){
+    preview.innerHTML = "";
+    return;
+  }
 
   preview.innerHTML = `
     <div class="calendarRequiredV300">
@@ -1842,8 +1858,8 @@ function initTopViewControlsV311(){
   const wrap = document.createElement("div");
   wrap.className = "topViewControlsV311";
   wrap.innerHTML = `
-    <button type="button" data-top-view-toggle-v311="weekend" title="Skrýt / zobrazit víkend">So/Ne</button>
-    <button type="button" data-top-view-toggle-v311="created" title="Skrýt / zobrazit datum vytvoření">Datum</button>
+    <button type="button" data-top-view-toggle-v311="weekend" title="Skrýt / zobrazit víkend" aria-label="Skrýt / zobrazit víkend">So/Ne</button>
+    <button type="button" data-top-view-toggle-v311="created" title="Skrýt / zobrazit datum vytvoření" aria-label="Skrýt / zobrazit datum vytvoření">⌗</button>
   `;
   actions.insertAdjacentElement("afterbegin", wrap);
   wrap.addEventListener("click", event=>{
