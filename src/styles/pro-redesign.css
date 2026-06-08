@@ -83,6 +83,12 @@ body{
   line-height:1!important;
 }
 
+@keyframes eduLoadingSpinV314{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
 .top .subtitle.eduState-loadingV312{
   border-color:rgba(180,83,9,.22)!important;
   background:#fff7ed!important;
@@ -90,9 +96,13 @@ body{
 }
 
 .top .subtitle.eduState-loadingV312::before{
-  content:"↻"!important;
-  background:#f59e0b!important;
-  color:#fff!important;
+  content:""!important;
+  width:13px!important;
+  height:13px!important;
+  border:2px solid rgba(154,52,18,.22)!important;
+  border-top-color:#f59e0b!important;
+  background:transparent!important;
+  animation:eduLoadingSpinV314 .75s linear infinite!important;
 }
 
 .top .subtitle.eduState-errorV312{
@@ -184,8 +194,8 @@ body{
 }
 
 .actions .outputPrintPdfV313::before{
-  content:"⎙"!important;
-  font-size:14px!important;
+  content:"🖨"!important;
+  font-size:13px!important;
   line-height:1!important;
 }
 
@@ -1625,18 +1635,10 @@ body{
   grid-row:2!important;
 }
 
-.topWeekControlsV310 > div:last-child button:first-child::before{
-  content:"‹ "!important;
-}
-
 .topWeekControlsV310 > div:last-child button:last-child{
   order:6!important;
   grid-column:3!important;
   grid-row:2!important;
-}
-
-.topWeekControlsV310 > div:last-child button:last-child::after{
-  content:" ›"!important;
 }
 
 .topViewControlsV311{
