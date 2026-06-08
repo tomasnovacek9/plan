@@ -3,6 +3,11 @@
   The app chrome can change freely; the weekly plan keeps its original structure.
 */
 
+html{
+  scrollbar-gutter:stable!important;
+  overflow-y:scroll!important;
+}
+
 body{
   --brand-blue:#155a94;
   --brand-blue-2:#1f6faf;
@@ -55,7 +60,8 @@ body{
 }
 
 .top .subtitle{
-  display:inline-flex!important;
+  display:inline-grid!important;
+  grid-template-columns:13px 1fr!important;
   align-items:center!important;
   gap:6px!important;
   box-sizing:border-box!important;
@@ -79,6 +85,7 @@ body{
   content:"✓"!important;
   display:grid!important;
   place-items:center!important;
+  grid-column:1!important;
   flex:0 0 13px!important;
   box-sizing:border-box!important;
   width:13px!important;
