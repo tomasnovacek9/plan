@@ -1859,7 +1859,7 @@ function initTopViewControlsV311(){
   wrap.className = "topViewControlsV311";
   wrap.innerHTML = `
     <button type="button" data-top-view-toggle-v311="weekend" title="Skrýt / zobrazit víkend" aria-label="Skrýt / zobrazit víkend">So/Ne</button>
-    <button type="button" data-top-view-toggle-v311="created" title="Skrýt / zobrazit datum vytvoření" aria-label="Skrýt / zobrazit datum vytvoření">⌗</button>
+    <button type="button" data-top-view-toggle-v311="created" title="Skrýt / zobrazit datum vytvoření" aria-label="Skrýt / zobrazit datum vytvoření">Datum</button>
   `;
   actions.insertAdjacentElement("afterbegin", wrap);
   wrap.addEventListener("click", event=>{
