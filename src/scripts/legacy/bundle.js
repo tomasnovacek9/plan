@@ -1842,11 +1842,11 @@ function initTopWeekControlsV310(){
   wrapper.classList.add("topWeekControlsV310");
   const weekButtons = wrapper.querySelectorAll("div:last-child button");
   if(weekButtons[0]){
-    weekButtons[0].textContent = "Předchozí";
+    weekButtons[0].textContent = "Předchozí týden";
     weekButtons[0].title = "Předchozí týden";
   }
   if(weekButtons[1]){
-    weekButtons[1].textContent = "Další";
+    weekButtons[1].textContent = "Další týden";
     weekButtons[1].title = "Další týden";
   }
   actions.insertAdjacentElement("afterbegin", wrapper);
