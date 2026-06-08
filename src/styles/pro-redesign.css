@@ -979,11 +979,11 @@ body{
 }
 
 .previewPage .dateColV308{
-  width:20mm!important;
+  width:19.5mm!important;
 }
 
 .previewPage .timeColV308{
-  width:28mm!important;
+  width:28.6mm!important;
 }
 
 .previewPage .personColV308{
@@ -1003,8 +1003,7 @@ body{
 .previewPage .planTable td{
   border-top:1px solid #edf2f7!important;
   border-right:1px solid #eef3f8!important;
-  color:#1f2937!important;
-  background:#fff!important;
+  color:#1f2937;
 }
 
 .previewPage .planTable th:last-child,
@@ -1012,15 +1011,19 @@ body{
   border-right:0!important;
 }
 
-.previewPage .planTable tbody tr:nth-child(even) td:not(.dayCell){
+.previewPage .planTable tbody tr:nth-child(even) td:not(.dayCell):not(.eventCell){
   background:#fff!important;
 }
 
-.previewPage .planTable tbody tr:hover td:not(.dayCell){
+.previewPage .planTable tbody tr:hover td:not(.dayCell):not(.eventCell){
   background:#f6fbff!important;
 }
 
-.previewPage .planTable tbody tr:has(.dayAddRowV308:hover) td:not(.dayCell){
+.previewPage .planTable tbody tr:has(.dayAddRowV308:hover) td:not(.dayCell):not(.eventCell){
+  background:#fff!important;
+}
+
+.previewPage .planTable tbody tr:has(.dayCell:hover) td:not(.dayCell):not(.eventCell){
   background:#fff!important;
 }
 
@@ -1087,20 +1090,20 @@ body{
 .previewPage .timeCell{
   color:#334155!important;
   font-variant-numeric:tabular-nums!important;
-  width:28mm!important;
-  min-width:28mm!important;
-  max-width:28mm!important;
+  width:28.6mm!important;
+  min-width:28.6mm!important;
+  max-width:28.6mm!important;
   padding-left:5px!important;
   padding-right:5px!important;
   text-align:left!important;
 }
 
 .previewPage .eventCell{
-  color:#172033!important;
+  color:#172033;
 }
 
 .previewPage .personCell{
-  color:#334155!important;
+  color:#334155;
   position:relative!important;
 }
 
@@ -1283,6 +1286,47 @@ body{
   outline:none!important;
 }
 
+.manualRowControlsV316{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  justify-content:flex-end!important;
+  align-items:center!important;
+  gap:4px!important;
+  margin-top:5px!important;
+}
+
+.manualRowControlsV316 button{
+  min-height:20px!important;
+  padding:2px 7px!important;
+  border:1px solid rgba(15,23,42,.12)!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  color:#334155!important;
+  font-size:10.5px!important;
+  font-weight:750!important;
+  line-height:1!important;
+  cursor:pointer!important;
+}
+
+.manualRowControlsV316 .planRowDeleteV302{
+  position:static!important;
+  display:inline-grid!important;
+  opacity:1!important;
+  transform:none!important;
+  width:20px!important;
+  height:20px!important;
+  min-width:20px!important;
+  padding:0!important;
+  border-radius:50%!important;
+  color:#991b1b!important;
+}
+
+.previewPage .planTable tr:hover .manualRowControlsV316 .planRowDeleteV302,
+.previewPage .planTable tr:focus-within .manualRowControlsV316 .planRowDeleteV302{
+  opacity:1!important;
+  transform:none!important;
+}
+
 .planStylePopoverV307,
 .timeChoicePopoverV307{
   position:absolute!important;
@@ -1382,8 +1426,8 @@ body{
 .timeChoicePopoverV307{
   flex-direction:column!important;
   align-items:stretch!important;
-  gap:7px!important;
-  width:242px!important;
+  gap:8px!important;
+  width:310px!important;
 }
 
 .timeChoiceTabsV307,
@@ -1394,7 +1438,10 @@ body{
 }
 
 .timeChoicePanelV307{
-  align-items:flex-end!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  align-items:end!important;
+  gap:8px!important;
 }
 
 .timeSplitGroupV310{
@@ -1413,14 +1460,14 @@ body{
 
 .timeSplitListsV310{
   display:grid!important;
-  grid-template-columns:42px 48px!important;
-  gap:5px!important;
+  grid-template-columns:minmax(52px,1fr) minmax(52px,1fr)!important;
+  gap:6px!important;
   min-width:0!important;
 }
 
 .timeChoiceMiniGroupV312{
   display:grid!important;
-  grid-template-rows:auto 66px!important;
+  grid-template-rows:auto 88px!important;
   gap:3px!important;
   min-width:0!important;
 }
@@ -1449,7 +1496,7 @@ body{
 
 .timeChoiceListGroupV307{
   display:grid!important;
-  grid-template-rows:auto 62px!important;
+  grid-template-rows:auto 88px!important;
   gap:3px!important;
   min-width:0!important;
   flex:1 1 0!important;
@@ -1462,7 +1509,7 @@ body{
 }
 
 .timeChoiceListV307{
-  height:66px!important;
+  height:88px!important;
   overflow:auto!important;
   padding:6px 3px!important;
   border:1px solid rgba(15,23,42,.08)!important;
@@ -1483,8 +1530,8 @@ body{
 
 .timeChoiceListV307 button{
   width:100%!important;
-  height:18px!important;
-  min-height:18px!important;
+  height:22px!important;
+  min-height:22px!important;
   margin:0 0 2px!important;
   padding:0 4px!important;
   border:0!important;
@@ -1535,6 +1582,7 @@ body{
 }
 
 .timeChoicePanelV307 > button{
+  grid-column:1 / -1!important;
   color:#fff!important;
   border-color:rgba(21,90,148,.45)!important;
   background:linear-gradient(180deg,#1f6faf,#155a94)!important;

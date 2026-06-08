@@ -422,7 +422,7 @@ const MANUAL_EVENTS_STORE_V300 = "tydenni_plan_manual_events_v167";
 
 function loadManualEventsV300(){
   try{
-    const data = JSON.parse(localStorage.getItem(MANUAL_EVENTS_STORE_V300) || "[]");
+    const data = JSON.parse(localStorage.getItem(scopedStorageKeyV316(MANUAL_EVENTS_STORE_V300)) || "[]");
     return Array.isArray(data) ? data : [];
   }catch(e){
     return [];
@@ -430,7 +430,7 @@ function loadManualEventsV300(){
 }
 
 function saveManualEventsV308(list){
-  try{ localStorage.setItem(MANUAL_EVENTS_STORE_V300, JSON.stringify(Array.isArray(list) ? list : [])); }catch(e){}
+  try{ localStorage.setItem(scopedStorageKeyV316(MANUAL_EVENTS_STORE_V300), JSON.stringify(Array.isArray(list) ? list : [])); }catch(e){}
 }
 
 function manualUidFromPlanKeyV309(key){
@@ -788,7 +788,7 @@ function signatureRoleInputV312(){
   input = document.createElement("input");
   input.type = "hidden";
   input.id = "signatureRoleV312";
-  input.value = localStorage.getItem(SIGNATURE_ROLE_STORE_V312) || DEFAULT_SIGNATURE_ROLE_V312;
+  input.value = localStorage.getItem(scopedStorageKeyV316(SIGNATURE_ROLE_STORE_V312)) || DEFAULT_SIGNATURE_ROLE_V312;
   const signature = document.getElementById("signature");
   if(signature?.parentElement) signature.insertAdjacentElement("afterend", input);
   else document.body.appendChild(input);
@@ -799,11 +799,25 @@ function signatureRoleValueV312(){
   return signatureRoleInputV312().value || DEFAULT_SIGNATURE_ROLE_V312;
 }
 
+function saveSignatureTextV316(value){
+  const text = String(value || "").trim();
+  const input = document.getElementById("signature");
+  if(input) input.value = text || DEFAULT_SIGNATURE_V310;
+  if(text && text !== DEFAULT_SIGNATURE_V310) localStorage.setItem(scopedStorageKeyV316(SIGNATURE_STORE_V316), text);
+  else localStorage.removeItem(scopedStorageKeyV316(SIGNATURE_STORE_V316));
+}
+
+function loadSignatureIntoInputV316(){
+  const input = document.getElementById("signature");
+  if(input) input.value = localStorage.getItem(scopedStorageKeyV316(SIGNATURE_STORE_V316)) || DEFAULT_SIGNATURE_V310;
+  signatureRoleInputV312().value = localStorage.getItem(scopedStorageKeyV316(SIGNATURE_ROLE_STORE_V312)) || DEFAULT_SIGNATURE_ROLE_V312;
+}
+
 function saveSignatureRoleV312(value){
   const text = String(value || "").trim();
   signatureRoleInputV312().value = text || DEFAULT_SIGNATURE_ROLE_V312;
-  if(text && text !== DEFAULT_SIGNATURE_ROLE_V312) localStorage.setItem(SIGNATURE_ROLE_STORE_V312, text);
-  else localStorage.removeItem(SIGNATURE_ROLE_STORE_V312);
+  if(text && text !== DEFAULT_SIGNATURE_ROLE_V312) localStorage.setItem(scopedStorageKeyV316(SIGNATURE_ROLE_STORE_V312), text);
+  else localStorage.removeItem(scopedStorageKeyV316(SIGNATURE_ROLE_STORE_V312));
 }
 
 function renderSignatureChangeControlsV310(signature, role){
@@ -823,13 +837,54 @@ const PLAN_CELL_STORE_V302 = "tydenni_plan_cell_overrides_v302";
 const PLAN_DELETE_STORE_V302 = "tydenni_plan_deleted_rows_v302";
 const PLAN_STYLE_STORE_V307 = "tydenni_plan_cell_styles_v307";
 const PLAN_RICH_STORE_V308 = "tydenni_plan_rich_html_v308";
+const SIGNATURE_STORE_V316 = "tydenni_plan_signature_text_v316";
 const SIGNATURE_ROLE_STORE_V312 = "tydenni_plan_signature_role_v312";
 const DEFAULT_SIGNATURE_V310 = "Mgr. MgA. Bc. Michal Jančík";
 const DEFAULT_SIGNATURE_ROLE_V312 = "ředitel školy";
+const WEEK_SCOPED_STORES_V316 = new Set([
+  MANUAL_EVENTS_STORE_V300,
+  RESPONSIBLE_STORE_V300,
+  RESPONSIBLE_ORIG_V300,
+  PLAN_CELL_STORE_V302,
+  PLAN_DELETE_STORE_V302,
+  PLAN_STYLE_STORE_V307,
+  PLAN_RICH_STORE_V308,
+  SIGNATURE_STORE_V316,
+  SIGNATURE_ROLE_STORE_V312
+]);
+const WEEK_STORAGE_MIGRATION_V316 = "tydenni_plan_week_storage_migrated_v316";
+
+function weekArchiveIdV316(){
+  const source = parseDate(document.getElementById("weekFrom")?.value || "") || new Date();
+  const date = new Date(source);
+  date.setHours(0,0,0,0);
+  date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
+  const week1 = new Date(date.getFullYear(), 0, 4);
+  const week = 1 + Math.round(((date - week1) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
+  return `${date.getFullYear()}-W${String(week).padStart(2, "0")}`;
+}
+
+function migrateLegacyWeekStorageV316(){
+  if(localStorage.getItem(WEEK_STORAGE_MIGRATION_V316) === "1") return;
+  const suffix = `__${weekArchiveIdV316()}`;
+  WEEK_SCOPED_STORES_V316.forEach(key=>{
+    const raw = localStorage.getItem(key);
+    if(raw !== null && localStorage.getItem(`${key}${suffix}`) === null){
+      try{ localStorage.setItem(`${key}${suffix}`, raw); }catch(e){}
+    }
+  });
+  try{ localStorage.setItem(WEEK_STORAGE_MIGRATION_V316, "1"); }catch(e){}
+}
+
+function scopedStorageKeyV316(key){
+  if(!WEEK_SCOPED_STORES_V316.has(key)) return key;
+  migrateLegacyWeekStorageV316();
+  return `${key}__${weekArchiveIdV316()}`;
+}
 
 function loadJsonMapV300(key){
   try{
-    const data = JSON.parse(localStorage.getItem(key) || "{}");
+    const data = JSON.parse(localStorage.getItem(scopedStorageKeyV316(key)) || "{}");
     return data && typeof data === "object" ? data : {};
   }catch(e){
     return {};
@@ -837,7 +892,7 @@ function loadJsonMapV300(key){
 }
 
 function saveJsonMapV300(key, data){
-  try{ localStorage.setItem(key, JSON.stringify(data || {})); }catch(e){}
+  try{ localStorage.setItem(scopedStorageKeyV316(key), JSON.stringify(data || {})); }catch(e){}
 }
 
 function responsibleKeyV300(e, dateKey, index){
@@ -891,6 +946,7 @@ function planStyleAttrV307(key, field){
   if(/^\d{1,2}pt$/.test(String(style.size || ""))) parts.push(`font-size:${style.size}`);
   if(/^#[0-9a-f]{6}$/i.test(String(style.color || ""))) parts.push(`color:${style.color}`);
   if(style.bold) parts.push("font-weight:850");
+  if(style.italic) parts.push("font-style:italic");
   return parts.length ? ` style="${escapeHtml(parts.join(";"))}"` : "";
 }
 
@@ -901,7 +957,7 @@ function planRichHtmlValueV308(key, field){
 
 function cleanEditableHtmlV308(cell){
   const clone = cell?.cloneNode(true);
-  clone?.querySelectorAll("button,.planStylePopoverV307,.timeChoicePopoverV307,.planRowDeleteV302,.planRowChangeToolsV304,.planFieldResetV304").forEach(el=>el.remove());
+  clone?.querySelectorAll("button,.planStylePopoverV307,.timeChoicePopoverV307,.planRowDeleteV302,.planRowChangeToolsV304,.planFieldResetV304,.manualRowControlsV316").forEach(el=>el.remove());
   clone?.querySelectorAll("*").forEach(el=>{
     if(el.tagName === "BR") return;
     if(el.tagName !== "SPAN"){
@@ -912,9 +968,11 @@ function cleanEditableHtmlV308(cell){
     const size = el.style?.fontSize || "";
     const color = el.style?.color || "";
     const weight = el.style?.fontWeight || "";
+    const fontStyle = el.style?.fontStyle || "";
     if(/^\d{1,2}pt$/.test(size)) allowed.push(`font-size:${size}`);
     if(color) allowed.push(`color:${color}`);
     if(weight && (Number(weight) >= 700 || /bold/i.test(weight))) allowed.push("font-weight:850");
+    if(/italic/i.test(fontStyle)) allowed.push("font-style:italic");
     if(allowed.length) el.setAttribute("style", allowed.join(";"));
     else el.removeAttribute("style");
     el.removeAttribute("class");
@@ -954,17 +1012,15 @@ function applyStyleToSelectionV308(cell, style){
   if(style.size) span.style.fontSize = style.size;
   if(style.color) span.style.color = style.color;
   if(style.bold) span.style.fontWeight = "850";
+  if(style.italic) span.style.fontStyle = "italic";
   try{
     span.appendChild(range.extractContents());
     range.insertNode(span);
-    selection?.removeAllRanges();
-    const after = document.createRange();
-    after.selectNodeContents(span);
-    after.collapse(false);
-    selection?.addRange(after);
     const saved = document.createRange();
     saved.selectNodeContents(span);
     cell.__savedStyleRangeV308 = saved;
+    selection?.removeAllRanges();
+    selection?.addRange(saved.cloneRange());
     return true;
   }catch(e){
     return false;
@@ -1037,6 +1093,14 @@ function renderRowDeleteButtonV302(key){
   return `<button type="button" class="planRowDeleteV302" contenteditable="false" title="Odstranit celý řádek" aria-label="Odstranit celý řádek" data-plan-delete-key-v302="${escapeHtml(key)}">−</button>`;
 }
 
+function renderManualRowControlsV316(key){
+  return `<div class="manualRowControlsV316" contenteditable="false" aria-label="Vložený řádek">
+    <button type="button" data-manual-row-edit-v316="${escapeHtml(key)}">Upravit</button>
+    <button type="button" data-manual-row-back-v316="${escapeHtml(key)}">Zpět</button>
+    ${renderRowDeleteButtonV302(key)}
+  </div>`;
+}
+
 function renderDayCellV302(dateKey, d, rowspan){
   return `<td class="dayCell" rowspan="${rowspan}">
     <button type="button" class="dayAddRowV308" title="Přidat řádek k tomuto dni" aria-label="Přidat řádek k tomuto dni" data-add-day-v308="${escapeHtml(dateKey)}">+</button>
@@ -1086,7 +1150,7 @@ function renderEventTitleHtmlV306(e){
 
 function cellTextV300(cell){
   const clone = cell?.cloneNode(true);
-  clone?.querySelectorAll("button,.planStylePopoverV307,.timeChoicePopoverV307,.planRowDeleteV302,.planRowChangeToolsV304,.planFieldResetV304").forEach(el=>el.remove());
+  clone?.querySelectorAll("button,.planStylePopoverV307,.timeChoicePopoverV307,.planRowDeleteV302,.planRowChangeToolsV304,.planFieldResetV304,.manualRowControlsV316").forEach(el=>el.remove());
   return String(clone?.textContent || "").replace(/\s+/g," ").trim();
 }
 
@@ -1125,6 +1189,7 @@ function ensurePlanStylePopoverV307(){
       <button type="button" data-style-color-preset-v309="#6d28d9" style="--preset:#6d28d9" aria-label="Fialová"></button>
     </div>
     <button type="button" data-style-bold-v307 aria-label="Tučné">B</button>
+    <button type="button" data-style-italic-v307 aria-label="Kurzíva"><i>I</i></button>
   `;
   document.body.appendChild(pop);
   return pop;
@@ -1152,6 +1217,7 @@ function showPlanStylePopoverV307(cell){
     btn.classList.toggle("active", !!style.color && btn.dataset.styleColorPresetV309 === style.color);
   });
   pop.querySelector("[data-style-bold-v307]").classList.toggle("active", !!style.bold);
+  pop.querySelector("[data-style-italic-v307]").classList.toggle("active", !!style.italic);
   pop.hidden = false;
   positionPopoverV307(pop, cell);
 }
@@ -1163,7 +1229,8 @@ function savePlanStyleFromPopoverV307(pop){
   const style = {
     size: pop.querySelector("[data-style-size-v307]")?.value || "",
     color: pop.dataset.colorV307 || "",
-    bold: pop.querySelector("[data-style-bold-v307]")?.classList.contains("active") || false
+    bold: pop.querySelector("[data-style-bold-v307]")?.classList.contains("active") || false,
+    italic: pop.querySelector("[data-style-italic-v307]")?.classList.contains("active") || false
   };
   const cell = document.querySelector(`[data-plan-row-key-v302="${CSS.escape(key)}"][data-plan-field-v302="${CSS.escape(field)}"]`);
   if(cell){
@@ -1173,7 +1240,7 @@ function savePlanStyleFromPopoverV307(pop){
     }
     const styles = loadJsonMapV300(PLAN_STYLE_STORE_V307);
     if(!styles[key]) styles[key] = {};
-    if(!style.size && !style.color && !style.bold){
+    if(!style.size && !style.color && !style.bold && !style.italic){
       delete styles[key][field];
     }else{
       styles[key][field] = style;
@@ -1183,6 +1250,7 @@ function savePlanStyleFromPopoverV307(pop){
     cell.style.fontSize = style.size || "";
     cell.style.color = style.color || "";
     cell.style.fontWeight = style.bold ? "850" : "";
+    cell.style.fontStyle = style.italic ? "italic" : "";
   }
 }
 
@@ -1484,8 +1552,9 @@ function initPlanEditingV302(){
     }
 
     const bold = event.target.closest("[data-style-bold-v307]");
-    if(!bold) return;
-    bold.classList.toggle("active");
+    const italic = event.target.closest("[data-style-italic-v307]");
+    if(!bold && !italic) return;
+    (bold || italic).classList.toggle("active");
     savePlanStyleFromPopoverV307(stylePopover);
   });
 
@@ -1618,8 +1687,7 @@ function initPlanEditingV302(){
 
     const signatureName = event.target.closest("[data-signature-name-v310]");
     if(signatureName){
-      const input = document.getElementById("signature");
-      if(input) input.value = cellTextV300(signatureName);
+      saveSignatureTextV316(cellTextV300(signatureName));
       renderPreview();
       return;
     }
@@ -1694,8 +1762,7 @@ function initPlanEditingV302(){
       event.preventDefault();
       event.stopPropagation();
       if(signatureReset.dataset.signatureResetV310 === "text"){
-        const input = document.getElementById("signature");
-        if(input) input.value = DEFAULT_SIGNATURE_V310;
+        saveSignatureTextV316(DEFAULT_SIGNATURE_V310);
       }else{
         saveSignatureRoleV312(DEFAULT_SIGNATURE_ROLE_V312);
       }
@@ -1739,6 +1806,25 @@ function initPlanEditingV302(){
       event.preventDefault();
       event.stopPropagation();
       resetPlanFieldV304(resetButton);
+      return;
+    }
+
+    const manualEdit = event.target.closest("[data-manual-row-edit-v316]");
+    if(manualEdit){
+      event.preventDefault();
+      event.stopPropagation();
+      const key = manualEdit.dataset.manualRowEditV316;
+      const cell = document.querySelector(`[data-plan-row-key-v302="${CSS.escape(key)}"][data-plan-field-v302="title"]`);
+      cell?.focus();
+      return;
+    }
+
+    const manualBack = event.target.closest("[data-manual-row-back-v316]");
+    if(manualBack){
+      event.preventDefault();
+      event.stopPropagation();
+      const key = manualBack.dataset.manualRowBackV316;
+      if(removeManualEventByUidV309(manualUidFromPlanKeyV309(key))) renderPreview();
       return;
     }
 
@@ -1810,6 +1896,7 @@ function renderPreview(){
         const e = item.event;
         const rowKey = planRowKeyV302(e, dateKey, item.originalIndex);
         const repeated = repeatClasses.get(e) || "";
+        const manualRow = !!manualUidFromPlanKeyV309(rowKey);
         const rowChangeControls = renderRowChangeControlsV304(rowKey, [
           {field:"time", original:timePlainV302(e)},
           {field:"lesson", original:lessonPlainV302(e)},
@@ -1820,7 +1907,7 @@ function renderPreview(){
           ${idx===0 ? renderDayCellV302(dateKey,d,dayItems.length) : ""}
           ${renderTimeCellEditableV302(e, rowKey)}
           ${renderEditableCellV302("eventCell", rowKey, "title", String(e.title || ""), renderEventTitleHtmlV306(e))}
-          ${renderResponsibleCellV300(e, dateKey, rowIndex, rowKey, `${renderRowDeleteButtonV302(rowKey)}${rowChangeControls}`)}
+          ${renderResponsibleCellV300(e, dateKey, rowIndex, rowKey, manualRow ? renderManualRowControlsV316(rowKey) : `${renderRowDeleteButtonV302(rowKey)}${rowChangeControls}`)}
         </tr>`);
         rowIndex++;
       });
@@ -1967,6 +2054,7 @@ function setWeekByDate(baseDate){
   document.getElementById("weekTo").value = dateToInput(sunday);
   document.getElementById("eventDate").value = dateToInput(monday);
   loadWeekNoteIntoInputV300();
+  loadSignatureIntoInputV316();
 }
 
 function setDefaultWeek(){
