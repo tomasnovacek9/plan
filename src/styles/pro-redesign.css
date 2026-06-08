@@ -58,6 +58,10 @@ body{
   display:inline-flex!important;
   align-items:center!important;
   gap:6px!important;
+  box-sizing:border-box!important;
+  width:152px!important;
+  min-width:152px!important;
+  height:23px!important;
   margin-top:3px!important;
   padding:2px 6px!important;
   border:1px solid rgba(22,101,52,.14)!important;
@@ -67,12 +71,16 @@ body{
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
   font-size:12px!important;
   font-weight:720!important;
+  line-height:1!important;
+  white-space:nowrap!important;
 }
 
 .top .subtitle::before{
   content:"✓"!important;
   display:grid!important;
   place-items:center!important;
+  flex:0 0 13px!important;
+  box-sizing:border-box!important;
   width:13px!important;
   height:13px!important;
   border-radius:50%!important;
@@ -99,6 +107,7 @@ body{
   content:""!important;
   width:13px!important;
   height:13px!important;
+  box-sizing:border-box!important;
   border:2px solid rgba(154,52,18,.22)!important;
   border-top-color:#f59e0b!important;
   background:transparent!important;

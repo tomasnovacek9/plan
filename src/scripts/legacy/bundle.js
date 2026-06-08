@@ -98,7 +98,7 @@ function updateTopEduStatusV312(state, text, detail){
   const applyStatus = () => {
     badge.classList.remove("eduState-connectedV312", "eduState-loadingV312", "eduState-errorV312");
     badge.classList.add(`eduState-${normalized}V312`);
-    badge.textContent = text || (normalized === "loading" ? "Načítání EduPage" : normalized === "error" ? "EduPage nepřipojeno" : "Živě propojeno s EduPage");
+    badge.textContent = text || (normalized === "loading" ? "EduPage načítání" : normalized === "error" ? "EduPage nepřipojeno" : "EduPage připojeno");
     badge.title = detail || "";
     if(normalized !== "loading") topEduLoadingStartedV314 = 0;
   };
@@ -2000,7 +2000,7 @@ async function loadCalendarFromUrl(options = {}){
   const initialLoad = !!options.initial;
   try{
     if(!calendarEvents.length){
-      setCalendarBadgeV300("loading", "Načítání EduPage", "Aktualizuji živý kalendář.");
+      setCalendarBadgeV300("loading", "EduPage načítání", "Aktualizuji živý kalendář.");
       if(initialLoad){
         setPreviewStatusV300("Načítám EduPage kalendář", "Plán se zobrazí až po úspěšném načtení živého kalendáře.");
       }
