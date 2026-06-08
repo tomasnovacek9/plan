@@ -30,7 +30,7 @@ body{
   align-items:start!important;
   gap:14px!important;
   width:100%!important;
-  max-width:980px!important;
+  max-width:1440px!important;
   margin:0 auto 10px!important;
   padding:10px 12px!important;
   border:1px solid rgba(15,23,42,.08)!important;
@@ -981,7 +981,7 @@ body{
 }
 
 .previewPage .timeColV308{
-  width:28mm!important;
+  width:30mm!important;
 }
 
 .previewPage .personColV308{
@@ -1085,9 +1085,9 @@ body{
 .previewPage .timeCell{
   color:#334155!important;
   font-variant-numeric:tabular-nums!important;
-  width:28mm!important;
-  min-width:28mm!important;
-  max-width:28mm!important;
+  width:30mm!important;
+  min-width:30mm!important;
+  max-width:30mm!important;
   padding-left:5px!important;
   padding-right:5px!important;
   text-align:left!important;
