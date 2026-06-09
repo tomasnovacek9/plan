@@ -983,7 +983,7 @@ body{
 }
 
 .previewPage .timeColV308{
-  width:28.6mm!important;
+  width:29mm!important;
 }
 
 .previewPage .personColV308{
@@ -1090,9 +1090,9 @@ body{
 .previewPage .timeCell{
   color:#334155!important;
   font-variant-numeric:tabular-nums!important;
-  width:28.6mm!important;
-  min-width:28.6mm!important;
-  max-width:28.6mm!important;
+  width:29mm!important;
+  min-width:29mm!important;
+  max-width:29mm!important;
   padding-left:5px!important;
   padding-right:5px!important;
   text-align:left!important;
@@ -1410,6 +1410,11 @@ body{
   box-shadow:0 1px 2px rgba(15,23,42,.04)!important;
 }
 
+.planStylePopoverV307 .planColorPresetsV309 button{
+  background:var(--preset)!important;
+  color:transparent!important;
+}
+
 .planStylePopoverV307 button.active,
 .timeChoicePopoverV307 button.active{
   border-color:rgba(21,90,148,.35)!important;
@@ -1467,7 +1472,7 @@ body{
 
 .timeChoiceMiniGroupV312{
   display:grid!important;
-  grid-template-rows:auto 88px!important;
+  grid-template-rows:auto 18px 88px 18px!important;
   gap:3px!important;
   min-width:0!important;
 }
@@ -1559,6 +1564,20 @@ body{
   color:#fff!important;
   box-shadow:0 5px 12px rgba(21,90,148,.22)!important;
   transform:scale(1.02)!important;
+}
+
+.timeStepBtnV317{
+  width:100%!important;
+  height:18px!important;
+  min-height:18px!important;
+  max-height:18px!important;
+  padding:0!important;
+  border-radius:7px!important;
+  background:#fff!important;
+  color:#64748b!important;
+  font-size:10px!important;
+  font-weight:900!important;
+  box-shadow:none!important;
 }
 
 .hourChoiceListV312{
@@ -1774,7 +1793,7 @@ body{
 
 .webCopyrightV167{
   max-width:980px!important;
-  margin:-4px auto 0!important;
+  margin:-10px auto 0!important;
   padding:0 8px!important;
   border:0!important;
   border-radius:0!important;

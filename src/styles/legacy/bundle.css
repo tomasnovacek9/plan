@@ -2085,9 +2085,9 @@ body.printingV113 .timeCell{
 
 /* Sloupec Hodina pevně užší */
 .previewPage .timeCell{
-  width:28.6mm!important;
-  min-width:28.6mm!important;
-  max-width:28.6mm!important;
+  width:29mm!important;
+  min-width:29mm!important;
+  max-width:29mm!important;
 }
 
 /* Poznámka k týdnu */

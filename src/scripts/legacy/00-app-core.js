@@ -1222,6 +1222,8 @@ function showPlanStylePopoverV307(cell){
 }
 
 function savePlanStyleFromPopoverV307(pop){
+  clearTimeout(pop.__hideTimerV307);
+  pop.hidden = false;
   const key = pop.dataset.keyV307;
   const field = pop.dataset.fieldV307;
   if(!key || !field) return;
@@ -1272,15 +1274,15 @@ function ensureTimeChoicePopoverV307(){
       <div class="timeSplitGroupV310">
         <label>Od</label>
         <div class="timeSplitListsV310">
-          <div class="timeChoiceMiniGroupV312"><span>hod.</span><div class="timeChoiceListV307 hourChoiceListV312" data-time-hour-v310="from">${hours}</div></div>
-          <div class="timeChoiceMiniGroupV312"><span>min.</span><div class="timeChoiceListV307 minuteChoiceListV310" data-time-minute-v310="from">${minutes}</div></div>
+          <div class="timeChoiceMiniGroupV312"><span>hod.</span><button type="button" class="timeStepBtnV317" data-time-step-v317="-1" data-time-step-target-v317="hour:from">▲</button><div class="timeChoiceListV307 hourChoiceListV312" data-time-hour-v310="from">${hours}</div><button type="button" class="timeStepBtnV317" data-time-step-v317="1" data-time-step-target-v317="hour:from">▼</button></div>
+          <div class="timeChoiceMiniGroupV312"><span>min.</span><button type="button" class="timeStepBtnV317" data-time-step-v317="-1" data-time-step-target-v317="minute:from">▲</button><div class="timeChoiceListV307 minuteChoiceListV310" data-time-minute-v310="from">${minutes}</div><button type="button" class="timeStepBtnV317" data-time-step-v317="1" data-time-step-target-v317="minute:from">▼</button></div>
         </div>
       </div>
       <div class="timeSplitGroupV310">
         <label>Do</label>
         <div class="timeSplitListsV310">
-          <div class="timeChoiceMiniGroupV312"><span>hod.</span><div class="timeChoiceListV307 hourChoiceListV312" data-time-hour-v310="to">${hours}</div></div>
-          <div class="timeChoiceMiniGroupV312"><span>min.</span><div class="timeChoiceListV307 minuteChoiceListV310" data-time-minute-v310="to">${minutes}</div></div>
+          <div class="timeChoiceMiniGroupV312"><span>hod.</span><button type="button" class="timeStepBtnV317" data-time-step-v317="-1" data-time-step-target-v317="hour:to">▲</button><div class="timeChoiceListV307 hourChoiceListV312" data-time-hour-v310="to">${hours}</div><button type="button" class="timeStepBtnV317" data-time-step-v317="1" data-time-step-target-v317="hour:to">▼</button></div>
+          <div class="timeChoiceMiniGroupV312"><span>min.</span><button type="button" class="timeStepBtnV317" data-time-step-v317="-1" data-time-step-target-v317="minute:to">▲</button><div class="timeChoiceListV307 minuteChoiceListV310" data-time-minute-v310="to">${minutes}</div><button type="button" class="timeStepBtnV317" data-time-step-v317="1" data-time-step-target-v317="minute:to">▼</button></div>
         </div>
       </div>
       <button type="button" data-time-apply-v307>Vybrat čas</button>
@@ -1326,6 +1328,22 @@ function setChoiceListValueV307(pop, selector, attr, value){
 
 function getChoiceListValueV307(pop, selector, fallback = ""){
   return pop.querySelector(selector)?.dataset.valueV307 || fallback;
+}
+
+function stepTimeChoiceValueV317(pop, target, delta){
+  const [kind, side] = String(target || "").split(":");
+  const selector = kind === "minute" ? `[data-time-minute-v310='${side}']` : `[data-time-hour-v310='${side}']`;
+  const attr = kind === "minute" ? "data-time-minute-choice-v310" : "data-time-hour-choice-v310";
+  const list = pop.querySelector(selector);
+  if(!list) return;
+  const values = Array.from(list.querySelectorAll(`[${attr}]`)).map(btn=>btn.getAttribute(attr));
+  if(!values.length) return;
+  const current = getChoiceListValueV307(pop, selector, values[0]);
+  const currentIndex = values.indexOf(current);
+  const index = currentIndex >= 0 ? currentIndex : 0;
+  const next = values[(index + Number(delta || 0) + values.length) % values.length];
+  setChoiceListValueV307(pop, selector, attr, next);
+  syncTimeChoiceLessonsFromTimeV307(pop);
 }
 
 function setTimeSplitValueV310(pop, side, value){
@@ -1413,6 +1431,7 @@ function saveTimeChoiceV307(key, time, lesson){
 }
 
 function syncRowChangeControlsV304(preview, key){
+  if(manualUidFromPlanKeyV309(key)) return;
   const rowCells = Array.from(preview.querySelectorAll("[data-plan-row-key-v302]"))
     .filter(cell=>cell.dataset.planRowKeyV302 === key);
   const personCell = rowCells.find(cell=>cell.dataset.planFieldV302 === "person");
@@ -1527,15 +1546,22 @@ function initPlanEditingV302(){
   const timePopover = ensureTimeChoicePopoverV307();
 
   stylePopover.addEventListener("mousedown", event=>{
+    clearTimeout(stylePopover.__hideTimerV307);
     if(!event.target.closest("select")) event.preventDefault();
   });
 
   stylePopover.addEventListener("input", event=>{
-    if(event.target.closest("[data-style-size-v307]")) savePlanStyleFromPopoverV307(stylePopover);
+    if(event.target.closest("[data-style-size-v307]")){
+      clearTimeout(stylePopover.__hideTimerV307);
+      savePlanStyleFromPopoverV307(stylePopover);
+    }
   });
 
   stylePopover.addEventListener("change", event=>{
-    if(event.target.closest("[data-style-size-v307]")) savePlanStyleFromPopoverV307(stylePopover);
+    if(event.target.closest("[data-style-size-v307]")){
+      clearTimeout(stylePopover.__hideTimerV307);
+      savePlanStyleFromPopoverV307(stylePopover);
+    }
   });
 
   stylePopover.addEventListener("click", event=>{
@@ -1558,6 +1584,12 @@ function initPlanEditingV302(){
   });
 
   timePopover.addEventListener("click", event=>{
+    const step = event.target.closest("[data-time-step-v317]");
+    if(step){
+      stepTimeChoiceValueV317(timePopover, step.dataset.timeStepTargetV317, step.dataset.timeStepV317);
+      return;
+    }
+
     const hourChoice = event.target.closest("[data-time-hour-choice-v310]");
     if(hourChoice){
       const list = hourChoice.closest("[data-time-hour-v310]");
@@ -1635,6 +1667,7 @@ function initPlanEditingV302(){
   stylePopover.addEventListener("mouseleave", ()=>{
     clearTimeout(stylePopover.__hideTimerV307);
     stylePopover.__hideTimerV307 = setTimeout(()=>{
+      if(stylePopover.contains(document.activeElement)) return;
       stylePopover.hidden = true;
     }, 260);
   });
@@ -1642,7 +1675,7 @@ function initPlanEditingV302(){
   timePopover.addEventListener("mouseenter", ()=>clearTimeout(timePopover.__hideTimerV307));
   timePopover.addEventListener("mouseleave", ()=>{
     clearTimeout(timePopover.__hideTimerV307);
-    timePopover.__hideTimerV307 = setTimeout(()=>{ timePopover.hidden = true; }, 260);
+    timePopover.__hideTimerV307 = setTimeout(()=>{ if(!timePopover.contains(document.activeElement)) timePopover.hidden = true; }, 260);
   });
 
   preview.addEventListener("focusin", event=>{
@@ -1794,6 +1827,8 @@ function initPlanEditingV302(){
       showPlanStylePopoverV307(editableCell);
     }else if(!event.target.closest(".planStylePopoverV307")){
       stylePopover.hidden = true;
+      window.getSelection?.()?.removeAllRanges();
+      if(preview.contains(document.activeElement)) document.activeElement?.blur?.();
     }
 
     if(!event.target.closest(".timeChoicePopoverV307")){
@@ -1847,6 +1882,15 @@ function initPlanEditingV302(){
     deleted[key] = true;
     saveJsonMapV300(PLAN_DELETE_STORE_V302, deleted);
     renderPreview();
+  });
+
+  document.addEventListener("mousedown", event=>{
+    if(!event.target.closest("#preview") && !event.target.closest(".planStylePopoverV307") && !event.target.closest(".timeChoicePopoverV307")){
+      stylePopover.hidden = true;
+      timePopover.hidden = true;
+      window.getSelection?.()?.removeAllRanges();
+      document.activeElement?.blur?.();
+    }
   });
 }
 
