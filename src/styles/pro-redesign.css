@@ -1015,12 +1015,22 @@ body{
   background:#fff!important;
 }
 
-.previewPage .planTable tbody tr:hover td{
-  background:#f6fbff!important;
-}
-
 .previewPage .planTable tbody tr:focus-within td:not(.dayCell){
   background:#fffdf4!important;
+}
+
+.previewPage .planTable tbody tr:hover > td,
+.previewPage .planTable tbody tr:hover > td.dayCell,
+.previewPage .planTable tbody tr:hover > td.timeCell,
+.previewPage .planTable tbody tr:hover > td.eventCell,
+.previewPage .planTable tbody tr:hover > td.personCell{
+  background:#f0f7ff!important;
+}
+
+.previewPage .planTable tbody tr:hover > td .planEditableCellV302,
+.previewPage .planTable tbody tr:hover > td .timeRangeEditV302,
+.previewPage .planTable tbody tr:hover > td .lessonEditV302{
+  background:transparent!important;
 }
 
 .previewPage .dayCell{
@@ -1494,7 +1504,7 @@ body{
 
 .timeChoiceListGroupV307{
   display:grid!important;
-  grid-template-rows:auto 18px 72px 18px!important;
+  grid-template-rows:auto 22px 76px 22px!important;
   gap:3px!important;
   min-width:0!important;
   flex:1 1 0!important;
@@ -1507,7 +1517,7 @@ body{
 }
 
 .timeChoiceListV307{
-  height:72px!important;
+  height:76px!important;
   overflow:hidden!important;
   padding:4px 3px!important;
   border:1px solid rgba(21,90,148,.2)!important;
@@ -1515,6 +1525,9 @@ body{
   background:linear-gradient(180deg,#ffffff 0%,#f8fafc 43%,#edf6ff 50%,#f8fafc 57%,#ffffff 100%)!important;
   scroll-snap-type:none!important;
   overscroll-behavior:contain!important;
+  touch-action:none!important;
+  user-select:none!important;
+  cursor:ns-resize!important;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.75), inset 0 34px 20px -22px rgba(255,255,255,.95), inset 0 -34px 20px -22px rgba(255,255,255,.95)!important;
   position:relative!important;
 }
@@ -1579,9 +1592,9 @@ body{
 
 .timeStepBtnV317{
   width:100%!important;
-  height:18px!important;
-  min-height:18px!important;
-  max-height:18px!important;
+  height:22px!important;
+  min-height:22px!important;
+  max-height:22px!important;
   padding:0!important;
   border-radius:7px!important;
   border-color:rgba(21,90,148,.18)!important;
@@ -1753,7 +1766,7 @@ body{
   }
 }
 
-.previewPage:hover .planNoteSlotV318 > .planNoteAddV310,
+.planNoteSlotV318.noteHoverZoneV320 > .planNoteAddV310,
 .planNoteSlotV318:focus-within > .planNoteAddV310,
 .planNoteSlotV318 > .planNoteAddV310:hover,
 .planNoteSlotV318 > .planNoteAddV310:focus-visible{
@@ -2047,10 +2060,41 @@ body{
 }
 
 .pdfExportV319 .docHeader{
-  margin:0 0 7mm!important;
-  padding:0 0 4mm!important;
+  display:block!important;
+  margin:0 0 6mm!important;
+  padding:0 0 3.5mm!important;
   border-bottom:1px solid #d9e2ec!important;
   background:#fff!important;
+}
+
+.pdfExportV319 .docSchoolFullV93,
+.pdfExportV319 .docLogo,
+.pdfExportV319 .createdDateV184,
+.pdfExportV319 .podpisFinal41,
+.pdfExportV319 .planNoteAddV310,
+.pdfExportV319 .noteResetV310,
+.pdfExportV319 .dayAddRowV308,
+.pdfExportV319 .planFieldResetV304,
+.pdfExportV319 .planRowChangeToolsV304,
+.pdfExportV319 .manualRowControlsV316{
+  display:none!important;
+}
+
+.pdfExportV319 .docTitle{
+  margin:0!important;
+  color:#0f172a!important;
+  font-size:16pt!important;
+  font-weight:850!important;
+  line-height:1.2!important;
+  text-align:left!important;
+}
+
+.pdfExportV319 .docDates{
+  margin:1.5mm 0 0!important;
+  color:#475569!important;
+  font-size:9.5pt!important;
+  font-weight:650!important;
+  text-align:left!important;
 }
 
 .pdfExportV319 .planTable{
@@ -2095,8 +2139,21 @@ body{
   color:#164e85!important;
 }
 
-.pdfExportV319 .podpisFinal41{
-  margin-top:8mm!important;
+.pdfExportV319 .planNoteSlotV318{
+  margin:0 0 5mm!important;
+}
+
+.pdfExportV319 .planNoteWrapV310{
+  margin:0 0 5mm!important;
+}
+
+.pdfExportV319 .planNoteFinalV193,
+.pdfExportV319 .planNoteInlineV310{
+  border:1px solid #e2e8f0!important;
+  background:#fff!important;
+  color:#172033!important;
+  break-inside:avoid!important;
+  page-break-inside:avoid!important;
 }
 
 .previewPage td.responsibleCellV213:focus{

@@ -1269,9 +1269,32 @@ function setupTimeChoiceCenteringV318(pop){
   if(!pop || pop.__centerChoiceV318) return;
   pop.__centerChoiceV318 = true;
   pop.querySelectorAll(".timeChoiceListV307").forEach(list=>{
-    list.addEventListener("scroll", ()=>{
-      clearTimeout(list.__centerTimerV318);
-      list.__centerTimerV318 = setTimeout(()=>centerChoiceListValueV318(pop, list), 90);
+    list.addEventListener("wheel", event=>{
+      event.preventDefault();
+      const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+      if(Math.abs(delta) < 8) return;
+      const meta = timeChoiceMetaV318(list);
+      if(!meta) return;
+      const side = list.dataset.timeHourV310 || list.dataset.timeMinuteV310 || list.dataset.lessonListV307;
+      const kind = list.dataset.lessonListV307 ? "lesson" : list.dataset.timeMinuteV310 ? "minute" : "hour";
+      const now = Date.now();
+      if(now - Number(list.__wheelAtV319 || 0) < 120) return;
+      list.__wheelAtV319 = now;
+      stepTimeChoiceValueV317(pop, `${kind}:${side}`, delta > 0 ? 1 : -1);
+    }, {passive:false});
+
+    list.addEventListener("touchstart", event=>{
+      list.__touchYV319 = event.touches?.[0]?.clientY || 0;
+    }, {passive:true});
+
+    list.addEventListener("touchend", event=>{
+      const start = Number(list.__touchYV319 || 0);
+      const end = event.changedTouches?.[0]?.clientY || start;
+      const diff = start - end;
+      if(Math.abs(diff) < 18) return;
+      const side = list.dataset.timeHourV310 || list.dataset.timeMinuteV310 || list.dataset.lessonListV307;
+      const kind = list.dataset.lessonListV307 ? "lesson" : list.dataset.timeMinuteV310 ? "minute" : "hour";
+      stepTimeChoiceValueV317(pop, `${kind}:${side}`, diff > 0 ? 1 : -1);
     }, {passive:true});
   });
 }
@@ -1624,6 +1647,19 @@ function initPlanEditingV302(){
   preview.__planEditingV302 = true;
   const stylePopover = ensurePlanStylePopoverV307();
   const timePopover = ensureTimeChoicePopoverV307();
+
+  preview.addEventListener("mousemove", event=>{
+    const slot = preview.querySelector(".planNoteSlotV318");
+    if(!slot) return;
+    const rect = slot.getBoundingClientRect();
+    const nearX = event.clientX >= rect.left - 140 && event.clientX <= rect.left - 4;
+    const nearY = event.clientY >= rect.top - 18 && event.clientY <= rect.top + Math.max(46, rect.height + 18);
+    slot.classList.toggle("noteHoverZoneV320", nearX && nearY);
+  });
+
+  preview.addEventListener("mouseleave", ()=>{
+    preview.querySelector(".planNoteSlotV318")?.classList.remove("noteHoverZoneV320");
+  });
 
   stylePopover.addEventListener("mousedown", event=>{
     clearTimeout(stylePopover.__hideTimerV307);
