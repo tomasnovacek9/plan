@@ -434,8 +434,7 @@ function saveManualEventsV308(list){
 }
 
 function manualUidFromPlanKeyV309(key){
-  const uid = String(key || "").split("||")[1] || "";
-  return uid.startsWith("manual-") ? uid : "";
+  return String(key || "").split("||").find(part=>part.startsWith("manual-")) || "";
 }
 
 function removeManualEventByUidV309(uid){
@@ -462,6 +461,26 @@ function updateManualEventTimeV309(key, time, lesson){
   window.manualEventsV167 = list;
   mergeManualEventsV300();
   return uid;
+}
+
+function resetManualEventTimeV318(key){
+  const uid = manualUidFromPlanKeyV309(key);
+  if(!uid) return false;
+  const timeCell = document.querySelector(`[data-plan-row-key-v302="${CSS.escape(key)}"][data-plan-field-v302="time"]`);
+  const lessonCell = document.querySelector(`[data-plan-row-key-v302="${CSS.escape(key)}"][data-plan-field-v302="lesson"]`);
+  const timeOriginal = timeCell?.dataset.planOriginalV302 || "08:00 - 08:45";
+  const match = String(timeOriginal).match(/(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})/);
+  if(!match) return false;
+  const list = loadManualEventsV300();
+  const item = list.find(e=>e.uid === uid);
+  if(!item) return false;
+  item.from = match[1].padStart(5, "0");
+  item.to = match[2].padStart(5, "0");
+  item.lesson = lessonCell?.dataset.planOriginalV302 || lessonLabelV161(item.from, item.to) || "";
+  saveManualEventsV308(list);
+  window.manualEventsV167 = list;
+  mergeManualEventsV300();
+  return true;
 }
 
 function focusManualTitleByUidV310(uid){
@@ -495,6 +514,8 @@ function addPreviewManualRowV308(dateKey){
     date: dateKey,
     from: "08:00",
     to: "08:45",
+    originalFrom: "08:00",
+    originalTo: "08:45",
     title: "",
     person: "",
     classes: "",
@@ -524,6 +545,8 @@ function mergeManualEventsV300(){
       date: e.date,
       from: e.from,
       to: e.to,
+      originalFrom: e.originalFrom || e.from || "08:00",
+      originalTo: e.originalTo || e.to || "08:45",
       title: e.title,
       person: e.person,
       classes: e.classes || "",
@@ -634,6 +657,15 @@ function currentWeekNoteV174(){
   }
 
   return String(input?.value || "").trim();
+}
+
+function editableTextV318(cell, preserveLines = false){
+  const clone = cell?.cloneNode(true);
+  clone?.querySelectorAll("button,.planStylePopoverV307,.timeChoicePopoverV307,.planRowDeleteV302,.planRowChangeToolsV304,.planFieldResetV304,.manualRowControlsV316").forEach(el=>el.remove());
+  const text = preserveLines ? (clone?.innerText || clone?.textContent || "") : (clone?.textContent || "");
+  return preserveLines
+    ? String(text).replace(/\u00a0/g, " ").replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim()
+    : String(text).replace(/\s+/g," ").trim();
 }
 
 function stableTextKeyV300(text){
@@ -784,10 +816,10 @@ function renderPlanNoteSlotV310(message){
   const key = weekNoteKeyV174() || "week-note";
   const rich = planRichHtmlValueV308(`note||${key}`, "note");
   const content = rich || escapeHtml(txt).replace(/\n/g,"<br>");
-  if(txt){
-    return `<div class="planNoteWrapV310"><div class="planNoteFinalV193 planNoteInlineV310 planEditableCellV302" contenteditable="true" spellcheck="false" data-inline-note-v310="1" data-plan-row-key-v302="note||${escapeHtml(key)}" data-plan-field-v302="note" data-plan-original-v302="${escapeHtml(txt)}">${content}</div><button type="button" class="noteResetV310" title="Vrátit poznámku" data-note-reset-v310="1"><span>📝</span><b>↩</b></button></div>`;
+  if(txt || rich){
+    return `<div class="planNoteSlotV318"><button type="button" class="planNoteAddV310" data-add-note-v310="1">+ poznámka</button><div class="planNoteWrapV310"><div class="planNoteFinalV193 planNoteInlineV310 planEditableCellV302" contenteditable="true" spellcheck="false" data-inline-note-v310="1" data-plan-row-key-v302="note||${escapeHtml(key)}" data-plan-field-v302="note" data-plan-original-v302="${escapeHtml(txt)}">${content}</div><button type="button" class="noteResetV310" title="Vrátit poznámku" data-note-reset-v310="1"><span>📝</span><b>↩</b></button></div></div>`;
   }
-  return `<button type="button" class="planNoteAddV310" data-add-note-v310="1">+ Poznámka do plánu</button>`;
+  return `<div class="planNoteSlotV318 planNoteSlotEmptyV318"><button type="button" class="planNoteAddV310" data-add-note-v310="1">+ poznámka</button></div>`;
 }
 
 function signatureRoleInputV312(){
@@ -915,6 +947,9 @@ function responsibleKeyV300(e, dateKey, index){
 }
 
 function planRowKeyV302(e, dateKey, index){
+  if(e?.manualV167 || e?.manual || e?.source === "manual"){
+    return [dateKey || "", e?.uid || e?.id || "", "manual"].join("||");
+  }
   return [
     dateKey || "",
     e?.uid || e?.id || "",
@@ -967,32 +1002,32 @@ function planRichHtmlValueV308(key, field){
 function cleanEditableHtmlV308(cell){
   const clone = cell?.cloneNode(true);
   clone?.querySelectorAll("button,.planStylePopoverV307,.timeChoicePopoverV307,.planRowDeleteV302,.planRowChangeToolsV304,.planFieldResetV304,.manualRowControlsV316").forEach(el=>el.remove());
-  clone?.querySelectorAll("*").forEach(el=>{
-    if(el.tagName === "BR") return;
-    if(el.tagName !== "SPAN"){
-      el.replaceWith(document.createTextNode(el.textContent || ""));
-      return;
-    }
+  const sanitize = node=>{
+    if(node.nodeType === Node.TEXT_NODE) return escapeHtml(node.textContent || "");
+    if(node.nodeType !== Node.ELEMENT_NODE) return "";
+    const tag = node.tagName;
+    if(tag === "BR") return "<br>";
+    const inner = Array.from(node.childNodes).map(sanitize).join("");
+    if(tag === "DIV" || tag === "P") return `${inner}<br>`;
+    if(tag !== "SPAN") return inner;
     const allowed = [];
-    const size = el.style?.fontSize || "";
-    const color = el.style?.color || "";
-    const weight = el.style?.fontWeight || "";
-    const fontStyle = el.style?.fontStyle || "";
+    const size = node.style?.fontSize || "";
+    const color = node.style?.color || "";
+    const weight = node.style?.fontWeight || "";
+    const fontStyle = node.style?.fontStyle || "";
     if(/^\d{1,2}pt$/.test(size)) allowed.push(`font-size:${size}`);
     if(color) allowed.push(`color:${color}`);
     if(weight && (Number(weight) >= 700 || /bold/i.test(weight))) allowed.push("font-weight:850");
     if(/italic/i.test(fontStyle)) allowed.push("font-style:italic");
-    if(allowed.length) el.setAttribute("style", allowed.join(";"));
-    else el.removeAttribute("style");
-    el.removeAttribute("class");
-  });
-  return String(clone?.innerHTML || "").trim();
+    return allowed.length ? `<span style="${escapeHtml(allowed.join(";"))}">${inner}</span>` : inner;
+  };
+  return Array.from(clone?.childNodes || []).map(sanitize).join("").replace(/(<br>\s*)+$/i, "").trim();
 }
 
 function saveRichHtmlV308(key, field, html){
   const rich = loadJsonMapV300(PLAN_RICH_STORE_V308);
   if(!rich[key]) rich[key] = {};
-  if(/<span[^>]+style=/i.test(html)) rich[key][field] = html;
+  if(/<span[^>]+style=|<br/i.test(html)) rich[key][field] = html;
   else delete rich[key][field];
   if(rich[key] && !Object.keys(rich[key]).length) delete rich[key];
   saveJsonMapV300(PLAN_RICH_STORE_V308, rich);
@@ -1060,8 +1095,9 @@ function renderEditablePartV302(className, key, field, original, fallback, edita
 }
 
 function renderTimeCellEditableV302(e, key){
-  const timeOriginal = timePlainV302(e);
-  const lessonOriginal = lessonPlainV302(e);
+  const manualRow = !!(e?.manualV167 || e?.manual || e?.source === "manual");
+  const timeOriginal = manualRow ? `${displayTimeV161(e?.originalFrom || "08:00")} - ${displayTimeV161(e?.originalTo || "08:45")}` : timePlainV302(e);
+  const lessonOriginal = manualRow ? lessonLabelV161(e?.originalFrom || "08:00", e?.originalTo || "08:45") : lessonPlainV302(e);
   return renderTimeCellFromOriginalsV307(key, timeOriginal, lessonOriginal);
 }
 
@@ -1084,7 +1120,6 @@ function renderRowChangeControlsV304(key, fields){
   const icons = {time:"🕒", lesson:"🕒", title:"📌", person:"👤", row:"➕"};
   const normalized = fields.filter(item=>isPlanFieldEditedV305(key, item.field, item.original));
   const merged = [];
-  if(manualUidFromPlanKeyV309(key)) merged.push({field:"__row", original:"", visual:"row"});
   const hourEdited = normalized.find(item=>item.field === "time" || item.field === "lesson");
   if(hourEdited) merged.push({field:hourEdited.field, original:hourEdited.original, visual:"time"});
   normalized.filter(item=>item.field !== "time" && item.field !== "lesson").forEach(item=>merged.push(item));
@@ -1201,6 +1236,44 @@ function ensurePlanStylePopoverV307(){
   return pop;
 }
 
+function timeChoiceMetaV318(list){
+  if(list?.dataset?.timeHourV310) return {attr:"data-time-hour-choice-v310", type:"time"};
+  if(list?.dataset?.timeMinuteV310) return {attr:"data-time-minute-choice-v310", type:"time"};
+  if(list?.dataset?.lessonListV307) return {attr:"data-lesson-choice-v307", type:"lesson"};
+  return null;
+}
+
+function centerChoiceListValueV318(pop, list){
+  const meta = timeChoiceMetaV318(list);
+  if(!meta) return;
+  const buttons = Array.from(list.querySelectorAll(`[${meta.attr}]`));
+  if(!buttons.length) return;
+  const center = list.scrollTop + (list.clientHeight / 2);
+  const active = buttons.reduce((best, btn)=>{
+    const btnCenter = btn.offsetTop + (btn.offsetHeight / 2);
+    const distance = Math.abs(btnCenter - center);
+    return !best || distance < best.distance ? {btn, distance} : best;
+  }, null)?.btn;
+  if(!active) return;
+  const value = active.getAttribute(meta.attr);
+  if(list.dataset.valueV307 === String(value || "")) return;
+  list.dataset.valueV307 = String(value || "");
+  buttons.forEach(btn=>btn.classList.toggle("active", btn === active));
+  if(meta.type === "time") syncTimeChoiceLessonsFromTimeV307(pop);
+  else syncTimeChoiceTimeFromLessonsV307(pop);
+}
+
+function setupTimeChoiceCenteringV318(pop){
+  if(!pop || pop.__centerChoiceV318) return;
+  pop.__centerChoiceV318 = true;
+  pop.querySelectorAll(".timeChoiceListV307").forEach(list=>{
+    list.addEventListener("scroll", ()=>{
+      clearTimeout(list.__centerTimerV318);
+      list.__centerTimerV318 = setTimeout(()=>centerChoiceListValueV318(pop, list), 90);
+    }, {passive:true});
+  });
+}
+
 function positionPopoverV307(pop, target){
   const rect = target.getBoundingClientRect();
   const width = pop.offsetWidth || 280;
@@ -1274,25 +1347,25 @@ function ensureTimeChoicePopoverV307(){
   pop.innerHTML = `
     <div class="timeChoiceTabsV307">
       <button type="button" data-time-mode-v307="time" class="active">Čas</button>
-      <button type="button" data-time-mode-v307="lesson">Hodiny</button>
+      <button type="button" data-time-mode-v307="lesson">Vyuč. hodiny</button>
       <button type="button" data-time-all-day-v307>Celý den</button>
     </div>
     <div class="timeChoicePanelV307" data-time-panel-v307="time">
       <div class="timeSplitGroupV310">
-        <label>Od</label>
+        <label>Začátek</label>
         <div class="timeSplitListsV310">
-          <div class="timeChoiceMiniGroupV312"><span>hod.</span><button type="button" class="timeStepBtnV317" data-time-step-v317="-1" data-time-step-target-v317="hour:from">▲</button><div class="timeChoiceListV307 hourChoiceListV312" data-time-hour-v310="from">${hours}</div><button type="button" class="timeStepBtnV317" data-time-step-v317="1" data-time-step-target-v317="hour:from">▼</button></div>
-          <div class="timeChoiceMiniGroupV312"><span>min.</span><button type="button" class="timeStepBtnV317" data-time-step-v317="-1" data-time-step-target-v317="minute:from">▲</button><div class="timeChoiceListV307 minuteChoiceListV310" data-time-minute-v310="from">${minutes}</div><button type="button" class="timeStepBtnV317" data-time-step-v317="1" data-time-step-target-v317="minute:from">▼</button></div>
+          <div class="timeChoiceMiniGroupV312"><span>Hodiny</span><button type="button" class="timeStepBtnV317" data-time-step-v317="-1" data-time-step-target-v317="hour:from">▲</button><div class="timeChoiceListV307 hourChoiceListV312" data-time-hour-v310="from">${hours}</div><button type="button" class="timeStepBtnV317" data-time-step-v317="1" data-time-step-target-v317="hour:from">▼</button></div>
+          <div class="timeChoiceMiniGroupV312"><span>Minuty</span><button type="button" class="timeStepBtnV317" data-time-step-v317="-1" data-time-step-target-v317="minute:from">▲</button><div class="timeChoiceListV307 minuteChoiceListV310" data-time-minute-v310="from">${minutes}</div><button type="button" class="timeStepBtnV317" data-time-step-v317="1" data-time-step-target-v317="minute:from">▼</button></div>
         </div>
       </div>
       <div class="timeSplitGroupV310">
-        <label>Do</label>
+        <label>Konec</label>
         <div class="timeSplitListsV310">
-          <div class="timeChoiceMiniGroupV312"><span>hod.</span><button type="button" class="timeStepBtnV317" data-time-step-v317="-1" data-time-step-target-v317="hour:to">▲</button><div class="timeChoiceListV307 hourChoiceListV312" data-time-hour-v310="to">${hours}</div><button type="button" class="timeStepBtnV317" data-time-step-v317="1" data-time-step-target-v317="hour:to">▼</button></div>
-          <div class="timeChoiceMiniGroupV312"><span>min.</span><button type="button" class="timeStepBtnV317" data-time-step-v317="-1" data-time-step-target-v317="minute:to">▲</button><div class="timeChoiceListV307 minuteChoiceListV310" data-time-minute-v310="to">${minutes}</div><button type="button" class="timeStepBtnV317" data-time-step-v317="1" data-time-step-target-v317="minute:to">▼</button></div>
+          <div class="timeChoiceMiniGroupV312"><span>Hodiny</span><button type="button" class="timeStepBtnV317" data-time-step-v317="-1" data-time-step-target-v317="hour:to">▲</button><div class="timeChoiceListV307 hourChoiceListV312" data-time-hour-v310="to">${hours}</div><button type="button" class="timeStepBtnV317" data-time-step-v317="1" data-time-step-target-v317="hour:to">▼</button></div>
+          <div class="timeChoiceMiniGroupV312"><span>Minuty</span><button type="button" class="timeStepBtnV317" data-time-step-v317="-1" data-time-step-target-v317="minute:to">▲</button><div class="timeChoiceListV307 minuteChoiceListV310" data-time-minute-v310="to">${minutes}</div><button type="button" class="timeStepBtnV317" data-time-step-v317="1" data-time-step-target-v317="minute:to">▼</button></div>
         </div>
       </div>
-      <button type="button" data-time-apply-v307>Vybrat čas</button>
+      <button type="button" data-time-apply-v307>Použít čas</button>
     </div>
     <div class="timeChoicePanelV307" data-time-panel-v307="lesson" hidden>
       <div class="timeChoiceListGroupV307">
@@ -1303,10 +1376,11 @@ function ensureTimeChoicePopoverV307(){
         <label>Do hodiny</label>
         <div class="timeChoiceListV307 lessonChoiceListV307" data-lesson-list-v307="to">${lessonButtons}</div>
       </div>
-      <button type="button" data-lesson-apply-v307>Vybrat hodiny</button>
+      <button type="button" data-lesson-apply-v307>Použít hodiny</button>
     </div>
   `;
   document.body.appendChild(pop);
+  setupTimeChoiceCenteringV318(pop);
   return pop;
 }
 
@@ -1418,11 +1492,7 @@ function showTimeChoicePopoverV307(cell){
 }
 
 function saveTimeChoiceV307(key, time, lesson){
-  const manualUid = updateManualEventTimeV309(key, time, lesson);
-  if(manualUid){
-    renderPreview();
-    return;
-  }
+  updateManualEventTimeV309(key, time, lesson);
   const overrides = loadJsonMapV300(PLAN_CELL_STORE_V302);
   if(!overrides[key]) overrides[key] = {};
   const timeCell = document.querySelector(`[data-plan-row-key-v302="${CSS.escape(key)}"][data-plan-field-v302="time"]`);
@@ -1439,7 +1509,6 @@ function saveTimeChoiceV307(key, time, lesson){
 }
 
 function syncRowChangeControlsV304(preview, key){
-  if(manualUidFromPlanKeyV309(key)) return;
   const rowCells = Array.from(preview.querySelectorAll("[data-plan-row-key-v302]"))
     .filter(cell=>cell.dataset.planRowKeyV302 === key);
   const personCell = rowCells.find(cell=>cell.dataset.planFieldV302 === "person");
@@ -1465,18 +1534,12 @@ function resetPlanFieldV304(button){
   if(!key || !field) return;
 
   const overrides = loadJsonMapV300(PLAN_CELL_STORE_V302);
-  if(field === "__row"){
-    const uid = manualUidFromPlanKeyV309(key);
-    if(removeManualEventByUidV309(uid)){
-      renderPreview();
-      return;
-    }
-  }
   if(overrides[key]){
     delete overrides[key][field];
     if(field === "time" || field === "lesson"){
       delete overrides[key].time;
       delete overrides[key].lesson;
+      resetManualEventTimeV318(key);
     }
     if(!Object.keys(overrides[key]).length) delete overrides[key];
     saveJsonMapV300(PLAN_CELL_STORE_V302, overrides);
@@ -1705,7 +1768,7 @@ function initPlanEditingV302(){
     const cell = event.target.closest(".planEditableCellV302");
     if(!cell) return;
 
-    if(event.key === "Enter"){
+    if(event.key === "Enter" && !event.target.closest("[data-inline-note-v310]")){
       event.preventDefault();
       cell.blur();
     }
@@ -1720,7 +1783,7 @@ function initPlanEditingV302(){
   preview.addEventListener("focusout", event=>{
     const inlineNote = event.target.closest("[data-inline-note-v310]");
     if(inlineNote){
-      saveInlineWeekNoteV310(cellTextV300(inlineNote));
+      saveInlineWeekNoteV310(editableTextV318(inlineNote, true));
       saveRichHtmlV308(inlineNote.dataset.planRowKeyV302, "note", cleanEditableHtmlV308(inlineNote));
       return;
     }
@@ -1772,8 +1835,16 @@ function initPlanEditingV302(){
     if(noteAdd){
       event.preventDefault();
       event.stopPropagation();
+      const existing = preview.querySelector("[data-inline-note-v310]");
+      if(existing){
+        existing.focus();
+        showPlanStylePopoverV307(existing);
+        return;
+      }
       const note = document.createElement("div");
+      const wrap = document.createElement("div");
       const key = weekNoteKeyV174() || "week-note";
+      wrap.className = "planNoteWrapV310";
       note.className = "planNoteFinalV193 planNoteInlineV310 planEditableCellV302";
       note.contentEditable = "true";
       note.spellcheck = false;
@@ -1781,8 +1852,12 @@ function initPlanEditingV302(){
       note.dataset.planRowKeyV302 = `note||${key}`;
       note.dataset.planFieldV302 = "note";
       note.dataset.planOriginalV302 = "";
-      noteAdd.replaceWith(note);
+      wrap.appendChild(note);
+      const slot = noteAdd.closest(".planNoteSlotV318");
+      slot?.classList.remove("planNoteSlotEmptyV318");
+      slot?.appendChild(wrap);
       note.focus();
+      showPlanStylePopoverV307(note);
       return;
     }
 
@@ -1848,25 +1923,6 @@ function initPlanEditingV302(){
       event.preventDefault();
       event.stopPropagation();
       resetPlanFieldV304(resetButton);
-      return;
-    }
-
-    const manualEdit = event.target.closest("[data-manual-row-edit-v316]");
-    if(manualEdit){
-      event.preventDefault();
-      event.stopPropagation();
-      const key = manualEdit.dataset.manualRowEditV316;
-      const cell = document.querySelector(`[data-plan-row-key-v302="${CSS.escape(key)}"][data-plan-field-v302="title"]`);
-      cell?.focus();
-      return;
-    }
-
-    const manualBack = event.target.closest("[data-manual-row-back-v316]");
-    if(manualBack){
-      event.preventDefault();
-      event.stopPropagation();
-      const key = manualBack.dataset.manualRowBackV316;
-      if(removeManualEventByUidV309(manualUidFromPlanKeyV309(key))) renderPreview();
       return;
     }
 
@@ -1949,8 +2005,8 @@ function renderPreview(){
         const repeated = repeatClasses.get(e) || "";
         const manualRow = !!manualUidFromPlanKeyV309(rowKey);
         const rowChangeControls = renderRowChangeControlsV304(rowKey, [
-          {field:"time", original:timePlainV302(e)},
-          {field:"lesson", original:lessonPlainV302(e)},
+          {field:"time", original:manualRow ? `${displayTimeV161(e.originalFrom || "08:00")} - ${displayTimeV161(e.originalTo || "08:45")}` : timePlainV302(e)},
+          {field:"lesson", original:manualRow ? lessonLabelV161(e.originalFrom || "08:00", e.originalTo || "08:45") : lessonPlainV302(e)},
           {field:"title", original:String(e.title || "")},
           {field:"person", original:String(e.person || "").trim()}
         ]);
@@ -1958,7 +2014,7 @@ function renderPreview(){
           ${idx===0 ? renderDayCellV302(dateKey,d,dayItems.length) : ""}
           ${renderTimeCellEditableV302(e, rowKey)}
           ${renderEditableCellV302("eventCell", rowKey, "title", String(e.title || ""), renderEventTitleHtmlV306(e))}
-          ${renderResponsibleCellV300(e, dateKey, rowIndex, rowKey, manualRow ? renderManualRowControlsV316(rowKey) : `${renderRowDeleteButtonV302(rowKey)}${rowChangeControls}`)}
+          ${renderResponsibleCellV300(e, dateKey, rowIndex, rowKey, `${renderRowDeleteButtonV302(rowKey)}${rowChangeControls}`)}
         </tr>`);
         rowIndex++;
       });
@@ -2236,9 +2292,11 @@ function hookPrintPdfButtonV115(){
     const t = (btn.textContent || "").trim().toLowerCase();
 
     if(
+      btn.classList.contains("outputPrintPdfV313") ||
       t.includes("uložit do pdf") ||
       t.includes("ulozit do pdf") ||
-      t.includes("pdf")
+      t.includes("pdf") ||
+      t.includes("export")
     ){
       btn.onclick = function(e){
         if(e) e.preventDefault();

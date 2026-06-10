@@ -1480,7 +1480,7 @@ body{
 
 .timeChoiceMiniGroupV312 > span{
   color:#475569!important;
-  font-size:9.5px!important;
+  font-size:9.8px!important;
   font-weight:900!important;
   line-height:1!important;
   text-transform:uppercase!important;
@@ -1525,6 +1525,7 @@ body{
   scroll-behavior:smooth!important;
   overscroll-behavior:contain!important;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.75), inset 0 34px 20px -22px rgba(255,255,255,.95), inset 0 -34px 20px -22px rgba(255,255,255,.95)!important;
+  position:relative!important;
 }
 
 .timeChoiceListV307::-webkit-scrollbar{
@@ -1551,6 +1552,7 @@ body{
   font-variant-numeric:tabular-nums!important;
   box-shadow:none!important;
   scroll-snap-align:none!important;
+  transition:background-color .12s ease, color .12s ease, transform .12s ease, box-shadow .12s ease!important;
 }
 
 .lessonChoiceListV307 button{
@@ -1701,18 +1703,45 @@ body{
 }
 
 .planNoteAddV310{
-  display:block!important;
-  width:100%!important;
-  margin:3mm 0 2mm!important;
-  padding:4px 8px!important;
-  border:1px dashed rgba(21,90,148,.35)!important;
-  border-radius:8px!important;
-  background:#f6fbff!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:auto!important;
+  min-width:76px!important;
+  margin:0!important;
+  padding:4px 7px!important;
+  border:1px solid rgba(21,90,148,.24)!important;
+  border-radius:999px!important;
+  background:#fff!important;
   color:#155a94!important;
-  font-size:9pt!important;
+  font-size:8.5pt!important;
   font-weight:750!important;
-  text-align:left!important;
+  line-height:1!important;
+  text-align:center!important;
   cursor:pointer!important;
+  box-shadow:0 1px 3px rgba(15,23,42,.06)!important;
+}
+
+.planNoteSlotV318{
+  position:relative!important;
+  min-height:0!important;
+  margin:0 0 1.5mm!important;
+}
+
+.planNoteSlotEmptyV318{
+  height:0!important;
+  margin:0!important;
+}
+
+.planNoteSlotV318 > .planNoteAddV310{
+  position:absolute!important;
+  left:-28mm!important;
+  top:1mm!important;
+  z-index:6!important;
+}
+
+.planNoteSlotEmptyV318 > .planNoteAddV310{
+  top:0!important;
 }
 
 .planNoteWrapV310{
@@ -1734,6 +1763,8 @@ body{
 
 .planNoteInlineV310{
   outline:none!important;
+  white-space:pre-wrap!important;
+  min-height:22px!important;
 }
 
 .planNoteInlineV310:focus{
@@ -1866,6 +1897,121 @@ body{
   background:#fff!important;
   color:#155a94!important;
   font-size:10px!important;
+}
+
+@media(max-width:760px){
+  .planNoteSlotV318 > .planNoteAddV310{
+    position:static!important;
+    margin:0 0 5px!important;
+  }
+
+  .planNoteSlotEmptyV318{
+    height:auto!important;
+    margin:0 0 2mm!important;
+  }
+}
+
+@media print{
+  @page{
+    size:A4 landscape;
+    margin:8mm;
+  }
+
+  html,
+  body{
+    width:auto!important;
+    min-width:0!important;
+    margin:0!important;
+    padding:0!important;
+    background:#fff!important;
+  }
+
+  body *{
+    visibility:hidden!important;
+  }
+
+  .page,
+  .layout,
+  .previewShell,
+  .previewPage,
+  #preview,
+  #preview .planTable,
+  #preview .planTable *{
+    visibility:visible!important;
+  }
+
+  .top,
+  .panel,
+  .webCopyrightV167,
+  .docHeader,
+  .podpisFinal41,
+  .createdDateV184,
+  .planNoteSlotV318,
+  .planRowDeleteV302,
+  .planRowChangeToolsV304,
+  .planFieldResetV304,
+  .manualRowControlsV316,
+  .signatureChangeToolsV310,
+  .noteResetV310,
+  .planStylePopoverV307,
+  .timeChoicePopoverV307{
+    display:none!important;
+    visibility:hidden!important;
+  }
+
+  .page,
+  .layout,
+  .previewShell,
+  .previewPage,
+  #preview{
+    display:block!important;
+    width:auto!important;
+    max-width:none!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    background:#fff!important;
+    overflow:visible!important;
+  }
+
+  #preview .planTable{
+    width:100%!important;
+    table-layout:fixed!important;
+    border-collapse:separate!important;
+    border-spacing:0!important;
+    background:#fff!important;
+    box-shadow:none!important;
+    page-break-before:auto!important;
+  }
+
+  #preview .planTable thead{
+    display:table-header-group!important;
+  }
+
+  #preview .planTable tfoot{
+    display:table-footer-group!important;
+  }
+
+  #preview .planTable tr,
+  #preview .planTable td,
+  #preview .planTable th{
+    break-inside:avoid!important;
+    page-break-inside:avoid!important;
+  }
+
+  #preview .planTable th{
+    background:#f1f5f9!important;
+    color:#0f172a!important;
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+  }
+
+  #preview .planTable td{
+    background:#fff;
+  }
 }
 
 .previewPage td.responsibleCellV213:focus{

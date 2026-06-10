@@ -14,9 +14,11 @@ function hookPrintPdfButtonV115(){
     const t = (btn.textContent || "").trim().toLowerCase();
 
     if(
+      btn.classList.contains("outputPrintPdfV313") ||
       t.includes("uložit do pdf") ||
       t.includes("ulozit do pdf") ||
-      t.includes("pdf")
+      t.includes("pdf") ||
+      t.includes("export")
     ){
       btn.onclick = function(e){
         if(e) e.preventDefault();
