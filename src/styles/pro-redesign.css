@@ -983,7 +983,7 @@ body{
 }
 
 .previewPage .timeColV308{
-  width:29mm!important;
+  width:31mm!important;
 }
 
 .previewPage .personColV308{
@@ -1090,9 +1090,9 @@ body{
 .previewPage .timeCell{
   color:#334155!important;
   font-variant-numeric:tabular-nums!important;
-  width:29mm!important;
-  min-width:29mm!important;
-  max-width:29mm!important;
+  width:31mm!important;
+  min-width:31mm!important;
+  max-width:31mm!important;
   padding-left:5px!important;
   padding-right:5px!important;
   text-align:left!important;
@@ -1132,6 +1132,7 @@ body{
   padding:0 1px!important;
   border-radius:3px!important;
   color:inherit!important;
+  font-family:inherit!important;
   vertical-align:baseline!important;
 }
 
@@ -1517,11 +1518,13 @@ body{
   height:88px!important;
   overflow:auto!important;
   padding:6px 3px!important;
-  border:1px solid rgba(15,23,42,.08)!important;
+  border:1px solid rgba(21,90,148,.2)!important;
   border-radius:9px!important;
-  background:#f8fafc!important;
+  background:linear-gradient(180deg,#ffffff 0%,#f8fafc 43%,#edf6ff 50%,#f8fafc 57%,#ffffff 100%)!important;
   scroll-snap-type:none!important;
+  scroll-behavior:smooth!important;
   overscroll-behavior:contain!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.75), inset 0 34px 20px -22px rgba(255,255,255,.95), inset 0 -34px 20px -22px rgba(255,255,255,.95)!important;
 }
 
 .timeChoiceListV307::-webkit-scrollbar{
@@ -1542,7 +1545,7 @@ body{
   border:0!important;
   border-radius:7px!important;
   background:transparent!important;
-  color:#475569!important;
+  color:#334155!important;
   font-size:10.5px!important;
   font-weight:750!important;
   font-variant-numeric:tabular-nums!important;
@@ -1559,11 +1562,12 @@ body{
 }
 
 .timeChoiceListV307 button.active{
-  border:1px solid rgba(21,90,148,.62)!important;
-  background:linear-gradient(180deg,#1f6faf,#155a94)!important;
+  border:1px solid rgba(21,90,148,.78)!important;
+  background:linear-gradient(180deg,#1d6fac,#0f4f82)!important;
   color:#fff!important;
-  box-shadow:0 5px 12px rgba(21,90,148,.22)!important;
-  transform:scale(1.02)!important;
+  font-weight:900!important;
+  box-shadow:0 6px 14px rgba(21,90,148,.28)!important;
+  transform:scale(1.05)!important;
 }
 
 .timeStepBtnV317{
@@ -1573,11 +1577,20 @@ body{
   max-height:18px!important;
   padding:0!important;
   border-radius:7px!important;
+  border-color:rgba(21,90,148,.18)!important;
   background:#fff!important;
-  color:#64748b!important;
+  color:#155a94!important;
   font-size:10px!important;
   font-weight:900!important;
-  box-shadow:none!important;
+  box-shadow:0 1px 2px rgba(15,23,42,.04)!important;
+}
+
+.timeStepBtnV317:hover,
+.timeStepBtnV317:focus-visible{
+  border-color:rgba(21,90,148,.38)!important;
+  background:#eef6ff!important;
+  color:#0f4f82!important;
+  outline:none!important;
 }
 
 .hourChoiceListV312{
@@ -1591,9 +1604,9 @@ body{
 }
 
 .minuteChoiceListV310 button.active{
-  border-color:rgba(4,120,87,.62)!important;
-  background:linear-gradient(180deg,#059669,#047857)!important;
-  box-shadow:0 5px 12px rgba(4,120,87,.2)!important;
+  border-color:rgba(21,90,148,.78)!important;
+  background:linear-gradient(180deg,#1d6fac,#0f4f82)!important;
+  box-shadow:0 6px 14px rgba(21,90,148,.28)!important;
 }
 
 .timeChoicePanelV307[hidden]{

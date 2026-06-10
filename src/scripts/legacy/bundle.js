@@ -479,6 +479,14 @@ function focusManualTitleByUidV310(uid){
   });
 }
 
+function openManualTimeByUidV317(uid){
+  if(!uid) return;
+  requestAnimationFrame(()=>{
+    const timePart = document.querySelector(`[data-plan-row-key-v302*="${CSS.escape(uid)}"][data-plan-field-v302="time"]`);
+    if(timePart) showTimeChoicePopoverV307(timePart);
+  });
+}
+
 function addPreviewManualRowV308(dateKey){
   const uid = "manual-inline-" + Date.now() + "-" + Math.random().toString(36).slice(2);
   const list = loadManualEventsV300();
@@ -497,6 +505,7 @@ function addPreviewManualRowV308(dateKey){
   window.manualEventsV167 = list;
   mergeManualEventsV300();
   renderPreview();
+  openManualTimeByUidV317(uid);
 }
 
 function eventSortMinutesV300(value){
@@ -1046,7 +1055,8 @@ function renderEditablePartV302(className, key, field, original, fallback, edita
   const edited = String(value) !== String(original);
   const shown = value || fallback || "";
   const title = edited ? ` title="${escapeHtml(planEditedTitleV303(field, original))}"` : "";
-  return `<span class="${className} planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="${editable ? "true" : "false"}" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="${escapeHtml(field)}" data-plan-original-v302="${escapeHtml(original)}"${title}${planStyleAttrV307(key, field)}>${escapeHtml(shown) || "&nbsp;"}</span>`;
+  const styleAttr = field === "time" || field === "lesson" ? "" : planStyleAttrV307(key, field);
+  return `<span class="${className} planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="${editable ? "true" : "false"}" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="${escapeHtml(field)}" data-plan-original-v302="${escapeHtml(original)}"${title}${styleAttr}>${escapeHtml(shown) || "&nbsp;"}</span>`;
 }
 
 function renderTimeCellEditableV302(e, key){
@@ -1094,11 +1104,7 @@ function renderRowDeleteButtonV302(key){
 }
 
 function renderManualRowControlsV316(key){
-  return `<div class="manualRowControlsV316" contenteditable="false" aria-label="Vložený řádek">
-    <button type="button" data-manual-row-edit-v316="${escapeHtml(key)}">Upravit</button>
-    <button type="button" data-manual-row-back-v316="${escapeHtml(key)}">Zpět</button>
-    ${renderRowDeleteButtonV302(key)}
-  </div>`;
+  return renderRowDeleteButtonV302(key);
 }
 
 function renderDayCellV302(dateKey, d, rowspan){
@@ -1322,7 +1328,8 @@ function setChoiceListValueV307(pop, selector, attr, value){
   if(active){
     requestAnimationFrame(()=>{
       const top = active.offsetTop - (list.clientHeight / 2) + (active.offsetHeight / 2);
-      list.scrollTop = Math.max(0, top);
+      if(list.scrollTo) list.scrollTo({top:Math.max(0, top), behavior:"smooth"});
+      else list.scrollTop = Math.max(0, top);
     });
   }
 }
