@@ -2063,11 +2063,16 @@ body{
   width:210mm!important;
   min-height:297mm!important;
   margin:0!important;
+  padding-top:8mm!important;
   background:#fff!important;
   box-shadow:none!important;
+  -webkit-print-color-adjust:exact!important;
+  print-color-adjust:exact!important;
 }
 
 .pdfExportV319 .docHeader{
+  margin-top:0!important;
+  padding-top:0!important;
   background:#fff!important;
 }
 
@@ -2101,7 +2106,7 @@ body{
 }
 
 .pdfExportV319 .timeColV308{
-  width:31mm!important;
+  width:33mm!important;
 }
 
 .pdfExportV319 .personColV308{
@@ -2137,13 +2142,15 @@ body{
 .pdfExportV319 .dayCell{
   background:#f8fbff!important;
   color:#164e85!important;
+  border-left:1px solid #dfe7ef!important;
   border-right:1px solid #dde8f2!important;
+  box-shadow:inset 1px 0 0 #dfe7ef!important;
 }
 
 .pdfExportV319 .timeCell{
-  width:31mm!important;
-  min-width:31mm!important;
-  max-width:31mm!important;
+  width:33mm!important;
+  min-width:33mm!important;
+  max-width:33mm!important;
   padding-left:5px!important;
   padding-right:5px!important;
   text-align:left!important;
@@ -2152,6 +2159,35 @@ body{
 .pdfExportV319 .planTable tbody tr:hover > td,
 .pdfExportV319 .planTable tbody tr:focus-within td{
   background:inherit!important;
+}
+
+.pdfExportV319 .repeatColorV50-1 .eventCell,
+.pdfExportV319 .repeatColorV50-1 .personCell{background:#fff8dd!important}
+.pdfExportV319 .repeatColorV50-2 .eventCell,
+.pdfExportV319 .repeatColorV50-2 .personCell{background:#eef6ff!important}
+.pdfExportV319 .repeatColorV50-3 .eventCell,
+.pdfExportV319 .repeatColorV50-3 .personCell{background:#eefbf3!important}
+.pdfExportV319 .repeatColorV50-4 .eventCell,
+.pdfExportV319 .repeatColorV50-4 .personCell{background:#f4f3ff!important}
+.pdfExportV319 .repeatColorV50-5 .eventCell,
+.pdfExportV319 .repeatColorV50-5 .personCell{background:#fff1f1!important}
+.pdfExportV319 .repeatColorV50-6 .eventCell,
+.pdfExportV319 .repeatColorV50-6 .personCell{background:#fdf2fa!important}
+
+.pdfExportV319 .repeatColorV50-1 .eventCell{border-left:6px solid #c9a400!important}
+.pdfExportV319 .repeatColorV50-2 .eventCell{border-left:6px solid #3b82f6!important}
+.pdfExportV319 .repeatColorV50-3 .eventCell{border-left:6px solid #22a06b!important}
+.pdfExportV319 .repeatColorV50-4 .eventCell{border-left:6px solid #7c6cf2!important}
+.pdfExportV319 .repeatColorV50-5 .eventCell{border-left:6px solid #d14343!important}
+.pdfExportV319 .repeatColorV50-6 .eventCell{border-left:6px solid #c241a0!important}
+
+.pdfExportV319 .repeatColorV50-1 .planEditableCellV302,
+.pdfExportV319 .repeatColorV50-2 .planEditableCellV302,
+.pdfExportV319 .repeatColorV50-3 .planEditableCellV302,
+.pdfExportV319 .repeatColorV50-4 .planEditableCellV302,
+.pdfExportV319 .repeatColorV50-5 .planEditableCellV302,
+.pdfExportV319 .repeatColorV50-6 .planEditableCellV302{
+  background:transparent!important;
 }
 
 .pdfExportV319 .planNoteSlotV318{
