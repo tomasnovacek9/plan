@@ -989,6 +989,7 @@ function planStyleAttrV307(key, field){
   if(/^\d{1,2}pt$/.test(String(style.size || ""))) parts.push(`font-size:${style.size}`);
   if(/^#[0-9a-f]{6}$/i.test(String(style.color || ""))) parts.push(`color:${style.color}`);
   if(style.bold) parts.push("font-weight:850");
+  else if(style.boldTouched) parts.push("font-weight:400");
   if(style.italic) parts.push("font-style:italic");
   return parts.length ? ` style="${escapeHtml(parts.join(";"))}"` : "";
 }
@@ -1017,6 +1018,7 @@ function cleanEditableHtmlV308(cell){
     if(/^\d{1,2}pt$/.test(size)) allowed.push(`font-size:${size}`);
     if(color) allowed.push(`color:${color}`);
     if(weight && (Number(weight) >= 700 || /bold/i.test(weight))) allowed.push("font-weight:850");
+    else if(weight && Number(weight) <= 500) allowed.push("font-weight:400");
     if(/italic/i.test(fontStyle)) allowed.push("font-style:italic");
     return allowed.length ? `<span style="${escapeHtml(allowed.join(";"))}">${inner}</span>` : inner;
   };
@@ -1054,7 +1056,8 @@ function applyStyleToSelectionV308(cell, style){
   const span = document.createElement("span");
   if(style.size) span.style.fontSize = style.size;
   if(style.color) span.style.color = style.color;
-  if(style.bold) span.style.fontWeight = "850";
+  if(style.boldTouched) span.style.fontWeight = style.bold ? "850" : "400";
+  else if(style.bold) span.style.fontWeight = "850";
   if(style.italic) span.style.fontStyle = "italic";
   try{
     span.appendChild(range.extractContents());
@@ -1289,6 +1292,7 @@ function showPlanStylePopoverV307(cell){
   const style = planStyleValueV307(cell.dataset.planRowKeyV302, cell.dataset.planFieldV302);
   pop.dataset.keyV307 = cell.dataset.planRowKeyV302;
   pop.dataset.fieldV307 = cell.dataset.planFieldV302;
+  pop.dataset.boldTouchedV319 = "";
   pop.querySelector("[data-style-size-v307]").value = style.size || "";
   pop.dataset.colorV307 = style.color || "";
   pop.querySelectorAll("[data-style-color-preset-v309]").forEach(btn=>{
@@ -1310,6 +1314,7 @@ function savePlanStyleFromPopoverV307(pop){
     size: pop.querySelector("[data-style-size-v307]")?.value || "",
     color: pop.dataset.colorV307 || "",
     bold: pop.querySelector("[data-style-bold-v307]")?.classList.contains("active") || false,
+    boldTouched: pop.dataset.boldTouchedV319 === "1",
     italic: pop.querySelector("[data-style-italic-v307]")?.classList.contains("active") || false
   };
   const cell = document.querySelector(`[data-plan-row-key-v302="${CSS.escape(key)}"][data-plan-field-v302="${CSS.escape(field)}"]`);
@@ -1320,7 +1325,7 @@ function savePlanStyleFromPopoverV307(pop){
     }
     const styles = loadJsonMapV300(PLAN_STYLE_STORE_V307);
     if(!styles[key]) styles[key] = {};
-    if(!style.size && !style.color && !style.bold && !style.italic){
+    if(!style.size && !style.color && !style.bold && !style.boldTouched && !style.italic){
       delete styles[key][field];
     }else{
       styles[key][field] = style;
@@ -1329,7 +1334,7 @@ function savePlanStyleFromPopoverV307(pop){
     saveJsonMapV300(PLAN_STYLE_STORE_V307, styles);
     cell.style.fontSize = style.size || "";
     cell.style.color = style.color || "";
-    cell.style.fontWeight = style.bold ? "850" : "";
+    cell.style.fontWeight = style.boldTouched ? (style.bold ? "850" : "400") : (style.bold ? "850" : "");
     cell.style.fontStyle = style.italic ? "italic" : "";
   }
 }
@@ -1369,11 +1374,15 @@ function ensureTimeChoicePopoverV307(){
     <div class="timeChoicePanelV307" data-time-panel-v307="lesson" hidden>
       <div class="timeChoiceListGroupV307">
         <label>Od hodiny</label>
+        <button type="button" class="timeStepBtnV317" data-time-step-v317="-1" data-time-step-target-v317="lesson:from">▲</button>
         <div class="timeChoiceListV307 lessonChoiceListV307" data-lesson-list-v307="from">${lessonButtons}</div>
+        <button type="button" class="timeStepBtnV317" data-time-step-v317="1" data-time-step-target-v317="lesson:from">▼</button>
       </div>
       <div class="timeChoiceListGroupV307">
         <label>Do hodiny</label>
+        <button type="button" class="timeStepBtnV317" data-time-step-v317="-1" data-time-step-target-v317="lesson:to">▲</button>
         <div class="timeChoiceListV307 lessonChoiceListV307" data-lesson-list-v307="to">${lessonButtons}</div>
+        <button type="button" class="timeStepBtnV317" data-time-step-v317="1" data-time-step-target-v317="lesson:to">▼</button>
       </div>
       <button type="button" data-lesson-apply-v307>Použít hodiny</button>
     </div>
@@ -1392,19 +1401,15 @@ function setChoiceListValueV307(pop, selector, attr, value){
   const list = pop.querySelector(selector);
   if(!list) return;
   list.dataset.valueV307 = String(value || "");
-  let active = null;
-  list.querySelectorAll(`[${attr}]`).forEach(btn=>{
+  const buttons = Array.from(list.querySelectorAll(`[${attr}]`));
+  const activeIndex = buttons.findIndex(btn=>btn.getAttribute(attr) === String(value || ""));
+  const index = activeIndex >= 0 ? activeIndex : 0;
+  buttons.forEach((btn, btnIndex)=>{
     const isActive = btn.getAttribute(attr) === String(value || "");
     btn.classList.toggle("active", isActive);
-    if(isActive) active = btn;
+    btn.classList.toggle("prevChoiceV319", btnIndex === index - 1 || (index === 0 && btnIndex === buttons.length - 1));
+    btn.classList.toggle("nextChoiceV319", btnIndex === index + 1 || (index === buttons.length - 1 && btnIndex === 0));
   });
-  if(active){
-    requestAnimationFrame(()=>{
-      const top = active.offsetTop - (list.clientHeight / 2) + (active.offsetHeight / 2);
-      if(list.scrollTo) list.scrollTo({top:Math.max(0, top), behavior:"smooth"});
-      else list.scrollTop = Math.max(0, top);
-    });
-  }
 }
 
 function getChoiceListValueV307(pop, selector, fallback = ""){
@@ -1413,8 +1418,12 @@ function getChoiceListValueV307(pop, selector, fallback = ""){
 
 function stepTimeChoiceValueV317(pop, target, delta){
   const [kind, side] = String(target || "").split(":");
-  const selector = kind === "minute" ? `[data-time-minute-v310='${side}']` : `[data-time-hour-v310='${side}']`;
-  const attr = kind === "minute" ? "data-time-minute-choice-v310" : "data-time-hour-choice-v310";
+  const selector = kind === "lesson"
+    ? `[data-lesson-list-v307='${side}']`
+    : kind === "minute" ? `[data-time-minute-v310='${side}']` : `[data-time-hour-v310='${side}']`;
+  const attr = kind === "lesson"
+    ? "data-lesson-choice-v307"
+    : kind === "minute" ? "data-time-minute-choice-v310" : "data-time-hour-choice-v310";
   const list = pop.querySelector(selector);
   if(!list) return;
   const values = Array.from(list.querySelectorAll(`[${attr}]`)).map(btn=>btn.getAttribute(attr));
@@ -1424,7 +1433,8 @@ function stepTimeChoiceValueV317(pop, target, delta){
   const index = currentIndex >= 0 ? currentIndex : 0;
   const next = values[(index + Number(delta || 0) + values.length) % values.length];
   setChoiceListValueV307(pop, selector, attr, next);
-  syncTimeChoiceLessonsFromTimeV307(pop);
+  if(kind === "lesson") syncTimeChoiceTimeFromLessonsV307(pop);
+  else syncTimeChoiceLessonsFromTimeV307(pop);
 }
 
 function setTimeSplitValueV310(pop, side, value){
@@ -1650,6 +1660,7 @@ function initPlanEditingV302(){
     const italic = event.target.closest("[data-style-italic-v307]");
     if(!bold && !italic) return;
     (bold || italic).classList.toggle("active");
+    if(bold) stylePopover.dataset.boldTouchedV319 = "1";
     savePlanStyleFromPopoverV307(stylePopover);
   });
 
@@ -1739,7 +1750,7 @@ function initPlanEditingV302(){
     stylePopover.__hideTimerV307 = setTimeout(()=>{
       if(stylePopover.contains(document.activeElement)) return;
       stylePopover.hidden = true;
-    }, 260);
+    }, 850);
   });
 
   timePopover.addEventListener("mouseenter", ()=>clearTimeout(timePopover.__hideTimerV307));
