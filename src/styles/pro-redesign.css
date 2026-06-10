@@ -2051,7 +2051,7 @@ body{
 }
 
 .pdfExportV319{
-  width:194mm;
+  width:210mm;
   margin:0 auto;
   padding:0;
   background:#fff;
@@ -2059,18 +2059,18 @@ body{
   font-family:"Open Sans",Arial,sans-serif;
 }
 
+.pdfExportV319 .previewPage{
+  width:210mm!important;
+  min-height:297mm!important;
+  margin:0!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+
 .pdfExportV319 .docHeader{
-  display:block!important;
-  margin:0 0 6mm!important;
-  padding:0 0 3.5mm!important;
-  border-bottom:1px solid #d9e2ec!important;
   background:#fff!important;
 }
 
-.pdfExportV319 .docSchoolFullV93,
-.pdfExportV319 .docLogo,
-.pdfExportV319 .createdDateV184,
-.pdfExportV319 .podpisFinal41,
 .pdfExportV319 .planNoteAddV310,
 .pdfExportV319 .noteResetV310,
 .pdfExportV319 .dayAddRowV308,
@@ -2080,37 +2080,32 @@ body{
   display:none!important;
 }
 
-.pdfExportV319 .docTitle{
-  margin:0!important;
-  color:#0f172a!important;
-  font-size:16pt!important;
-  font-weight:850!important;
-  line-height:1.2!important;
-  text-align:left!important;
-}
-
-.pdfExportV319 .docDates{
-  margin:1.5mm 0 0!important;
-  color:#475569!important;
-  font-size:9.5pt!important;
-  font-weight:650!important;
-  text-align:left!important;
-}
-
 .pdfExportV319 .planTable{
   width:100%!important;
-  table-layout:fixed!important;
-  border-collapse:collapse!important;
+  table-layout:auto!important;
+  border-collapse:separate!important;
   border-spacing:0!important;
-  border:1px solid #d9e2ec!important;
-  border-radius:0!important;
+  border:1px solid #dfe7ef!important;
+  border-radius:10px!important;
   box-shadow:none!important;
   background:#fff!important;
-  font-size:8.5pt!important;
+  font-size:9.6pt!important;
 }
 
 .pdfExportV319 .planTable thead{
   display:table-header-group!important;
+}
+
+.pdfExportV319 .dateColV308{
+  width:19.5mm!important;
+}
+
+.pdfExportV319 .timeColV308{
+  width:31mm!important;
+}
+
+.pdfExportV319 .personColV308{
+  width:19%!important;
 }
 
 .pdfExportV319 .planTable tr{
@@ -2119,24 +2114,44 @@ body{
 }
 
 .pdfExportV319 .planTable th{
-  padding:4px 5px!important;
-  border:1px solid #d9e2ec!important;
-  background:#f3f7fb!important;
-  color:#0f172a!important;
-  font-weight:800!important;
+  padding:4px 6px!important;
+  border-right:1px solid #e5edf5!important;
+  border-bottom:1px solid #dce7f1!important;
+  background:#f8fafc!important;
+  color:#164e85!important;
+  font-weight:850!important;
 }
 
 .pdfExportV319 .planTable td{
-  padding:4px 5px!important;
-  border:1px solid #e2e8f0!important;
+  border-top:1px solid #edf2f7!important;
+  border-right:1px solid #eef3f8!important;
   background:#fff!important;
-  color:#172033!important;
-  line-height:1.24!important;
+  color:#1f2937!important;
+}
+
+.pdfExportV319 .planTable th:last-child,
+.pdfExportV319 .planTable td:last-child{
+  border-right:0!important;
 }
 
 .pdfExportV319 .dayCell{
-  background:#f8fafc!important;
+  background:#f8fbff!important;
   color:#164e85!important;
+  border-right:1px solid #dde8f2!important;
+}
+
+.pdfExportV319 .timeCell{
+  width:31mm!important;
+  min-width:31mm!important;
+  max-width:31mm!important;
+  padding-left:5px!important;
+  padding-right:5px!important;
+  text-align:left!important;
+}
+
+.pdfExportV319 .planTable tbody tr:hover > td,
+.pdfExportV319 .planTable tbody tr:focus-within td{
+  background:inherit!important;
 }
 
 .pdfExportV319 .planNoteSlotV318{

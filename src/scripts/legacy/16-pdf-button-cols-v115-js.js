@@ -30,27 +30,21 @@ function pdfFilenameV319(title){
 }
 
 function cleanPdfCloneV319(){
-  const source = document.getElementById("preview");
+  const source = document.getElementById("pdfArea") || document.getElementById("preview");
   if(!source) return null;
   const title = pdfDocumentTitleV319();
-  const range = pdfWeekRangeLabelV319();
   const clone = source.cloneNode(true);
   clone.querySelectorAll("button,.planRowDeleteV302,.planRowChangeToolsV304,.planFieldResetV304,.manualRowControlsV316,.signatureChangeToolsV310,.noteResetV310,.planStylePopoverV307,.timeChoicePopoverV307,.dayAddRowV308").forEach(el=>el.remove());
-  clone.querySelectorAll(".docSchoolFullV93,.docLogo,.podpisFinal41,.createdDateV184").forEach(el=>el.remove());
   clone.querySelectorAll(".planNoteSlotV318").forEach(slot=>{
     if(!slot.querySelector(".planNoteWrapV310")) slot.remove();
     else slot.classList.remove("planNoteSlotEmptyV318","noteHoverZoneV320");
   });
-  const titleEl = clone.querySelector(".docTitle") || clone.querySelector("h1");
-  if(titleEl) titleEl.textContent = title;
-  else{
+  if(!clone.querySelector(".docTitle")){
     const heading = document.createElement("h1");
     heading.className = "docTitle";
     heading.textContent = title;
     clone.prepend(heading);
   }
-  const datesEl = clone.querySelector(".docDates");
-  if(datesEl) datesEl.textContent = range;
   clone.querySelectorAll("[contenteditable]").forEach(el=>el.removeAttribute("contenteditable"));
   const wrapper = document.createElement("div");
   wrapper.className = "pdfExportV319";
@@ -85,7 +79,7 @@ function generatePdf(){
   host.appendChild(node);
   document.body.appendChild(host);
   const opt = {
-    margin: [8, 8, 10, 8],
+    margin: [0, 0, 0, 0],
     filename: pdfFilenameV319(title),
     image: { type: "jpeg", quality: 0.98 },
     html2canvas: { scale: 2, backgroundColor: "#ffffff", useCORS: true },
