@@ -2050,7 +2050,7 @@ body{
 }
 
 .pdfExportV319{
-  width:210mm;
+  width:198mm;
   margin:0 auto;
   padding:0;
   background:#fff;
@@ -2059,10 +2059,10 @@ body{
 }
 
 .pdfExportV319 .previewPage{
-  width:210mm!important;
+  width:198mm!important;
   min-height:297mm!important;
   margin:0!important;
-  padding-top:5mm!important;
+  padding:0!important;
   background:#fff!important;
   box-shadow:none!important;
   -webkit-print-color-adjust:exact!important;
@@ -2076,7 +2076,15 @@ body{
 }
 
 .pdfExportV319 .docHeader{
+  margin-top:0!important;
+  padding-top:0!important;
+  transform:none!important;
   background:#fff!important;
+}
+
+.pdfExportV319 .docHeader.headerV93{
+  margin-top:0!important;
+  padding-top:0!important;
 }
 
 .pdfExportV319 .docHeader.headerV93 .docLogo{
@@ -2100,6 +2108,8 @@ body{
 .pdfExportV319 .planTable{
   width:100%!important;
   table-layout:auto!important;
+  border-color:#cfdbe7!important;
+  box-shadow:none!important;
 }
 
 .pdfExportV319 .planTable thead{display:table-header-group!important}
@@ -2113,6 +2123,11 @@ body{
 .pdfExportV319 .planEditableCellV302{
   overflow-wrap:anywhere!important;
   word-break:normal!important;
+}
+
+.pdfExportV319 .planTable th,
+.pdfExportV319 .planTable td{
+  border-color:#d7e2ec!important;
 }
 
 .pdfExportV319 .planNoteWrapV310,

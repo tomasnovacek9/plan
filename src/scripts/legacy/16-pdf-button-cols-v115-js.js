@@ -79,10 +79,10 @@ function generatePdf(){
   host.appendChild(node);
   document.body.appendChild(host);
   const opt = {
-    margin: [0, 0, 0, 0],
+    margin: [6, 6, 6, 6],
     filename: pdfFilenameV319(title),
-    image: { type: "jpeg", quality: 0.98 },
-    html2canvas: { scale: 2, backgroundColor: "#ffffff", useCORS: true },
+    image: { type: "png", quality: 1 },
+    html2canvas: { scale: 4, backgroundColor: "#ffffff", useCORS: true, letterRendering: true, logging: false },
     jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
     pagebreak: { mode: ["css", "legacy"], avoid: ["tr", ".dayBreak", ".planNoteWrapV310"] }
   };
