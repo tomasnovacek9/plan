@@ -497,6 +497,25 @@ function focusManualTitleByUidV310(uid){
   });
 }
 
+function focusManualPersonByKeyV320(key){
+  if(!key) return;
+  requestAnimationFrame(()=>{
+    const personCell = document.querySelector(`[data-plan-row-key-v302="${CSS.escape(key)}"][data-plan-field-v302="person"]`);
+    if(!personCell) return;
+    personCell.focus();
+    const range = document.createRange();
+    range.selectNodeContents(personCell);
+    range.collapse(false);
+    const selection = window.getSelection?.();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+  });
+}
+
+function dateFromPlanRowKeyV320(key){
+  return String(key || "").split("||").find(part=>/^\d{4}-\d{2}-\d{2}$/.test(part)) || "";
+}
+
 function openManualTimeByUidV317(uid){
   if(!uid) return;
   requestAnimationFrame(()=>{
@@ -985,6 +1004,19 @@ function planStyleValueV307(key, field){
   return styles[key]?.[field] || {};
 }
 
+function planFieldHasStyleV320(key, field){
+  const style = planStyleValueV307(key, field);
+  return !!(style.size || style.color || style.bold || style.boldTouched || style.italic);
+}
+
+function planFieldHasRichV320(key, field){
+  return !!planRichHtmlValueV308(key, field);
+}
+
+function planFieldHasVisualEditV320(key, field){
+  return planFieldHasStyleV320(key, field) || planFieldHasRichV320(key, field);
+}
+
 function planStyleAttrV307(key, field){
   const style = planStyleValueV307(key, field);
   const parts = [];
@@ -1036,6 +1068,21 @@ function saveRichHtmlV308(key, field, html){
   saveJsonMapV300(PLAN_RICH_STORE_V308, rich);
 }
 
+function clearPlanVisualEditV320(key, field){
+  const styles = loadJsonMapV300(PLAN_STYLE_STORE_V307);
+  if(styles[key]){
+    delete styles[key][field];
+    if(!Object.keys(styles[key]).length) delete styles[key];
+    saveJsonMapV300(PLAN_STYLE_STORE_V307, styles);
+  }
+  const rich = loadJsonMapV300(PLAN_RICH_STORE_V308);
+  if(rich[key]){
+    delete rich[key][field];
+    if(!Object.keys(rich[key]).length) delete rich[key];
+    saveJsonMapV300(PLAN_RICH_STORE_V308, rich);
+  }
+}
+
 function selectionInCellV308(cell){
   const selection = window.getSelection?.();
   if(selection && selection.rangeCount > 0 && !selection.isCollapsed){
@@ -1082,7 +1129,7 @@ function planEditedTitleV303(field, original){
 
 function renderEditableCellV302(className, key, field, original, html, suffixHtml = ""){
   const value = planCellValueV302(key, field, original);
-  const edited = String(value) !== String(original);
+  const edited = String(value) !== String(original) || planFieldHasVisualEditV320(key, field);
   const rawContent = planRichHtmlValueV308(key, field) || (html && !edited ? html : escapeHtml(value).replace(/\n/g,"<br>"));
   const content = (rawContent || `<span class="emptyEditableV307">&nbsp;</span>`) + suffixHtml;
   const title = edited ? ` title="${escapeHtml(planEditedTitleV303(field, original))}"` : "";
@@ -1091,7 +1138,7 @@ function renderEditableCellV302(className, key, field, original, html, suffixHtm
 
 function renderEditablePartV302(className, key, field, original, fallback, editable = true){
   const value = planCellValueV302(key, field, original);
-  const edited = String(value) !== String(original);
+  const edited = String(value) !== String(original) || (field !== "time" && field !== "lesson" && planFieldHasVisualEditV320(key, field));
   const shown = value || fallback || "";
   const title = edited ? ` title="${escapeHtml(planEditedTitleV303(field, original))}"` : "";
   const styleAttr = field === "time" || field === "lesson" ? "" : planStyleAttrV307(key, field);
@@ -1116,7 +1163,7 @@ function renderTimeCellFromOriginalsV307(key, timeOriginal, lessonOriginal){
 
 function isPlanFieldEditedV305(key, field, original){
   const overrides = loadJsonMapV300(PLAN_CELL_STORE_V302);
-  return String(planCellValueV302(key, field, original)) !== String(original);
+  return String(planCellValueV302(key, field, original)) !== String(original) || planFieldHasVisualEditV320(key, field);
 }
 
 function renderRowChangeControlsV304(key, fields){
@@ -1165,7 +1212,7 @@ function renderResponsibleCellV300(e, dateKey, index, rowKey, suffixHtml = ""){
     saveJsonMapV300(RESPONSIBLE_ORIG_V300, originals);
   }
 
-  const edited = String(value) !== original;
+  const edited = String(value) !== original || planFieldHasVisualEditV320(key, "person");
   const title = edited ? ` title="${escapeHtml(planEditedTitleV303("person", original))}"` : "";
   const content = planRichHtmlValueV308(key, "person") || escapeHtml(value).replace(/\n/g,"<br>") || `<span class="emptyEditableV307">&nbsp;</span>`;
   return `<td class="personCell planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="person" data-plan-original-v302="${escapeHtml(original)}"${title}${planStyleAttrV307(key, "person")}>${content}${suffixHtml}</td>`;
@@ -1358,6 +1405,8 @@ function savePlanStyleFromPopoverV307(pop){
   if(cell){
     if(applyStyleToSelectionV308(cell, style)){
       saveRichHtmlV308(key, field, cleanEditableHtmlV308(cell));
+      cell.classList.add("planEditedCellV302");
+      syncRowChangeControlsV304(document.getElementById("preview"), key);
       return;
     }
     const styles = loadJsonMapV300(PLAN_STYLE_STORE_V307);
@@ -1373,6 +1422,8 @@ function savePlanStyleFromPopoverV307(pop){
     cell.style.color = style.color || "";
     cell.style.fontWeight = style.boldTouched ? (style.bold ? "850" : "400") : (style.bold ? "850" : "");
     cell.style.fontStyle = style.italic ? "italic" : "";
+    cell.classList.toggle("planEditedCellV302", isPlanFieldEditedV305(key, field, cell.dataset.planOriginalV302 || ""));
+    syncRowChangeControlsV304(document.getElementById("preview"), key);
   }
 }
 
@@ -1645,6 +1696,7 @@ function resetPlanFieldV304(button){
   if(!key || !field) return;
 
   const overrides = loadJsonMapV300(PLAN_CELL_STORE_V302);
+  clearPlanVisualEditV320(key, field);
   if(overrides[key]){
     delete overrides[key][field];
     if(field === "time" || field === "lesson"){
@@ -1834,6 +1886,7 @@ function initPlanEditingV302(){
       const key = timePopover.dataset.keyV307;
       if(key) saveTimeChoiceV307(key, "celý den", "");
       timePopover.hidden = true;
+      focusManualTitleByUidV310(manualUidFromPlanKeyV309(key));
       return;
     }
 
@@ -1846,6 +1899,7 @@ function initPlanEditingV302(){
       const time = `${from} - ${to}`;
       saveTimeChoiceV307(key, time, lessonLabelV161(from, to));
       timePopover.hidden = true;
+      focusManualTitleByUidV310(manualUidFromPlanKeyV309(key));
       return;
     }
 
@@ -1863,6 +1917,7 @@ function initPlanEditingV302(){
         saveTimeChoiceV307(key, `${from.start} - ${to.end}`, lesson);
       }
       timePopover.hidden = true;
+      focusManualTitleByUidV310(manualUidFromPlanKeyV309(key));
     }
   });
 
@@ -1904,6 +1959,26 @@ function initPlanEditingV302(){
   preview.addEventListener("keydown", event=>{
     const cell = event.target.closest(".planEditableCellV302");
     if(!cell) return;
+
+    if((event.key === "Enter" || event.key === "Tab") && cell.dataset.planFieldV302 === "title"){
+      event.preventDefault();
+      const key = cell.dataset.planRowKeyV302;
+      cell.blur();
+      focusManualPersonByKeyV320(key);
+      return;
+    }
+
+    if(event.key === "Enter" && cell.dataset.planFieldV302 === "person"){
+      const dateKey = dateFromPlanRowKeyV320(cell.dataset.planRowKeyV302);
+      if(dateKey){
+        event.preventDefault();
+        cell.blur();
+        preview.classList.add("suppressRowHoverV321");
+        addPreviewManualRowV308(dateKey);
+        setTimeout(()=>preview.classList.remove("suppressRowHoverV321"), 700);
+        return;
+      }
+    }
 
     if(event.key === "Enter" && !event.target.closest("[data-inline-note-v310]")){
       event.preventDefault();
@@ -2032,7 +2107,9 @@ function initPlanEditingV302(){
       event.stopPropagation();
       stylePopover.hidden = true;
       timePopover.hidden = true;
+      preview.classList.add("suppressRowHoverV321");
       addPreviewManualRowV308(addDay.dataset.addDayV308);
+      setTimeout(()=>preview.classList.remove("suppressRowHoverV321"), 700);
       return;
     }
 
