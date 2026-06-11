@@ -1019,12 +1019,8 @@ body{
   background:#fffdf4!important;
 }
 
-.previewPage .planTable tbody tr:hover > td,
-.previewPage .planTable tbody tr:hover > td.dayCell,
-.previewPage .planTable tbody tr:hover > td.timeCell,
-.previewPage .planTable tbody tr:hover > td.eventCell,
-.previewPage .planTable tbody tr:hover > td.personCell{
-  background:#f0f7ff!important;
+.previewPage .planTable tbody tr:hover > td{
+  box-shadow:inset 0 0 0 9999px rgba(219,234,254,.62)!important;
 }
 
 .previewPage .planTable tbody tr:hover > td .planEditableCellV302,
@@ -1434,8 +1430,9 @@ body{
 .timeChoicePopoverV307{
   flex-direction:column!important;
   align-items:stretch!important;
-  gap:8px!important;
-  width:310px!important;
+  gap:9px!important;
+  width:336px!important;
+  padding:8px!important;
 }
 
 .timeChoiceTabsV307,
@@ -1475,8 +1472,8 @@ body{
 
 .timeChoiceMiniGroupV312{
   display:grid!important;
-  grid-template-rows:auto 18px 88px 18px!important;
-  gap:3px!important;
+  grid-template-rows:auto 24px 82px 24px!important;
+  gap:4px!important;
   min-width:0!important;
 }
 
@@ -1490,6 +1487,8 @@ body{
 
 .timeChoiceTabsV307 button{
   flex:1 1 auto!important;
+  height:30px!important;
+  border-radius:10px!important;
 }
 
 .timeChoicePanelV307 label{
@@ -1504,8 +1503,8 @@ body{
 
 .timeChoiceListGroupV307{
   display:grid!important;
-  grid-template-rows:auto 22px 76px 22px!important;
-  gap:3px!important;
+  grid-template-rows:auto 24px 82px 24px!important;
+  gap:4px!important;
   min-width:0!important;
   flex:1 1 0!important;
 }
@@ -1517,18 +1516,18 @@ body{
 }
 
 .timeChoiceListV307{
-  height:76px!important;
+  height:82px!important;
   overflow:hidden!important;
-  padding:4px 3px!important;
+  padding:5px 4px!important;
   border:1px solid rgba(21,90,148,.2)!important;
-  border-radius:9px!important;
-  background:linear-gradient(180deg,#ffffff 0%,#f8fafc 43%,#edf6ff 50%,#f8fafc 57%,#ffffff 100%)!important;
+  border-radius:11px!important;
+  background:linear-gradient(180deg,#ffffff 0%,#f8fafc 35%,#e7f2ff 50%,#f8fafc 65%,#ffffff 100%)!important;
   scroll-snap-type:none!important;
   overscroll-behavior:contain!important;
   touch-action:none!important;
   user-select:none!important;
   cursor:ns-resize!important;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.75), inset 0 34px 20px -22px rgba(255,255,255,.95), inset 0 -34px 20px -22px rgba(255,255,255,.95)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.8), inset 0 34px 20px -22px rgba(255,255,255,.96), inset 0 -34px 20px -22px rgba(255,255,255,.96)!important;
   position:relative!important;
 }
 
@@ -1544,8 +1543,8 @@ body{
 .timeChoiceListV307 button{
   display:none!important;
   width:100%!important;
-  height:22px!important;
-  min-height:22px!important;
+  height:23px!important;
+  min-height:23px!important;
   margin:0 0 2px!important;
   padding:0 4px!important;
   border:0!important;
@@ -1586,19 +1585,19 @@ body{
   background:linear-gradient(180deg,#1d6fac,#0f4f82)!important;
   color:#fff!important;
   font-weight:900!important;
-  box-shadow:0 6px 14px rgba(21,90,148,.28)!important;
-  transform:scale(1.05)!important;
+  box-shadow:0 7px 16px rgba(21,90,148,.30)!important;
+  transform:scale(1.07)!important;
 }
 
 .timeStepBtnV317{
   width:100%!important;
-  height:22px!important;
-  min-height:22px!important;
-  max-height:22px!important;
+  height:24px!important;
+  min-height:24px!important;
+  max-height:24px!important;
   padding:0!important;
-  border-radius:7px!important;
+  border-radius:9px!important;
   border-color:rgba(21,90,148,.18)!important;
-  background:#fff!important;
+  background:linear-gradient(180deg,#fff,#f8fafc)!important;
   color:#155a94!important;
   font-size:10px!important;
   font-weight:900!important;
@@ -2063,17 +2062,29 @@ body{
   width:210mm!important;
   min-height:297mm!important;
   margin:0!important;
-  padding-top:8mm!important;
+  padding-top:5mm!important;
   background:#fff!important;
   box-shadow:none!important;
   -webkit-print-color-adjust:exact!important;
   print-color-adjust:exact!important;
 }
 
+.pdfExportV319 .previewPage,
+.pdfExportV319 .previewPage *{
+  -webkit-print-color-adjust:exact!important;
+  print-color-adjust:exact!important;
+}
+
 .pdfExportV319 .docHeader{
-  margin-top:0!important;
-  padding-top:0!important;
   background:#fff!important;
+}
+
+.pdfExportV319 .docHeader.headerV93 .docLogo{
+  width:162px!important;
+  height:112px!important;
+  max-width:162px!important;
+  max-height:112px!important;
+  object-fit:contain!important;
 }
 
 .pdfExportV319 .planNoteAddV310,
@@ -2088,121 +2099,24 @@ body{
 .pdfExportV319 .planTable{
   width:100%!important;
   table-layout:auto!important;
-  border-collapse:separate!important;
-  border-spacing:0!important;
-  border:1px solid #dfe7ef!important;
-  border-radius:10px!important;
-  box-shadow:none!important;
-  background:#fff!important;
-  font-size:9.6pt!important;
 }
 
-.pdfExportV319 .planTable thead{
-  display:table-header-group!important;
-}
-
-.pdfExportV319 .dateColV308{
-  width:19.5mm!important;
-}
-
-.pdfExportV319 .timeColV308{
-  width:33mm!important;
-}
-
-.pdfExportV319 .personColV308{
-  width:19%!important;
-}
-
+.pdfExportV319 .planTable thead{display:table-header-group!important}
 .pdfExportV319 .planTable tr{
   break-inside:avoid!important;
   page-break-inside:avoid!important;
 }
 
-.pdfExportV319 .planTable th{
-  padding:4px 6px!important;
-  border-right:1px solid #e5edf5!important;
-  border-bottom:1px solid #dce7f1!important;
-  background:#f8fafc!important;
-  color:#164e85!important;
-  font-weight:850!important;
+.pdfExportV319 .planTable th,
+.pdfExportV319 .planTable td,
+.pdfExportV319 .planEditableCellV302{
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
 }
 
-.pdfExportV319 .planTable td{
-  border-top:1px solid #edf2f7!important;
-  border-right:1px solid #eef3f8!important;
-  background:#fff!important;
-  color:#1f2937!important;
-}
-
-.pdfExportV319 .planTable th:last-child,
-.pdfExportV319 .planTable td:last-child{
-  border-right:0!important;
-}
-
-.pdfExportV319 .dayCell{
-  background:#f8fbff!important;
-  color:#164e85!important;
-  border-left:1px solid #dfe7ef!important;
-  border-right:1px solid #dde8f2!important;
-  box-shadow:inset 1px 0 0 #dfe7ef!important;
-}
-
-.pdfExportV319 .timeCell{
-  width:33mm!important;
-  min-width:33mm!important;
-  max-width:33mm!important;
-  padding-left:5px!important;
-  padding-right:5px!important;
-  text-align:left!important;
-}
-
-.pdfExportV319 .planTable tbody tr:hover > td,
-.pdfExportV319 .planTable tbody tr:focus-within td{
-  background:inherit!important;
-}
-
-.pdfExportV319 .repeatColorV50-1 .eventCell,
-.pdfExportV319 .repeatColorV50-1 .personCell{background:#fff8dd!important}
-.pdfExportV319 .repeatColorV50-2 .eventCell,
-.pdfExportV319 .repeatColorV50-2 .personCell{background:#eef6ff!important}
-.pdfExportV319 .repeatColorV50-3 .eventCell,
-.pdfExportV319 .repeatColorV50-3 .personCell{background:#eefbf3!important}
-.pdfExportV319 .repeatColorV50-4 .eventCell,
-.pdfExportV319 .repeatColorV50-4 .personCell{background:#f4f3ff!important}
-.pdfExportV319 .repeatColorV50-5 .eventCell,
-.pdfExportV319 .repeatColorV50-5 .personCell{background:#fff1f1!important}
-.pdfExportV319 .repeatColorV50-6 .eventCell,
-.pdfExportV319 .repeatColorV50-6 .personCell{background:#fdf2fa!important}
-
-.pdfExportV319 .repeatColorV50-1 .eventCell{border-left:6px solid #c9a400!important}
-.pdfExportV319 .repeatColorV50-2 .eventCell{border-left:6px solid #3b82f6!important}
-.pdfExportV319 .repeatColorV50-3 .eventCell{border-left:6px solid #22a06b!important}
-.pdfExportV319 .repeatColorV50-4 .eventCell{border-left:6px solid #7c6cf2!important}
-.pdfExportV319 .repeatColorV50-5 .eventCell{border-left:6px solid #d14343!important}
-.pdfExportV319 .repeatColorV50-6 .eventCell{border-left:6px solid #c241a0!important}
-
-.pdfExportV319 .repeatColorV50-1 .planEditableCellV302,
-.pdfExportV319 .repeatColorV50-2 .planEditableCellV302,
-.pdfExportV319 .repeatColorV50-3 .planEditableCellV302,
-.pdfExportV319 .repeatColorV50-4 .planEditableCellV302,
-.pdfExportV319 .repeatColorV50-5 .planEditableCellV302,
-.pdfExportV319 .repeatColorV50-6 .planEditableCellV302{
-  background:transparent!important;
-}
-
-.pdfExportV319 .planNoteSlotV318{
-  margin:0 0 5mm!important;
-}
-
-.pdfExportV319 .planNoteWrapV310{
-  margin:0 0 5mm!important;
-}
-
+.pdfExportV319 .planNoteWrapV310,
 .pdfExportV319 .planNoteFinalV193,
 .pdfExportV319 .planNoteInlineV310{
-  border:1px solid #e2e8f0!important;
-  background:#fff!important;
-  color:#172033!important;
   break-inside:avoid!important;
   page-break-inside:avoid!important;
 }
