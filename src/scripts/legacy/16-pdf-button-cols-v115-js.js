@@ -57,7 +57,7 @@ function openPdfPreviewFallbackV319(node, existingWin){
   const win = existingWin || window.open("", "_blank");
   if(!win) return;
   const title = node?.dataset?.pdfTitleV319 || pdfDocumentTitleV319();
-  win.document.write(`<!doctype html><html><head><title>${escapeHtml(title)}</title><base href="${location.href}"><link rel="stylesheet" href="src/styles/legacy/bundle.css"><link rel="stylesheet" href="src/styles/pro-redesign.css"></head><body class="pdfPreviewBodyV319"></body></html>`);
+  win.document.write(`<!doctype html><html><head><title>${escapeHtml(title)}</title><base href="${location.href}"><link rel="stylesheet" href="src/styles/legacy/bundle.css"><link rel="stylesheet" href="src/styles/pro-redesign.css"></head><body class="pdfPreviewBodyV319 vectorPdfPreviewV322"></body></html>`);
   win.document.body.appendChild(node);
   win.document.close();
 }
@@ -65,40 +65,8 @@ function openPdfPreviewFallbackV319(node, existingWin){
 function generatePdf(){
   const node = cleanPdfCloneV319();
   if(!node) return;
-  const title = node.dataset.pdfTitleV319 || pdfDocumentTitleV319();
   const previewWin = window.open("", "_blank");
-  if(typeof html2pdf !== "function"){
-    openPdfPreviewFallbackV319(node, previewWin);
-    return;
-  }
-  const host = document.createElement("div");
-  host.style.position = "fixed";
-  host.style.left = "-10000px";
-  host.style.top = "0";
-  host.style.background = "#fff";
-  host.appendChild(node);
-  document.body.appendChild(host);
-  const opt = {
-    margin: [6, 6, 6, 6],
-    filename: pdfFilenameV319(title),
-    image: { type: "png", quality: 1 },
-    html2canvas: { scale: 4, backgroundColor: "#ffffff", useCORS: true, letterRendering: true, logging: false },
-    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-    pagebreak: { mode: ["css", "legacy"], avoid: ["tr", ".dayBreak", ".planNoteWrapV310"] }
-  };
-  html2pdf().set(opt).from(node).toPdf().get("pdf").then(pdf=>{
-    if(pdf?.setProperties) pdf.setProperties({ title, subject: "Týdenní plán", creator: "Generátor plánu" });
-  }).outputPdf("blob").then(blob=>{
-    const url = URL.createObjectURL(blob);
-    if(previewWin) previewWin.location.href = url;
-    else window.open(url, "_blank");
-    setTimeout(()=>URL.revokeObjectURL(url), 60000);
-  }).catch(()=>{
-    if(previewWin) previewWin.close();
-    openPdfPreviewFallbackV319(node);
-  }).finally(()=>{
-    host.remove();
-  });
+  openPdfPreviewFallbackV319(node, previewWin);
 }
 
 /* přepsat PDF tlačítko */

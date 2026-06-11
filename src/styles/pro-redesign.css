@@ -944,6 +944,32 @@ body{
   background:#fff!important;
 }
 
+.pageBreakGuideV322{
+  position:absolute!important;
+  left:-18mm!important;
+  right:-18mm!important;
+  z-index:30!important;
+  height:0!important;
+  border-top:1px dashed rgba(220,38,38,.85)!important;
+  pointer-events:none!important;
+}
+
+.pageBreakGuideV322 span{
+  position:absolute!important;
+  right:0!important;
+  top:-9px!important;
+  padding:2px 6px!important;
+  border:1px solid rgba(220,38,38,.35)!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  color:#b91c1c!important;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
+  font-size:10px!important;
+  font-weight:850!important;
+  line-height:1!important;
+  box-shadow:0 1px 4px rgba(15,23,42,.08)!important;
+}
+
 .calendarRequiredV300{
   min-height:180mm;
   display:flex;
@@ -1982,6 +2008,7 @@ body{
   .webCopyrightV167,
   .createdDateV184,
   .planNoteSlotV318,
+  .pageBreakGuideV322,
   .planRowDeleteV302,
   .planRowChangeToolsV304,
   .planFieldResetV304,
@@ -2014,7 +2041,7 @@ body{
 
   #preview .planTable{
     width:100%!important;
-    table-layout:fixed!important;
+    table-layout:auto!important;
     border-collapse:separate!important;
     border-spacing:0!important;
     background:#fff!important;
@@ -2038,14 +2065,13 @@ body{
   }
 
   #preview .planTable th{
-    background:#f1f5f9!important;
-    color:#0f172a!important;
     -webkit-print-color-adjust:exact!important;
     print-color-adjust:exact!important;
   }
 
   #preview .planTable td{
-    background:#fff;
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
   }
 }
 
@@ -2056,6 +2082,12 @@ body{
   background:#fff;
   color:#172033;
   font-family:"Open Sans",Arial,sans-serif;
+}
+
+.vectorPdfPreviewV322{
+  margin:0!important;
+  padding:6mm!important;
+  background:#fff!important;
 }
 
 .pdfExportV319 .previewPage{
@@ -2098,6 +2130,7 @@ body{
 
 .pdfExportV319 .planNoteAddV310,
 .pdfExportV319 .noteResetV310,
+.pdfExportV319 .pageBreakGuideV322,
 .pdfExportV319 .dayAddRowV308,
 .pdfExportV319 .planFieldResetV304,
 .pdfExportV319 .planRowChangeToolsV304,
