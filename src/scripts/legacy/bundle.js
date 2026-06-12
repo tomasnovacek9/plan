@@ -1443,6 +1443,10 @@ function ensureTimeChoicePopoverV307(){
       <button type="button" data-time-mode-v307="lesson">Vyuč. hodiny</button>
       <button type="button" data-time-all-day-v307>Celý den</button>
     </div>
+    <div class="timeQuickInputsV323">
+      <label>Od <input type="time" data-time-direct-v323="from" step="300"></label>
+      <label>Do <input type="time" data-time-direct-v323="to" step="300"></label>
+    </div>
     <div class="timeChoicePanelV307" data-time-panel-v307="time">
       <div class="timeSplitGroupV310">
         <label>Začátek</label>
@@ -1586,6 +1590,10 @@ function showTimeChoicePopoverV307(cell){
     syncTimeChoiceLessonsFromTimeV307(pop);
     setTimeChoiceModeV307(pop, "time");
   }
+  const directFrom = pop.querySelector("[data-time-direct-v323='from']");
+  const directTo = pop.querySelector("[data-time-direct-v323='to']");
+  if(directFrom) directFrom.value = getTimeSplitValueV310(pop, "from");
+  if(directTo) directTo.value = getTimeSplitValueV310(pop, "to");
   pop.hidden = false;
   positionPopoverV307(pop, cell);
 }
@@ -1922,6 +1930,14 @@ function initPlanEditingV302(){
     }
   });
 
+  timePopover.addEventListener("change", event=>{
+    const input = event.target.closest("[data-time-direct-v323]");
+    if(!input || !input.value) return;
+    setTimeSplitValueV310(timePopover, input.dataset.timeDirectV323, input.value);
+    syncTimeChoiceLessonsFromTimeV307(timePopover);
+    saveTimeChoiceDraftV320(timePopover);
+  });
+
   stylePopover.addEventListener("mouseenter", ()=>clearTimeout(stylePopover.__hideTimerV307));
   stylePopover.addEventListener("mouseleave", ()=>{
     clearTimeout(stylePopover.__hideTimerV307);
@@ -2192,6 +2208,7 @@ function updatePageBreakGuidesV322(){
   const pageHeightPx = 281 * 96 / 25.4;
   const contentHeight = Math.max(page.scrollHeight, page.offsetHeight);
   const count = Math.max(1, Math.ceil(contentHeight / pageHeightPx));
+  page.style.minHeight = `${Math.max(page.offsetHeight, pageHeightPx)}px`;
   for(let i = 1; i <= count; i++){
     const guide = document.createElement("div");
     guide.className = "pageBreakGuideV322";
@@ -2549,7 +2566,7 @@ function cleanPdfCloneV319(){
   if(!source) return null;
   const title = pdfDocumentTitleV319();
   const clone = source.cloneNode(true);
-  clone.querySelectorAll("button,.planRowDeleteV302,.planRowChangeToolsV304,.planFieldResetV304,.manualRowControlsV316,.signatureChangeToolsV310,.noteResetV310,.planStylePopoverV307,.timeChoicePopoverV307,.dayAddRowV308").forEach(el=>el.remove());
+  clone.querySelectorAll("button,.pageBreakGuideV322,.planRowDeleteV302,.planRowChangeToolsV304,.planFieldResetV304,.manualRowControlsV316,.signatureChangeToolsV310,.noteResetV310,.planStylePopoverV307,.timeChoicePopoverV307,.dayAddRowV308").forEach(el=>el.remove());
   clone.querySelectorAll(".planNoteSlotV318").forEach(slot=>{
     if(!slot.querySelector(".planNoteWrapV310")) slot.remove();
     else slot.classList.remove("planNoteSlotEmptyV318","noteHoverZoneV320");
@@ -2580,8 +2597,40 @@ function openPdfPreviewFallbackV319(node, existingWin){
 function generatePdf(){
   const node = cleanPdfCloneV319();
   if(!node) return;
+  const title = node.dataset.pdfTitleV319 || pdfDocumentTitleV319();
   const previewWin = window.open("", "_blank");
-  openPdfPreviewFallbackV319(node, previewWin);
+  if(typeof html2pdf !== "function"){
+    openPdfPreviewFallbackV319(node, previewWin);
+    return;
+  }
+  const host = document.createElement("div");
+  host.style.position = "fixed";
+  host.style.left = "-10000px";
+  host.style.top = "0";
+  host.style.background = "#fff";
+  host.appendChild(node);
+  document.body.appendChild(host);
+  const opt = {
+    margin: [6, 6, 6, 6],
+    filename: pdfFilenameV319(title),
+    image: { type: "png", quality: 1 },
+    html2canvas: { scale: 4, backgroundColor: "#ffffff", useCORS: true, letterRendering: true, logging: false },
+    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+    pagebreak: { mode: ["css", "legacy"], avoid: ["tr", ".dayBreak", ".planNoteWrapV310", ".podpisFinal41"] }
+  };
+  html2pdf().set(opt).from(node).toPdf().get("pdf").then(pdf=>{
+    if(pdf?.setProperties) pdf.setProperties({ title, subject: "Týdenní plán", creator: "Generátor plánu" });
+  }).outputPdf("blob").then(blob=>{
+    const url = URL.createObjectURL(blob);
+    if(previewWin) previewWin.location.href = url;
+    else window.open(url, "_blank");
+    setTimeout(()=>URL.revokeObjectURL(url), 60000);
+  }).catch(()=>{
+    if(previewWin) previewWin.close();
+    openPdfPreviewFallbackV319(node);
+  }).finally(()=>{
+    host.remove();
+  });
 }
 
 /* přepsat PDF tlačítko */

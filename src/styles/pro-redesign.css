@@ -1049,10 +1049,36 @@ body{
   box-shadow:inset 0 0 0 9999px rgba(219,234,254,.62)!important;
 }
 
+.previewPage:not(.suppressRowHoverV321) .planTable tbody tr:has(> .dayCell:hover) > td{
+  box-shadow:none!important;
+}
+
 .previewPage:not(.suppressRowHoverV321) .planTable tbody tr:hover > td .planEditableCellV302,
 .previewPage:not(.suppressRowHoverV321) .planTable tbody tr:hover > td .timeRangeEditV302,
 .previewPage:not(.suppressRowHoverV321) .planTable tbody tr:hover > td .lessonEditV302{
   background:transparent!important;
+}
+
+.previewPage .repeatColorV50-1 .eventCell,
+.previewPage .repeatColorV50-1 .personCell{background:#fff8dd!important}
+.previewPage .repeatColorV50-2 .eventCell,
+.previewPage .repeatColorV50-2 .personCell{background:#eef6ff!important}
+.previewPage .repeatColorV50-3 .eventCell,
+.previewPage .repeatColorV50-3 .personCell{background:#eefbf3!important}
+.previewPage .repeatColorV50-4 .eventCell,
+.previewPage .repeatColorV50-4 .personCell{background:#f4f3ff!important}
+.previewPage .repeatColorV50-5 .eventCell,
+.previewPage .repeatColorV50-5 .personCell{background:#fff1f1!important}
+.previewPage .repeatColorV50-6 .eventCell,
+.previewPage .repeatColorV50-6 .personCell{background:#fdf2fa!important}
+
+.previewPage .repeatColorV50-1 .eventCell,
+.previewPage .repeatColorV50-2 .eventCell,
+.previewPage .repeatColorV50-3 .eventCell,
+.previewPage .repeatColorV50-4 .eventCell,
+.previewPage .repeatColorV50-5 .eventCell,
+.previewPage .repeatColorV50-6 .eventCell{
+  border-left:0!important;
 }
 
 .previewPage .dayCell{
@@ -1515,6 +1541,40 @@ body{
   flex:1 1 auto!important;
   height:30px!important;
   border-radius:10px!important;
+}
+
+.timeQuickInputsV323{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:6px!important;
+}
+
+.timeQuickInputsV323 label{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:5px!important;
+  margin:0!important;
+  padding:4px 6px!important;
+  border:1px solid rgba(15,23,42,.1)!important;
+  border-radius:10px!important;
+  background:#f8fafc!important;
+  color:#475569!important;
+  font-size:11px!important;
+  font-weight:850!important;
+}
+
+.timeQuickInputsV323 input{
+  width:100%!important;
+  min-width:0!important;
+  height:26px!important;
+  padding:0 4px!important;
+  border:0!important;
+  background:transparent!important;
+  color:#0f172a!important;
+  font:inherit!important;
+  font-variant-numeric:tabular-nums!important;
+  outline:none!important;
 }
 
 .timeChoicePanelV307 label{
