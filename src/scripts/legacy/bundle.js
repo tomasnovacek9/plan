@@ -41,7 +41,9 @@ function isReservation(ev){
   return /rezervovaná učebna|změnit učebnu/i.test(ev.summary || "");
 }
 function isSubjectEvent(ev){
-  return !!ev.subject || /test|čtvrtlet|slovíčka|lesson|unit|diktát|písemná práce|opakování/i.test(ev.summary || "");
+  const hasCalendarOnlyFields = !!(ev.location || ev.classes || ev.teachers || ev.description);
+  if(ev.subject && !hasCalendarOnlyFields) return true;
+  return /test|čtvrtlet|slovíčka|lesson|unit|diktát|písemná práce|opakování/i.test(ev.summary || "");
 }
 function eventTitleFromCalendar(ev){
   const parts = [];
@@ -50,8 +52,12 @@ function eventTitleFromCalendar(ev){
   if(ev.location && !/iPad/i.test(ev.location)) parts.push(`(${ev.location})`);
   return parts.join(" ");
 }
+function isTuPlaceholderV323(value){
+  return /^tu$/i.test(String(value || "").trim());
+}
 function eventPersonFromCalendar(ev){
-  return ev.teachers || "";
+  if(ev.classTeacher && !isTuPlaceholderV323(ev.classTeacher) && isTuPlaceholderV323(ev.teachers)) return ev.classTeacher;
+  return ev.teachers || ev.classTeacher || ev.responsible || "";
 }
 
 function importEmbeddedCalendar(){
@@ -296,13 +302,21 @@ function parseIcs(text){
       const found = desc.split("\n").find(l=>l.startsWith(label+":"));
       return found ? found.replace(label+":","").trim() : "";
     };
+    const teachersRaw = pick("Učitelé");
+    const classTeacher = pick("Třídní učitel") || pick("TU");
+    const responsible = pick("Zodpovídá") || pick("Odpovídá");
+    const teachers = isTuPlaceholderV323(teachersRaw) && classTeacher && !isTuPlaceholderV323(classTeacher)
+      ? classTeacher
+      : teachersRaw;
     return {
       uid:e.UID || uid(),
       summary:e.SUMMARY || "",
       description:desc,
       location:e.LOCATION || "",
       classes:pick("Třídy"),
-      teachers:pick("Učitelé"),
+      teachers:teachers || classTeacher || responsible,
+      classTeacher,
+      responsible,
       subject:pick("Předmět"),
       allDay,
       startDate:start.date,
@@ -2206,9 +2220,9 @@ function updatePageBreakGuidesV322(){
   page.querySelectorAll(".pageBreakGuideV322").forEach(el=>el.remove());
   if(document.body.classList.contains("pdfExportingV205")) return;
   const pageHeightPx = 281 * 96 / 25.4;
-  const contentHeight = Math.max(page.scrollHeight, page.offsetHeight);
-  const count = Math.max(1, Math.ceil(contentHeight / pageHeightPx));
-  page.style.minHeight = `${Math.max(page.offsetHeight, pageHeightPx)}px`;
+  page.style.minHeight = "";
+  const contentHeight = page.scrollHeight;
+  const count = Math.floor((contentHeight - 1) / pageHeightPx);
   for(let i = 1; i <= count; i++){
     const guide = document.createElement("div");
     guide.className = "pageBreakGuideV322";
