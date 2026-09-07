@@ -1079,6 +1079,10 @@ body{
 .previewPage .repeatColorV50-5 .personCell.planEditedCellV302{background:#fff1f1!important}
 .previewPage .repeatColorV50-6 .personCell.planEditedCellV302{background:#fdf2fa!important}
 
+.previewPage tr[class*="repeatColorV50-"] > td{
+  vertical-align:top!important;
+}
+
 .previewPage .repeatColorV50-1 .eventCell,
 .previewPage .repeatColorV50-2 .eventCell,
 .previewPage .repeatColorV50-3 .eventCell,
@@ -1144,6 +1148,26 @@ body{
   color:#64748b!important;
 }
 
+.previewPage .currentDayRowV323 > td{
+  box-shadow:inset 0 0 0 9999px rgba(31,111,175,.075)!important;
+}
+
+.previewPage .currentDayRowV323 > .dayCell{
+  background:#edf6ff!important;
+  box-shadow:inset 0 0 0 9999px rgba(31,111,175,.095)!important;
+}
+
+.previewPage .currentDayRowV323 > .dayCell::after{
+  content:""!important;
+  position:absolute!important;
+  top:0!important;
+  bottom:0!important;
+  left:0!important;
+  width:4px!important;
+  background:#1f6faf!important;
+  pointer-events:none!important;
+}
+
 .previewPage .timeCell{
   color:#334155!important;
   font-variant-numeric:tabular-nums!important;
@@ -1167,6 +1191,14 @@ body{
 .previewPage .dayBreak td{
   border-top-color:#b8c6d7!important;
   box-shadow:inset 0 1px 0 #b8c6d7!important;
+}
+
+.previewPage .dayBreak.currentDayRowV323 > td{
+  box-shadow:inset 0 1px 0 #b8c6d7, inset 0 0 0 9999px rgba(31,111,175,.075)!important;
+}
+
+.previewPage .dayBreak.currentDayRowV323 > .dayCell{
+  box-shadow:inset 0 1px 0 #b8c6d7, inset 0 0 0 9999px rgba(31,111,175,.095)!important;
 }
 
 .previewPage .planEditableCellV302{
