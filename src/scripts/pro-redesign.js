@@ -1,4 +1,27 @@
 window.addEventListener("load",()=>{
+  const ROLE_KEY = "tydenni_plan_role_v325";
+  const titleBlock = document.querySelector(".top .school")?.parentElement;
+  if(titleBlock && !document.querySelector(".roleModeV325")){
+    const role = document.createElement("label");
+    role.className = "roleModeV325";
+    role.innerHTML = `
+      <span>Režim</span>
+      <select aria-label="Režim práce">
+        <option value="hospodarka">Hospodářka</option>
+        <option value="ucitel">Učitel</option>
+        <option value="reditel">Ředitel</option>
+      </select>
+    `;
+    const select = role.querySelector("select");
+    select.value = localStorage.getItem(ROLE_KEY) || "reditel";
+    document.body.dataset.planRoleV325 = select.value;
+    select.addEventListener("change", ()=>{
+      localStorage.setItem(ROLE_KEY, select.value);
+      document.body.dataset.planRoleV325 = select.value;
+    });
+    titleBlock.appendChild(role);
+  }
+
   const hidePanelSectionByTitle = (titleText)=>{
     [...document.querySelectorAll(".panel .sectionTitle")].forEach(title=>{
       if((title.textContent || "").trim().toLowerCase() === titleText){

@@ -4,6 +4,7 @@ const dayNames = ["Neděle","Pondělí","Úterý","Středa","Čtvrtek","Pátek",
 let events = [];
 let longEvents = [];
 let calendarSignatureV300 = "";
+const LAST_WEEK_STORE_V324 = "tydenni_plan_last_week_v324";
 
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2); }
 function pad(n){ return String(n).padStart(2,"0"); }
@@ -795,6 +796,7 @@ function initWeekNoteV300(){
     if(field.__noteWeekStableV300) return;
     field.__noteWeekStableV300 = true;
     field.addEventListener("change", ()=>{
+      rememberCurrentWeekV324();
       loadWeekNoteIntoInputV300();
       renderPreview();
     });
@@ -2401,12 +2403,19 @@ function saveData(){
   localStorage.setItem("tydenniPlanData",JSON.stringify(data));
   alert("Uloženo v tomto prohlížeči.");
 }
+function rememberCurrentWeekV324(){
+  const from = document.getElementById("weekFrom")?.value || "";
+  const to = document.getElementById("weekTo")?.value || "";
+  if(!from || !to) return;
+  try{ localStorage.setItem(LAST_WEEK_STORE_V324, JSON.stringify({from,to})); }catch(e){}
+}
 function loadData(){
   const raw=localStorage.getItem("tydenniPlanData");
   if(!raw){ alert("Nic není uložené."); return; }
   const data=JSON.parse(raw);
   document.getElementById("weekFrom").value=data.weekFrom||"";
   document.getElementById("weekTo").value=data.weekTo||"";
+  rememberCurrentWeekV324();
   document.getElementById("signature").value=data.signature||"";
   saveSignatureRoleV312(data.signatureRole||DEFAULT_SIGNATURE_ROLE_V312);
   events=data.events||[];
@@ -2427,15 +2436,21 @@ function setWeekByDate(baseDate){
   monday.setDate(baseDate.getDate() - day + 1);
   const sunday = new Date(monday);
   sunday.setDate(monday.getDate() + 6);
-  document.getElementById("weekFrom").value = dateToInput(monday);
-  document.getElementById("weekTo").value = dateToInput(sunday);
+  const from = dateToInput(monday);
+  const to = dateToInput(sunday);
+  document.getElementById("weekFrom").value = from;
+  document.getElementById("weekTo").value = to;
   document.getElementById("eventDate").value = dateToInput(monday);
+  rememberCurrentWeekV324();
   loadWeekNoteIntoInputV300();
   loadSignatureIntoInputV316();
 }
 
 function setDefaultWeek(){
-  setWeekByDate(new Date());
+  let saved = null;
+  try{ saved = JSON.parse(localStorage.getItem(LAST_WEEK_STORE_V324) || "null"); }catch(e){}
+  const savedFrom = saved?.from ? parseDate(saved.from) : null;
+  setWeekByDate(savedFrom || new Date());
 }
 
 function setCurrentWeekAndImport(){

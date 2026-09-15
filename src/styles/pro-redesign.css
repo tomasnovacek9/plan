@@ -119,6 +119,33 @@ body{
   white-space:nowrap!important;
 }
 
+.roleModeV325{
+  display:inline-grid!important;
+  grid-template-columns:auto 1fr!important;
+  align-items:center!important;
+  gap:7px!important;
+  width:auto!important;
+  margin-top:6px!important;
+  color:#64748b!important;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
+  font-size:11px!important;
+  font-weight:720!important;
+}
+
+.roleModeV325 select{
+  width:auto!important;
+  min-width:116px!important;
+  min-height:25px!important;
+  padding:2px 24px 2px 8px!important;
+  border:1px solid rgba(15,23,42,.10)!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#0f172a!important;
+  font-size:11px!important;
+  font-weight:720!important;
+  box-shadow:none!important;
+}
+
 @keyframes eduLoadingSpinV314{
   to{
     transform:rotate(360deg);
