@@ -55,9 +55,13 @@ function eventTitleFromCalendar(ev){
 function isTuPlaceholderV323(value){
   return /^tu$/i.test(String(value || "").trim());
 }
+function isClassTeacherEventV325(ev){
+  const text = `${ev && ev.summary ? ev.summary : ""}\n${ev && ev.description ? ev.description : ""}`;
+  return /dopravn[ií]\s+hřiště|hodina\s+s\s+třídn[íi]m\s+učitelem/i.test(text);
+}
 function eventPersonFromCalendar(ev){
   if(ev.classTeacher && !isTuPlaceholderV323(ev.classTeacher) && isTuPlaceholderV323(ev.teachers)) return ev.classTeacher;
-  return ev.teachers || ev.classTeacher || ev.responsible || "";
+  return ev.teachers || ev.classTeacher || ev.responsible || (isClassTeacherEventV325(ev) && ev.classes ? "TU" : "");
 }
 
 function importEmbeddedCalendar(){
@@ -309,15 +313,18 @@ function parseIcs(text){
     const teachers = isTuPlaceholderV323(teachersRaw) && classTeacher && !isTuPlaceholderV323(classTeacher)
       ? classTeacher
       : teachersRaw;
+    const classTeacherFallback = !teachers && !classTeacher && !responsible && isClassTeacherEventV325({ summary:e.SUMMARY, description:desc })
+      ? "TU"
+      : "";
     return {
       uid:e.UID || uid(),
       summary:e.SUMMARY || "",
       description:desc,
       location:e.LOCATION || "",
       classes:pick("Třídy"),
-      teachers:teachers || classTeacher || responsible,
+      teachers:teachers || classTeacher || responsible || classTeacherFallback,
       classTeacher,
-      responsible,
+      responsible:responsible || classTeacherFallback,
       subject:pick("Předmět"),
       allDay,
       startDate:start.date,
