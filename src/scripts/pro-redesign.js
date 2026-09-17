@@ -1,4 +1,15 @@
 window.addEventListener("load",()=>{
+  const clearCurrentDayHighlight = ()=>{
+    document.querySelectorAll(".currentDayRowV323").forEach(row=>row.classList.remove("currentDayRowV323"));
+  };
+  clearCurrentDayHighlight();
+  new MutationObserver(clearCurrentDayHighlight).observe(document.body, {
+    childList:true,
+    subtree:true,
+    attributes:true,
+    attributeFilter:["class"]
+  });
+
   const ROLE_KEY = "tydenni_plan_role_v325";
   const titleBlock = document.querySelector(".top .school")?.parentElement;
   if(titleBlock && !document.querySelector(".roleModeV325")){

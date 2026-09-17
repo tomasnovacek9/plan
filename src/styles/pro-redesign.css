@@ -1195,6 +1195,18 @@ body{
   position:relative!important;
 }
 
+.previewPage .currentDayRowV323 > td,
+.previewPage .dayBreak.currentDayRowV323 > td,
+.previewPage .currentDayRowV323 > .dayCell,
+.previewPage .dayBreak.currentDayRowV323 > .dayCell{
+  background:inherit!important;
+  box-shadow:inherit!important;
+}
+
+.previewPage .currentDayRowV323 > .dayCell::after{
+  content:none!important;
+}
+
 .previewPage .dayBreak td{
   border-top-color:#b8c6d7!important;
   box-shadow:inset 0 1px 0 #b8c6d7!important;
