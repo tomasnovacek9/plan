@@ -2251,7 +2251,6 @@ function renderPreview(){
   const planMessage=currentWeekNoteV174();
   const messageHtml = renderPlanNoteSlotV310(planMessage);
   const repeatClasses = repeatClassMapV300(events);
-  const todayKey = dateToInput(new Date());
 
   const rows=[];
   let rowIndex = 0;
@@ -2261,7 +2260,6 @@ function renderPreview(){
       .map((event, originalIndex)=>({event, originalIndex}))
       .filter(item=>!isRowDeletedV302(planRowKeyV302(item.event,dateKey,item.originalIndex)));
     const weekendClass = (d.getDay() === 0 || d.getDay() === 6) ? " weekendRowV184" : "";
-    const todayClass = dateKey === todayKey ? " currentDayRowV323" : "";
     if(dayItems.length===0){
       const rowKey = `empty||${dateKey}`;
       const rowChangeControls = renderRowChangeControlsV304(rowKey, [
@@ -2270,7 +2268,7 @@ function renderPreview(){
         {field:"title", original:""},
         {field:"person", original:""}
       ]);
-      rows.push(`<tr class="dayBreak emptyDayV162${weekendClass}${todayClass}">
+      rows.push(`<tr class="dayBreak emptyDayV162${weekendClass}">
         ${renderDayCellV302(dateKey,d,1)}
         ${renderTimeCellFromOriginalsV307(rowKey, "", "")}
         ${renderEditableCellV302("eventCell", rowKey, "title", "", "")}
@@ -2288,7 +2286,7 @@ function renderPreview(){
           {field:"title", original:String(e.title || "")},
           {field:"person", original:String(e.person || "").trim()}
         ]);
-        rows.push(`<tr class="${idx===0?'dayBreak ':''}${repeated}${weekendClass}${todayClass}">
+        rows.push(`<tr class="${idx===0?'dayBreak ':''}${repeated}${weekendClass}">
           ${idx===0 ? renderDayCellV302(dateKey,d,dayItems.length) : ""}
           ${renderTimeCellEditableV302(e, rowKey)}
           ${renderEditableCellV302("eventCell", rowKey, "title", String(e.title || ""), renderEventTitleHtmlV306(e))}
