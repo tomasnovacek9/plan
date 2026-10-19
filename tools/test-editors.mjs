@@ -31,6 +31,9 @@ window.addEventListener('load',()=>setTimeout(async()=>{
  const firstBorder=getComputedStyle(normal),otherBorder=getComputedStyle(ordinaryRow.querySelector('.eventCell'));
  for(const property of ['borderTopWidth','borderTopColor','borderTopStyle','boxShadow'])check(firstBorder[property]===otherBorder[property],'První akce má stejné ohraničení: '+property);
  ordinaryRow.remove();
+ const nextDay=normal.closest('tr').cloneNode(true);nextDay.classList.add('dayBreak');normal.closest('tbody').append(nextDay);
+ check([...nextDay.children].every(cell=>getComputedStyle(cell).borderTopWidth==='2px'),'Dny odděluje silnější čára přes všechny sloupce');
+ nextDay.remove();
 
  normal.closest('tr').classList.add('repeatedEventV50','repeatColorV50-1');
  const repeatedStyle=getComputedStyle(normal);check(parseFloat(repeatedStyle.paddingLeft)+parseFloat(repeatedStyle.borderLeftWidth)===normalInset,'Text akce má stejné odsazení s čárkou i bez ní');

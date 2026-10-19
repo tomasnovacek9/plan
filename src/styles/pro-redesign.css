@@ -1172,9 +1172,10 @@ body{
   content:none!important;
 }
 
-.previewPage .dayBreak > .dayCell{
-  border-top-color:#b8c6d7!important;
-  box-shadow:inset 0 1px 0 #b8c6d7!important;
+/* A single divider between days, spanning all columns. */
+.previewPage .planTable tbody tr.dayBreak:not(:first-child) > td{
+  border-top:2px solid #9aaec3!important;
+  box-shadow:none!important;
 }
 
 .previewPage .planEditableCellV302{
