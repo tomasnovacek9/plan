@@ -21,7 +21,7 @@ export function resolveTeacherCode(code, people) {
   const assistant = value.match(/^(.*?)\s*\(AP\)$/i);
   if(assistant){
     const expanded = resolveTeacherCode(assistant[1],people);
-    return expanded!==assistant[1] ? raw.replace(value,`${expanded} (AP)`) : raw;
+    return raw.replace(value,expanded);
   }
   if (!/^[\p{L}.\s-]+$/u.test(value) || /^(TU|AJ|CJ|M|TV)$/i.test(value)) return raw;
   const normalized = normalizeTeacher(value);

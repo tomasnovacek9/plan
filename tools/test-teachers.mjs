@@ -34,7 +34,7 @@ edited=true;output=context.renderResponsibleCellV300(event,'2026-10-19',0,'origi
 console.log('Zobrazení příjmení zachová původní data, klíče i ruční úpravy: OK');
 
 const extra=[{firstName:'Kateřina',surname:'Brýdlová'},{firstName:'Kamila',surname:'Vaňkovská'},{firstName:'Markéta',surname:'Votoupalová'},{firstName:'Radim',surname:'Schöller'},{firstName:'Michaela',surname:'Schöllerová'},{firstName:'Šimon',surname:'Burian'},{firstName:'Alex',surname:'Löbb'},{firstName:'Ludmila',surname:'Šebánková'}];
-for(const [code,surname] of [['Brý','Brýdlová'],['Vaň','Vaňkovská'],['Vot','Votoupalová'],['Scholl','Schöller'],['Schöll','Schöller'],['SchollM','Schöllerová'],['Burš','Burian'],['Löb(AP)','Löbb (AP)'],['Šeb(AP)','Šebánková (AP)']])assert.equal(resolveTeacherCode(code,extra),surname,code);
+for(const [code,surname] of [['Brý','Brýdlová'],['Vaň','Vaňkovská'],['Vot','Votoupalová'],['Scholl','Schöller'],['Schöll','Schöller'],['SchollM','Schöllerová'],['Burš','Burian'],['Löb(AP)','Löbb'],['Šeb(AP)','Šebánková']])assert.equal(resolveTeacherCode(code,extra),surname,code);
 const compound=parseTeacherPage('<section id="text24_SubpageContent_1"><p>Mgr. Julie Florek Klimešová</p><strong>Mgr. Lucie Čermáková Šerá</strong><span>Bc. Markéta Votoupalová, DiS.</span><p>Lenka Al Masani</p></section>');
 assert.equal(compound.length,4);assert.equal(resolveTeacherCode('Flo',compound),'Florek Klimešová');assert.equal(resolveTeacherCode('Čer',compound),'Čermáková Šerá');assert.equal(resolveTeacherCode('AlM',compound),'Al Masani');
 console.log('Poradenské pracoviště, potvrzené výjimky, složená příjmení a označení AP: OK');
@@ -42,3 +42,6 @@ console.log('Poradenské pracoviště, potvrzené výjimky, složená příjmen�
 for(const [code,surname] of [['Brl','Brlicová'],['ondr','Ondráčková'],['kon','Konečná']])assert.equal(resolveTeacherCode(code,people),surname);
 assert.equal(resolveTeacherCode('Kon',[{firstName:'Eva',surname:'Konečná'},{firstName:'Jana',surname:'Konečná'}]),'Konečná');
 console.log('Potvrzené opravy Brl, Ondr a Kon fungují i před aktualizací webu: OK');
+
+assert.equal(resolveTeacherCode('XYZ(AP)',people),'XYZ');
+assert.equal(expandTeacherList('Pil (AP), XYZ(AP)',people),'Pilátová, XYZ');
