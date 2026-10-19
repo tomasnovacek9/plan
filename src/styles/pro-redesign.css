@@ -1037,7 +1037,7 @@ body{
   border-right:0!important;
 }
 
-.previewPage .planTable tbody tr:nth-child(even) td:not(.dayCell):not(.eventCell){
+.previewPage .planTable tbody tr:nth-child(even):not(.repeatedEventV50) td:not(.dayCell):not(.eventCell){
   background:#fff!important;
 }
 
@@ -1067,17 +1067,17 @@ body{
   --repeat-accent:#c241a0;
 }
 
-.previewPage .planTable tbody tr.repeatedEventV50 > td:not(.dayCell){
+.previewPage .planTable tbody tr.repeatedEventV50 > td:is(.eventCell, .personCell){
   background:var(--repeat-background)!important;
 }
 
-/* The time cell starts the event row; the spanning day cell stays unchanged. */
-.previewPage .planTable tbody tr.repeatedEventV50 > .timeCell{
+/* Mark the start of the action, keeping the time and day cells clear. */
+.previewPage .planTable tbody tr.repeatedEventV50 > .eventCell{
   position:relative!important;
   padding-left:10px!important;
 }
 
-.previewPage .planTable tbody tr.repeatedEventV50 > .timeCell::before{
+.previewPage .planTable tbody tr.repeatedEventV50 > .eventCell::before{
   content:""!important;
   display:block!important;
   position:absolute;
