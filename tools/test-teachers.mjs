@@ -38,3 +38,7 @@ for(const [code,surname] of [['Brý','Brýdlová'],['Vaň','Vaňkovská'],['Vot'
 const compound=parseTeacherPage('<section id="text24_SubpageContent_1"><p>Mgr. Julie Florek Klimešová</p><strong>Mgr. Lucie Čermáková Šerá</strong><span>Bc. Markéta Votoupalová, DiS.</span><p>Lenka Al Masani</p></section>');
 assert.equal(compound.length,4);assert.equal(resolveTeacherCode('Flo',compound),'Florek Klimešová');assert.equal(resolveTeacherCode('Čer',compound),'Čermáková Šerá');assert.equal(resolveTeacherCode('AlM',compound),'Al Masani');
 console.log('Poradenské pracoviště, potvrzené výjimky, složená příjmení a označení AP: OK');
+
+for(const [code,surname] of [['Brl','Brlicová'],['ondr','Ondráčková'],['kon','Konečná']])assert.equal(resolveTeacherCode(code,people),surname);
+assert.equal(resolveTeacherCode('Kon',[{firstName:'Eva',surname:'Konečná'},{firstName:'Jana',surname:'Konečná'}]),'Konečná');
+console.log('Potvrzené opravy Brl, Ondr a Kon fungují i před aktualizací webu: OK');

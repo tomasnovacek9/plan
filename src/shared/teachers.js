@@ -26,6 +26,12 @@ export function resolveTeacherCode(code, people) {
   if (!/^[\p{L}.\s-]+$/u.test(value) || /^(TU|AJ|CJ|M|TV)$/i.test(value)) return raw;
   const normalized = normalizeTeacher(value);
   if (normalized.length < 3) return raw;
+  // School-confirmed corrections while the public website is being updated.
+  const correction = {brl:{surname:'Brlicová'},ondr:{surname:'Ondráčková'},kon:{firstName:'Eva',surname:'Konečná'}}[normalized];
+  if(correction){
+    const matches = people.filter(p=>normalizeTeacher(p.surname)===normalizeTeacher(correction.surname) && (!correction.firstName || normalizeTeacher(p.firstName)===normalizeTeacher(correction.firstName)));
+    return matches.length>1 ? raw : raw.replace(value,matches[0]?.surname || correction.surname);
+  }
   // Explicitly confirmed by the school; resolve against the current directory.
   const confirmedSurname = {dan:'dankova',scholl:'scholler',schollm:'schollerova',burs:'burian'}[normalized];
   if(confirmedSurname){
