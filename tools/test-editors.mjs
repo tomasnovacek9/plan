@@ -127,6 +127,13 @@ window.addEventListener('load',()=>setTimeout(async()=>{
  const rich=validatePlanBackupV335(JSON.stringify({format:'school-plan-backup',version:1,entries:[['tydenni_plan_rich_html_v308',JSON.stringify({row:{title:'<img src=x onerror=alert(1)>Text'}})]]}));check(!rich[0][1].includes('onerror'),'Obnovení odstraní nebezpečné HTML');
  setWeekByDate(new Date(2020,0,6));[...tools.querySelectorAll('button')].find(b=>b.textContent==='Aktuální týden').click();
  const today=new Date(),monday=new Date(today);monday.setDate(today.getDate()-(today.getDay()||7)+1);check(document.getElementById('weekFrom').value===dateToInput(monday),'Tlačítko vrací aktuální týden');
+ const keyboardDay=document.getElementById('weekFrom').value;
+ saveManualEventsV308([{uid:'manual-keyboard',date:keyboardDay,from:'08:00',to:'08:45',title:'Nová akce',person:''}]);mergeManualEventsV300();renderAll();
+ const keyboardTitle=document.querySelector('#preview .eventCell');keyboardTitle.focus();keyboardTitle.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+ await new Promise(requestAnimationFrame);
+ const keyboardPerson=document.querySelector('#preview .personCell');check(document.activeElement===keyboardPerson,'Enter po akci přesune kurzor do Zodpovídá');
+ document.execCommand('insertText',false,'Nováková');check(cellTextV300(keyboardPerson)==='Nováková','Do Zodpovídá lze po Enteru rovnou psát');keyboardPerson.blur();
+ check(loadJsonMapV300(PLAN_CELL_STORE_V302)[keyboardPerson.dataset.planRowKeyV302]?.person==='Nováková','Jméno napsané po Enteru se uloží');
  const firstDay=document.getElementById('weekFrom').value;const secondDay=new Date(parseDate(firstDay));secondDay.setDate(secondDay.getDate()+1);
  saveManualEventsV308([{uid:'manual-source',date:firstDay,from:'08:00',to:'08:45',title:'Vlastní porada',person:'Nováková'}]);mergeManualEventsV300();renderAll();
  [...tools.querySelectorAll('button')].find(b=>b.textContent==='Kopírovat vlastní akci').click();

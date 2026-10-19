@@ -530,8 +530,16 @@ function focusManualPersonByKeyV320(key){
     if(!personCell) return;
     personCell.focus();
     const range = document.createRange();
-    range.selectNodeContents(personCell);
-    range.collapse(false);
+    // Row controls are noneditable children at the end of this cell.
+    // Put the caret in the text area, before those controls.
+    const controls = personCell.querySelector(":scope > button, :scope > .planRowChangeToolsV304, :scope > .manualRowControlsV316");
+    if(controls){
+      range.setStartBefore(controls);
+      range.collapse(true);
+    }else{
+      range.selectNodeContents(personCell);
+      range.collapse(false);
+    }
     const selection = window.getSelection?.();
     selection?.removeAllRanges();
     selection?.addRange(range);
