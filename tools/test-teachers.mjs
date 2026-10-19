@@ -50,3 +50,8 @@ assert.equal(resolveTeacherCode('Kre',[{firstName:'Veronika',surname:'Krejčí'}
 assert.equal(resolveTeacherCode('Zem',people),'Zemanová');
 assert.equal(resolveTeacherCode('KRE',people),'Krejčí');
 console.log('Potvrzené zkratky Kre → Krejčí a Zem → Zemanová: OK');
+
+assert.equal(resolveTeacherCode('Kře',people),'Křenková');
+assert.equal(resolveTeacherCode('KŘE',people),'Křenková');
+assert.equal(expandTeacherList('Kre, Kře',people),'Krejčí, Křenková');
+console.log('Rozlišení Kre → Krejčí a Kře → Křenková: OK');

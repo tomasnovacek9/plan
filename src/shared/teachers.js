@@ -24,6 +24,9 @@ export function resolveTeacherCode(code, people) {
     return raw.replace(value,expanded);
   }
   if (!/^[\p{L}.\s-]+$/u.test(value) || /^(TU|AJ|CJ|M|TV)$/i.test(value)) return raw;
+  // These two school abbreviations differ only by Czech diacritics.
+  const exactCorrection = {'kře':'Křenková','kre':'Krejčí'}[value.toLocaleLowerCase('cs')];
+  if(exactCorrection) return raw.replace(value,exactCorrection);
   const normalized = normalizeTeacher(value);
   if (normalized.length < 3) return raw;
   // School-confirmed corrections while the public website is being updated.
