@@ -130,3 +130,12 @@ písma a kurzívy. Platí pro označený text nebo celou buňku; ukládá se aut
 „Výchozí vzhled“ odstraní formátování a zachová text.
 
 Funkční test editorů: `CHROME_BIN="/cesta/k/chrome" npm run test:editors`.
+
+## Příjmení učitelů ze školního webu
+
+Funkce `/teachers.json` načítá veřejné stránky zaměstnanců na www.zsbabak.cz.
+Adresář se na síti obnovuje nejvýše jednou za hodinu. V „Zodpovídá“ se zkratka
+nahradí příjmením pouze při jediné shodě podle začátku příjmení, případně iniciály
+jména (např. `NovT`, `Nov T.` nebo `T. Nov`). Více možností, neznámá zkratka nebo
+neúplný adresář ponechají původní text. Výpadek adresáře neblokuje kalendář.
+Původní události a klíče ručních úprav se při doplnění příjmení nemění.

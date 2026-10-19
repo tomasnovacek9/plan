@@ -1240,7 +1240,8 @@ function renderResponsibleCellV300(e, dateKey, index, rowKey, suffixHtml = ""){
 
   const edited = String(value) !== original || planFieldHasVisualEditV320(key, "person");
   const title = edited ? ` title="${escapeHtml(planEditedTitleV303("person", original))}"` : "";
-  const content = planRichHtmlValueV308(key, "person") || escapeHtml(value).replace(/\n/g,"<br>") || `<span class="emptyEditableV307">&nbsp;</span>`;
+  const displayValue = String(value) === original && typeof window.expandPlanTeacherNamesV333 === "function" ? window.expandPlanTeacherNamesV333(value) : value;
+  const content = planRichHtmlValueV308(key, "person") || escapeHtml(displayValue).replace(/\n/g,"<br>") || `<span class="emptyEditableV307">&nbsp;</span>`;
   return `<td class="personCell planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="true" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="person" data-plan-original-v302="${escapeHtml(original)}"${title}${planStyleAttrV307(key, "person")}>${content}${suffixHtml}</td>`;
 }
 

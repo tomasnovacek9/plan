@@ -14,7 +14,7 @@
     "check": "npm run build:legacy && npm run check:js && npm run check:links",
     "check:js": "node tools/check-js-syntax.mjs",
     "check:links": "node tools/check-local-links.mjs",
-    "test": "node tools/test-calendar-load.mjs && node tools/test-calendar-filter.mjs && node tools/test-plan.mjs",
+    "test": "node tools/test-calendar-load.mjs && node tools/test-calendar-filter.mjs && node tools/test-teachers.mjs && node tools/test-plan.mjs",
     "test:editors": "node tools/test-editors.mjs"
   },
   "devDependencies": {
