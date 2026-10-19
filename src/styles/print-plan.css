@@ -18,7 +18,10 @@ body.schoolPrintOpen{overflow:hidden!important}
   padding:12mm!important;margin:0 auto!important;box-shadow:0 3px 18px #24364b24!important;
 }
 #schoolPrintRoot .printFlow{display:flow-root;padding-top:12px}
-#schoolPrintRoot .planTable{overflow:visible!important}
+/* Use the same column layout while measuring pages and while printing them. */
+#schoolPrintRoot .planTable{width:100%!important;table-layout:fixed!important;overflow:visible!important}
+#schoolPrintRoot .planTable :is(td,th){width:auto!important;min-width:0!important;max-width:none!important}
+#schoolPrintRoot .planTable :is(.eventCell,.personCell){overflow:visible!important;overflow-wrap:anywhere!important}
 #schoolPrintRoot .planTable .eventCell{position:relative!important}
 #schoolPrintRoot .printToolbar{font-family:Arial,Helvetica,sans-serif}
 @media(max-width:700px){#schoolPrintRoot .printToolbar{flex-wrap:wrap;padding:12px}#schoolPrintRoot .printToolbar>div{flex-basis:100%}#schoolPrintRoot .printSheets{padding:12px}}

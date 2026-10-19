@@ -8,7 +8,7 @@
     const originals = [node, ...node.querySelectorAll('*')];
     const clones = [copy, ...copy.querySelectorAll('*')];
     const properties = ['font-family','font-size','font-weight','font-style','line-height',
-      'letter-spacing','color','background-color','text-align','vertical-align',
+      'white-space','word-break','overflow-wrap','text-indent','letter-spacing','color','background-color','text-align','vertical-align',
       'padding-top','padding-right','padding-bottom','padding-left',
       'border-top-width','border-top-style','border-top-color',
       'border-right-width','border-right-style','border-right-color',
@@ -37,7 +37,10 @@
     const pages = [];
     const table = source.querySelector('.planTable');
     if (!table) throw new Error('Nejdřív načti nebo vytvoř plán.');
-    const title = source.querySelector('.docDates')?.textContent || '';
+    // Keep the source column proportions, but fit them inside the printable width.
+    const sourceColumns = [...table.querySelectorAll('colgroup col')];
+    const columnWidths = sourceColumns.map(col => col.getBoundingClientRect().width);
+    const totalColumnWidth = columnWidths.reduce((sum, width) => sum + width, 0);
     let page, flow, body;
     function newPage() {
       page = document.createElement('section');
@@ -70,6 +73,11 @@
         if (note) flow.append(clean(note));
       }
       const nextTable = clean(table);
+      if (totalColumnWidth > 0) {
+        nextTable.querySelectorAll('colgroup col').forEach((col, index) => {
+          col.style.setProperty('width', `${columnWidths[index] / totalColumnWidth * 100}%`, 'important');
+        });
+      }
       nextTable.querySelector('tbody').replaceChildren();
       flow.append(nextTable);
       body = nextTable.querySelector('tbody');
