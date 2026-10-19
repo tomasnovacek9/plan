@@ -774,6 +774,12 @@ function todayTextV300(){
 function createdDateKeyV336(){
   return "tydenni_plan_created_date_v336_" + document.getElementById("weekFrom").value;
 }
+function createdAuthorKeyV337(){
+  return "tydenni_plan_created_author_v337_" + document.getElementById("weekFrom").value;
+}
+function createdAuthorV337(){
+  return (localStorage.getItem(createdAuthorKeyV337()) || "").trim().slice(0,160);
+}
 function createdDateValueV336(){
   const value = localStorage.getItem(createdDateKeyV336()) || "";
   const parsed = /^\d{4}-\d{2}-\d{2}$/.test(value) ? parseDate(value) : null;
@@ -2499,7 +2505,7 @@ function renderPreview(){
       </div>
       ${renderSignatureChangeControlsV310(signature || DEFAULT_SIGNATURE_V310, signatureRole || DEFAULT_SIGNATURE_ROLE_V312)}
     </div>
-    <div class="createdDateV184"><span data-edit-created-v336 role="button" tabindex="0" title="Upravit datum vytvoření">Vytvořeno: ${createdDateTextV336()}</span></div>
+    <div class="createdDateV184"><span data-edit-created-v336 role="button" tabindex="0" title="Upravit datum a autora">Vytvořeno: ${createdDateTextV336()}${createdAuthorV337() ? `<br>Vytvořil: ${escapeHtml(createdAuthorV337())}` : ""}</span></div>
 
     `;
 }

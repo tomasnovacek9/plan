@@ -51,18 +51,24 @@
   }
   function editCreatedDate(){
     const key=createdDateKeyV336();
-    const dialog=openDialog('Datum vytvoření');
+    const authorKey=createdAuthorKeyV337();
+    const dialog=openDialog('Datum a autor plánu');
     const label=document.createElement('label');label.textContent='Vytvořeno dne';
     const input=document.createElement('input');input.type='date';input.required=true;input.value=createdDateValueV336();label.append(input);
-    const hint=document.createElement('p');hint.textContent='Datum se uloží pro tento týden a objeví se také v tisku a PDF.';
+    const authorLabel=document.createElement('label');authorLabel.textContent='Vytvořil (nepovinné)';
+    const author=document.createElement('input');author.type='text';author.maxLength=160;author.value=createdAuthorV337();author.placeholder='Jméno autora';authorLabel.append(author);
+    const hint=document.createElement('p');hint.textContent='Údaje se uloží pro tento týden a objeví se také v tisku a PDF. Prázdné jméno se nezobrazuje.';
     const form=document.createElement('form');
     const save=document.createElement('button');save.type='submit';save.textContent='Uložit';save.className='toolsPrimaryV335';
     const reset=document.createElement('button');reset.type='button';reset.textContent='Používat aktuální datum';
-    form.append(label,hint,save,reset);dialog.append(form);
+    form.append(label,authorLabel,hint,save,reset);dialog.append(form);
     form.onsubmit=event=>{
       event.preventDefault();
       if(!input.reportValidity()||!input.value)return;
-      localStorage.setItem(key,input.value);dialog.close();renderPreview();
+      localStorage.setItem(key,input.value);
+      if(author.value.trim())localStorage.setItem(authorKey,author.value.trim());
+      else localStorage.removeItem(authorKey);
+      dialog.close();renderPreview();
     };
     reset.onclick=()=>{localStorage.removeItem(key);dialog.close();renderPreview();};
     input.focus();

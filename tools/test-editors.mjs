@@ -148,6 +148,18 @@ window.addEventListener('load',()=>setTimeout(async()=>{
  document.querySelector('#preview [data-edit-created-v336]').dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
  createdDialog=document.querySelector('.planToolsDialogV335');[...createdDialog.querySelectorAll('button')].find(b=>b.textContent==='Používat aktuální datum').click();
  check(createdDateValueV336()===dateToInput(new Date())&&!localStorage.getItem(createdDateKeyV336()),'Lze obnovit automatické aktuální datum');
+ document.querySelector('#preview [data-edit-created-v336]').click();
+ createdDialog=document.querySelector('.planToolsDialogV335');createdDialog.querySelector('input[type=text]').value='Nováková <vedení>';createdDialog.querySelector('form').requestSubmit();
+ check(document.querySelector('#preview .createdDateV184').textContent.includes('Vytvořil: Nováková <vedení>'),'Volitelný autor se zobrazí bezpečně jako text');
+ check(!document.querySelector('#preview vedení'),'Jméno autora není vykresleno jako HTML');
+ renderPreview();check(createdAuthorV337()==='Nováková <vedení>','Autor přetrvá překreslení');
+ const authorPrint=document.createElement('div');document.body.append(authorPrint);buildSchoolPrintPages(document.getElementById('preview'),authorPrint);
+ check(authorPrint.querySelector('.createdDateV184')?.textContent.includes('Vytvořil: Nováková <vedení>'),'Autor se přenese do tisku');authorPrint.remove();
+ setWeekByDate(new Date(2020,0,6));check(createdAuthorV337()==='','Autor se nepřenese do jiného týdne');setWeekByDate(parseDate(originalWeek));renderPreview();
+ document.querySelector('#preview [data-edit-created-v336]').click();createdDialog=document.querySelector('.planToolsDialogV335');
+ check(createdDialog.querySelector('input[type=text]').value==='Nováková <vedení>','Editor načte uloženého autora');
+ createdDialog.querySelector('input[type=text]').value='';createdDialog.querySelector('form').requestSubmit();
+ check(!document.querySelector('#preview .createdDateV184').textContent.includes('Vytvořil:')&&!localStorage.getItem(createdAuthorKeyV337()),'Prázdný autor se nezobrazuje ani neukládá');
  const firstDay=document.getElementById('weekFrom').value;const secondDay=new Date(parseDate(firstDay));secondDay.setDate(secondDay.getDate()+1);
  saveManualEventsV308([{uid:'manual-source',date:firstDay,from:'08:00',to:'08:45',title:'Vlastní porada',person:'Nováková'}]);mergeManualEventsV300();renderAll();
  [...tools.querySelectorAll('button')].find(b=>b.textContent==='Kopírovat vlastní akci').click();
