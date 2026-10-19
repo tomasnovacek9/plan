@@ -26,6 +26,11 @@ window.addEventListener('load',()=>setTimeout(async()=>{
  const from=pop.querySelector('[data-time-direct-v323="from"]'),to=pop.querySelector('[data-time-direct-v323="to"]');
  const before=time().textContent;
  const normal=title(),normalStyle=getComputedStyle(normal),normalInset=parseFloat(normalStyle.paddingLeft)+parseFloat(normalStyle.borderLeftWidth);
+ const ordinaryRow=normal.closest('tr').cloneNode(true);ordinaryRow.classList.remove('dayBreak');ordinaryRow.querySelector('.dayCell')?.remove();normal.closest('tbody').append(ordinaryRow);
+ const firstBorder=getComputedStyle(normal),otherBorder=getComputedStyle(ordinaryRow.querySelector('.eventCell'));
+ for(const property of ['borderTopWidth','borderTopColor','borderTopStyle','boxShadow'])check(firstBorder[property]===otherBorder[property],'První akce má stejné ohraničení: '+property);
+ ordinaryRow.remove();
+
  normal.closest('tr').classList.add('repeatedEventV50','repeatColorV50-1');
  const repeatedStyle=getComputedStyle(normal);check(parseFloat(repeatedStyle.paddingLeft)+parseFloat(repeatedStyle.borderLeftWidth)===normalInset,'Text akce má stejné odsazení s čárkou i bez ní');
  normal.closest('tr').classList.remove('repeatedEventV50','repeatColorV50-1');
