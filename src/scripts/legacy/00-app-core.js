@@ -140,16 +140,15 @@ function setPreviewStatusV300(title, detail){
   const preview = document.getElementById("preview");
   if(!preview) return;
 
-  if(/načítám|nacitam|loading/i.test(String(title || ""))){
-    return;
-  }
-
+  const loading = /načítám|nacitam|loading/i.test(String(title || ""));
   preview.innerHTML = `
     <div class="calendarRequiredV300">
       <div class="calendarRequiredTitleV300">${escapeHtml(title)}</div>
-      <div class="calendarRequiredDetailV300">${escapeHtml(detail)}</div>
+      <div class="calendarRequiredDetailV300" role="status" aria-live="polite">${escapeHtml(detail)}</div>
+      ${loading ? "" : '<button type="button" class="calendarRetryV329">Zkusit načíst znovu</button>'}
     </div>
   `;
+  preview.querySelector(".calendarRetryV329")?.addEventListener("click",()=>loadCalendarFromUrl({initial:true}));
 }
 
 function calendarSignature(eventsList){
@@ -2567,7 +2566,7 @@ async function loadCalendarFromUrl(options = {}){
       }
     }
 
-    const res = await fetch("/calendar.ics?t=" + Date.now(), { cache: "no-store" });
+    const res = await fetch("/calendar.ics?t=" + Date.now(), { cache: "no-store", signal: AbortSignal.timeout(20000) });
     const text = await res.text();
 
     if(!res.ok){

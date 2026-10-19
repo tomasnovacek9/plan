@@ -4,8 +4,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Generátor týdenního plánu školy z EduPage kalendáře</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<link rel="stylesheet" href="src/styles/legacy/bundle.css?v=20261019-page-count-v8">
+<link rel="stylesheet" href="src/styles/legacy/bundle.css?v=20261019-load-fix-v9">
 <link rel="preconnect" href="https://fonts.googleapis.com/">
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -74,16 +73,14 @@
 
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 
 
-<link rel="stylesheet" href="src/styles/pro-redesign.css?v=20261019-page-count-v8">
-<script defer src="src/scripts/pro-redesign.js?v=20261019-page-count-v8"></script>
-<link rel="stylesheet" href="src/styles/print-plan.css?v=20261019-page-count-v8">
-<script defer src="src/scripts/print-plan.js?v=20261019-page-count-v8"></script>
-<link rel="stylesheet" href="src/styles/editors.css?v=20261019-page-count-v8">
+<link rel="stylesheet" href="src/styles/pro-redesign.css?v=20261019-load-fix-v9">
+<script defer src="src/scripts/pro-redesign.js?v=20261019-load-fix-v9"></script>
+<link rel="stylesheet" href="src/styles/print-plan.css?v=20261019-load-fix-v9">
+<script defer src="src/scripts/print-plan.js?v=20261019-load-fix-v9"></script>
+<link rel="stylesheet" href="src/styles/editors.css?v=20261019-load-fix-v9">
 </head>
 <body class="bpac-extension-installed hideCreatedDateV184">
 
@@ -225,12 +222,12 @@
 
     <main class="previewShell">
       <div class="previewPage" id="pdfArea">
-        <div id="preview"></div>
+        <div id="preview"><div class="calendarRequiredV300" role="status"><div class="calendarRequiredTitleV300">Načítám plán…</div><div class="calendarRequiredDetailV300">Připravuji aplikaci a připojení ke kalendáři EduPage.</div></div></div>
       </div>
     </main>
   </div>
 </div>
 <script src="src/scripts/legacy/mutation-guard-before.js"></script>
-<script src="src/scripts/legacy/bundle.js?v=20261019-page-count-v8"></script>
+<script src="src/scripts/legacy/bundle.js?v=20261019-load-fix-v9"></script>
 <script src="src/scripts/legacy/mutation-guard-after.js"></script>
 </body></html>
