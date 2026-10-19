@@ -133,7 +133,7 @@ Funkční test editorů: `CHROME_BIN="/cesta/k/chrome" npm run test:editors`.
 
 ## Příjmení učitelů ze školního webu
 
-Funkce `/teachers.json` načítá veřejné stránky zaměstnanců na www.zsbabak.cz.
+Funkce `/teachers.json` načítá veřejné stránky zaměstnanců a školního poradenského pracoviště na www.zsbabak.cz.
 Adresář se na síti obnovuje nejvýše jednou za hodinu. V „Zodpovídá“ se zkratka
 nahradí příjmením pouze při jediné shodě podle začátku příjmení, případně iniciály
 jména (např. `NovT`, `Nov T.` nebo `T. Nov`). Více možností, neznámá zkratka nebo
