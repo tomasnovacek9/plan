@@ -107,10 +107,8 @@ Tlačítko **Tisk / export** otevře společný náhled A4. Volba **Vytisknout /
 spustí systémový tisk; pro PDF vyber „Uložit jako PDF“. Ponech A4 na výšku,
 měřítko 100 % a vypni automatické záhlaví a zápatí prohlížeče.
 
-Dny se drží pohromadě, pokud se vejdou na jednu stránku. Delší den se rozdělí
-mezi akcemi a zopakuje datum s označením „pokračování“. Poznámka a podpis jsou
-na konci. Opakované celodenní akce jsou v daném dni první; klíče uložených úprav
-zůstávají zachované.
+Tisk zachovává obsah, pořadí, písmo a barvy aktuálního náhledu. Tabulka se dělí mezi řádky a záhlaví sloupců se opakuje. Tisk nemění její grafiku.
+Opakované celodenní akce zůstávají první v daném dni a uložené úpravy se zachovají.
 
 Test řazení: `npm test`. Test skutečného rozložení v Chrome/Chromium:
 

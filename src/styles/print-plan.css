@@ -14,49 +14,13 @@ body.schoolPrintOpen{overflow:hidden!important}
 #schoolPrintRoot .printToolbar [data-print]{background:#155a94;color:#fff}
 #schoolPrintRoot .printSheets{width:max-content;min-width:100%;padding:24px}
 #schoolPrintRoot .printSheet{
-  box-sizing:content-box;position:relative;width:186mm;height:273mm;margin:0 auto 24px;
-  padding:12mm;background:#fff;box-shadow:0 3px 18px #24364b24;
-  font-size:10pt;line-height:1.35;
+  box-sizing:content-box!important;width:186mm!important;min-height:0!important;height:273mm!important;
+  padding:12mm!important;margin:0 auto!important;box-shadow:0 3px 18px #24364b24!important;
 }
-#schoolPrintRoot .printFlow{display:flow-root}
-#schoolPrintRoot .docHeader{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:8mm!important;margin:0 0 6mm!important;padding:0 0 4mm!important;border-bottom:2px solid #253f57!important;background:#fff!important;transform:none!important}
-#schoolPrintRoot .docSchoolFullV93{font-size:9pt!important;font-weight:600!important;color:#526172!important}
-#schoolPrintRoot .docTitle{font-size:21pt!important;font-weight:800!important;letter-spacing:.6pt!important;margin:2mm 0 1mm!important;color:#213c55!important}
-#schoolPrintRoot .docDates{font-size:11pt!important;font-weight:600!important;color:#334155!important}
-#schoolPrintRoot .docLogo{width:23mm!important;height:23mm!important;max-width:23mm!important;max-height:23mm!important;object-fit:contain!important}
-#schoolPrintRoot .printCompactHeader{margin-bottom:4mm!important;padding-bottom:2mm!important}
-#schoolPrintRoot .printCompactHeader .docTitle{font-size:13pt!important;display:inline-block!important;margin:1mm 3mm 0 0!important}
-#schoolPrintRoot .printCompactHeader .docDates{display:inline-block!important;font-size:10pt!important}
-#schoolPrintRoot .printCompactHeader .docLogo{width:12mm!important;height:12mm!important}
-#schoolPrintRoot .planTable{width:100%!important;table-layout:fixed!important;border-radius:0!important;overflow:visible!important;border-collapse:collapse!important;border-spacing:0!important;border:0!important;box-shadow:none!important;margin:0!important;font-size:10pt!important}
-#schoolPrintRoot .dateColV308{width:15%!important}
-#schoolPrintRoot .timeColV308{width:19%!important}
-#schoolPrintRoot .eventColV308{width:47%!important}
-#schoolPrintRoot .personColV308{width:19%!important}
-#schoolPrintRoot .planTable th{background:#f0f3f5!important;text-align:left;color:#334155!important;font-size:9pt!important;font-weight:700;padding:2mm!important;border:0!important;border-bottom:1px solid #b8c3ce!important}
-#schoolPrintRoot .planTable td{position:relative!important;padding:2mm!important;border:0!important;border-bottom:1px solid #dfe5eb!important;vertical-align:top!important;background:#fff!important;color:#202b37;overflow-wrap:anywhere;white-space:normal!important;min-width:0!important;max-width:none!important;box-shadow:none!important}
-#schoolPrintRoot .printDayGroup{border-top:1.5px solid #97a7b6}
-#schoolPrintRoot .planTable .dayCell{background:#f6f7f8!important;font-size:9pt;text-align:left!important;vertical-align:top!important}
-#schoolPrintRoot .dayName{font-weight:700}
-#schoolPrintRoot .dayDate{margin-top:1mm;font-size:9pt}
-#schoolPrintRoot .dayCell small{display:block;margin-top:2mm;color:#687582;font-size:8pt}
-#schoolPrintRoot .lessonEditV302{display:block;color:#64748b;font-size:8pt}
-#schoolPrintRoot .repeatColorV50-1{--repeat-background:#fff8dd;--repeat-accent:#c9a400}
-#schoolPrintRoot .repeatColorV50-2{--repeat-background:#fff0e2;--repeat-accent:#d98236}
-#schoolPrintRoot .repeatColorV50-3{--repeat-background:#eefbf3;--repeat-accent:#22a06b}
-#schoolPrintRoot .repeatColorV50-4{--repeat-background:#f4f3ff;--repeat-accent:#7c6cf2}
-#schoolPrintRoot .repeatColorV50-5{--repeat-background:#fff1f1;--repeat-accent:#d14343}
-#schoolPrintRoot .repeatColorV50-6{--repeat-background:#fdf2fa;--repeat-accent:#c241a0}
-#schoolPrintRoot .planTable .repeatedEventV50>td:is(.eventCell,.personCell){background:var(--repeat-background)!important}
-#schoolPrintRoot .planTable .eventCell{border-left:0!important;padding-left:3mm!important}
-#schoolPrintRoot .planTable .repeatedEventV50>.eventCell::before{content:""!important;display:block!important;position:absolute;left:.6mm;top:1.4mm;bottom:1.4mm;width:.8mm;border-radius:1mm;background:var(--repeat-accent)!important}
-#schoolPrintRoot .printEnding{padding-top:5mm;break-inside:avoid}
-#schoolPrintRoot .planNoteWrapV310{padding:3mm 4mm;margin:0 0 5mm;border-left:2px solid #9c8a5d;background:#fcfaf4;white-space:pre-wrap}
-#schoolPrintRoot .podpisFinal41{display:block!important;margin:5mm 0 0!important;text-align:right!important;font-size:10pt}
-#schoolPrintRoot .podpisFinal41Box{display:block!important}
-#schoolPrintRoot .createdDateV184{display:block!important;margin-top:3mm;font-size:8pt;color:#687582}
-#schoolPrintRoot .printSheet>footer{position:absolute;bottom:4mm;left:12mm;right:12mm;text-align:right;font-size:8pt;color:#687582;border-top:1px solid #e1e6ec;padding-top:2mm}
-#schoolPrintRoot .printOversize{height:auto;min-height:273mm;padding-bottom:20mm}
+#schoolPrintRoot .printFlow{display:flow-root;padding-top:12px}
+#schoolPrintRoot .planTable{overflow:visible!important}
+#schoolPrintRoot .planTable .eventCell{position:relative!important}
+#schoolPrintRoot .printToolbar{font-family:Arial,Helvetica,sans-serif}
 @media(max-width:700px){#schoolPrintRoot .printToolbar{flex-wrap:wrap;padding:12px}#schoolPrintRoot .printToolbar>div{flex-basis:100%}#schoolPrintRoot .printSheets{padding:12px}}
 @media print{
   @page{size:A4 portrait;margin:12mm}
@@ -66,11 +30,17 @@ body.schoolPrintOpen{overflow:hidden!important}
   #schoolPrintRoot,#schoolPrintRoot *{visibility:visible!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
   #schoolPrintRoot .printToolbar{display:none!important}
   #schoolPrintRoot .printSheets{display:block!important;width:auto!important;min-width:0!important;padding:0!important}
-  #schoolPrintRoot .printSheet{width:186mm!important;height:273mm!important;padding:0!important;margin:0!important;border:0!important;box-shadow:none!important;break-after:page!important;page-break-after:always!important}
+  #schoolPrintRoot .printSheet{display:block!important;position:relative!important;width:186mm!important;min-height:0!important;height:273mm!important;padding:0!important;margin:0!important;border:0!important;box-shadow:none!important;overflow:clip!important}
+  #schoolPrintRoot .printSheet{break-after:page!important;page-break-after:always!important}
   #schoolPrintRoot .printSheet:last-child{break-after:auto!important;page-break-after:auto!important}
-  #schoolPrintRoot .printSheet>footer{left:0;right:0;bottom:0}
+  #schoolPrintRoot .printSheet::after{display:none!important}
+  #schoolPrintRoot .planTable{width:100%!important;table-layout:fixed!important;overflow:visible!important;break-inside:auto!important;page-break-inside:auto!important}
   #schoolPrintRoot .planTable thead{display:table-header-group!important}
-  #schoolPrintRoot .planTable tr{break-inside:avoid!important;page-break-inside:avoid!important}
-  #schoolPrintRoot .printOversize{height:auto!important;min-height:273mm!important;padding-bottom:12mm!important}
-  #schoolPrintRoot .printOversize>footer{position:static!important}
+  #schoolPrintRoot .planTable tbody{break-inside:auto!important;page-break-inside:auto!important}
+  #schoolPrintRoot .planTable tr{break-inside:avoid!important;page-break-inside:avoid!important;break-before:auto!important;break-after:auto!important}
+  #schoolPrintRoot .planTable .dayCell{break-inside:auto!important;page-break-inside:auto!important}
+  #schoolPrintRoot .planNoteSlotV318:has(.planNoteWrapV310){display:block!important}
+  #schoolPrintRoot .planNoteWrapV310,#schoolPrintRoot .podpisFinal41{break-inside:avoid!important}
 }
+
+#schoolPrintRoot .printOversize{height:auto!important;min-height:273mm!important}

@@ -2,12 +2,35 @@
 (() => {
   let root;
   let previousFocus;
-  const clean = node => {
-    const clone = node.cloneNode(true);
-    clone.querySelectorAll('button,.pageBreakGuideV322,.signatureChangeToolsV310,.planRowChangeToolsV304,.manualRowControlsV316,.planFieldResetV304').forEach(el => el.remove());
-    clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
-    return clone;
-  };
+  function clean(node) {
+    const copy = node.cloneNode(true);
+    // Preserve the actual on-screen appearance, including edited text and colors.
+    const originals = [node, ...node.querySelectorAll('*')];
+    const clones = [copy, ...copy.querySelectorAll('*')];
+    const properties = ['font-family','font-size','font-weight','font-style','line-height',
+      'letter-spacing','color','background-color','text-align','vertical-align',
+      'padding-top','padding-right','padding-bottom','padding-left',
+      'border-top-width','border-top-style','border-top-color',
+      'border-right-width','border-right-style','border-right-color',
+      'border-bottom-width','border-bottom-style','border-bottom-color',
+      'border-left-width','border-left-style','border-left-color'];
+    originals.forEach((element, index) => {
+      const style = getComputedStyle(element);
+      properties.forEach(property => clones[index].style.setProperty(property, style.getPropertyValue(property), 'important'));
+      if (element.matches('.docHeader,.docHeader *,col')) {
+        for (const property of ['display','grid-template-columns','gap','align-items','justify-content','flex-direction','min-height','width','height','margin-top','margin-bottom','transform']) {
+          clones[index].style.setProperty(property, style.getPropertyValue(property), 'important');
+        }
+      }
+      if (style.display === 'none') clones[index].style.setProperty('display', 'none', 'important');
+    });
+    copy.querySelectorAll('button,.pageBreakGuideV322,.signatureChangeToolsV310,.planRowChangeToolsV304,.manualRowControlsV316,.planFieldResetV304').forEach(el => el.remove());
+    [copy, ...copy.querySelectorAll('[id],[contenteditable]')].forEach(el => {
+      el.removeAttribute('id');
+      el.removeAttribute('contenteditable');
+    });
+    return copy;
+  }
 
   function build(source, target) {
     target.replaceChildren();
@@ -18,12 +41,15 @@
     let page, flow, body;
     function newPage() {
       page = document.createElement('section');
-      page.className = 'printSheet';
+      page.className = 'previewPage printSheet';
       flow = document.createElement('div');
       flow.className = 'printFlow';
       const header = clean(source.querySelector('.docHeader'));
-      if (pages.length) header.classList.add('printCompactHeader');
       flow.append(header);
+      if (!pages.length) {
+        const note = source.querySelector('.planNoteSlotV318:has(.planNoteWrapV310),.planNoteWrapV310');
+        if (note) flow.append(clean(note));
+      }
       const nextTable = clean(table);
       nextTable.querySelector('tbody').replaceChildren();
       flow.append(nextTable);
@@ -64,12 +90,6 @@
       body.parentNode.append(chunk);
       if (fits()) continue;
       chunk.remove();
-      if (body.parentNode.querySelector('.printDayGroup')) {
-        newPage();
-        body.parentNode.append(chunk);
-        if (fits()) continue;
-        chunk.remove();
-      }
       // A day longer than one page is split only between complete event rows.
       let batch = [];
       let continued = false;
@@ -78,6 +98,11 @@
         chunk.remove();
         chunk = makeChunk(batch, continued);
         body.parentNode.append(chunk);
+        if (!fits() && batch.length === 1 && body.parentNode.querySelectorAll('.printDayGroup').length > 1) {
+          chunk.remove();
+          newPage();
+          body.parentNode.append(chunk);
+        }
         if (!fits() && batch.length > 1) {
           chunk.remove();
           batch.pop();
@@ -96,8 +121,6 @@
     }
     const end = document.createElement('div');
     end.className = 'printEnding';
-    const note = source.querySelector('.planNoteWrapV310');
-    if (note?.textContent.trim()) end.append(clean(note));
     const signature = source.querySelector('.podpisFinal41');
     if (signature) end.append(clean(signature));
     if (!document.body.classList.contains('hideCreatedDateV184')) {
@@ -128,11 +151,6 @@
       flow.append(end);
       if (!fits()) page.classList.add('printOversize');
     }
-    pages.forEach((sheet, index) => {
-      const footer = document.createElement('footer');
-      footer.textContent = `${title} · ${index + 1} / ${pages.length}`;
-      sheet.append(footer);
-    });
     return pages;
   }
 
@@ -143,7 +161,7 @@
     root.setAttribute('role', 'dialog');
     root.setAttribute('aria-modal', 'true');
     root.setAttribute('aria-label', 'Náhled tisku a PDF');
-    root.innerHTML = '<div class="printToolbar"><div><strong>Náhled tisku a PDF</strong><span>A4 na výšku · PDF uložíš v tiskovém dialogu. Pro přesný výstup ponech měřítko 100 % a vypni záhlaví a zápatí prohlížeče.</span></div><button type="button" data-print>Vytisknout / uložit PDF</button><button type="button" data-close>Zavřít</button></div><div class="printSheets"></div>';
+    root.innerHTML = '<div class="printToolbar"><div><strong>Náhled tisku a PDF</strong><span>Stejný vzhled jako v plánu. Stránky jsou rozdělené mezi řádky akcí. PDF uložíš volbou „Uložit jako PDF“. Ponech A4 na výšku a měřítko 100 %.</span></div><button type="button" data-print>Vytisknout / uložit PDF</button><button type="button" data-close>Zavřít</button></div><div class="printSheets"></div>';
     document.body.append(root);
     root.querySelector('[data-print]').onclick = () => window.print();
     root.querySelector('[data-close]').onclick = close;
@@ -191,7 +209,7 @@
       if (!event.shiftKey && document.activeElement === buttons.at(-1)) { event.preventDefault(); buttons[0].focus(); }
     }
   });
-  window.addEventListener('beforeprint', prepare);
+  window.addEventListener('beforeprint', () => { if (!root) prepare(); });
   window.buildSchoolPrintPages = build;
   window.openSchoolPrintPreview = open;
 })();
