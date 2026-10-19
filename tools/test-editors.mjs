@@ -110,6 +110,8 @@ window.addEventListener('load',()=>setTimeout(async()=>{
  window.confirm=()=>{check(document.querySelector('.planStylePopoverV307').hidden,'Mazání neotevře formátování před potvrzením');return false;};deleteButton.click();
  check(document.querySelector('#preview .eventCell'),'Zrušení mazání zachová událost');
  window.confirm=()=>true;const deletedKey=deleteButton.dataset.planDeleteKeyV302;deleteButton.click();check(isRowDeletedV302(deletedKey),'Potvrzené mazání funguje');window.confirm=originalConfirm;
+ const undoButton=document.querySelector('[data-undo-delete-v338]');check(!undoButton.disabled,'Po smazání lze obnovit akci');undoButton.click();
+ check(!isRowDeletedV302(deletedKey)&&undoButton.disabled,'Obnovení vrátí kalendářovou akci a vyčerpá krok');
  events=Array.from({length:55},(_,i)=>({uid:'scroll'+i,id:'scroll'+i,source:'calendar',date:'2026-10-19',from:'08:00',to:'08:45',title:'Akce pro kontrolu rolování '+i,person:'Nováková'}));renderPreview();
  await openSchoolPrintPreview();
  check(!document.querySelector('#pdfArea .pageBreakGuideV322'),'Hlavní náhled neobsahuje odhadované konce stran');
@@ -165,6 +167,32 @@ window.addEventListener('load',()=>setTimeout(async()=>{
  [...tools.querySelectorAll('button')].find(b=>b.textContent==='Kopírovat vlastní akci').click();
  const copyDialog=document.querySelector('.planToolsDialogV335');copyDialog.querySelector('input[type=date]').value=dateToInput(secondDay);copyDialog.querySelector('.toolsPrimaryV335').click();
  const manual=loadManualEventsV300();check(manual.length===2&&manual[0].uid!==manual[1].uid,'Kopie má nové ID');check(manual[1].date===dateToInput(secondDay)&&manual[1].title==='Vlastní porada','Kopie zachová obsah a změní den');
+ const sourceKey=[manual[0].date,manual[0].uid,'manual'].join('||');
+ saveJsonMapV300(PLAN_CELL_STORE_V302,{[sourceKey]:{title:'Upravená porada',lesson:'3.–4. hodina'}});
+ saveJsonMapV300(PLAN_STYLE_STORE_V307,{[sourceKey]:{title:{color:'#155a94'}}});
+ saveJsonMapV300(PLAN_RICH_STORE_V308,{[sourceKey]:{person:'<b>Nováková</b>'}});
+ const targetDay=new Date(parseDate(firstDay));targetDay.setDate(targetDay.getDate()+14);const targetDate=dateToInput(targetDay);
+ const targetStore=MANUAL_EVENTS_STORE_V300+'__'+weekArchiveIdV316(targetDate);
+ localStorage.setItem(targetStore,JSON.stringify([{uid:'manual-existing-target',date:targetDate,title:'Již uložená akce'}]));
+ [...tools.querySelectorAll('button')].find(b=>b.textContent==='Kopírovat vlastní akci').click();
+ let crossDialog=document.querySelector('.planToolsDialogV335');crossDialog.querySelector('input[type=date]').value=targetDate;crossDialog.querySelector('.toolsPrimaryV335').click();
+ const targetItems=JSON.parse(localStorage.getItem(targetStore));const copied=targetItems[1];
+ check(targetItems.length===2&&targetItems[0].title==='Již uložená akce','Kopie do jiného týdne zachová jeho existující akce');
+ check(copied.date===targetDate&&copied.title==='Upravená porada'&&loadManualEventsV300().length===2,'Kopie nezmění původní týden');
+ const targetRow=[targetDate,copied.uid,'manual'].join('||');
+ check(JSON.parse(localStorage.getItem(PLAN_CELL_STORE_V302+'__'+weekArchiveIdV316(targetDate)))[targetRow].lesson==='3.–4. hodina','Kopie přenese upravené vyučovací hodiny');
+ check(JSON.parse(localStorage.getItem(PLAN_STYLE_STORE_V307+'__'+weekArchiveIdV316(targetDate)))[targetRow].title.color==='#155a94','Kopie přenese barvy do cílového týdne');
+ check(JSON.parse(localStorage.getItem(PLAN_RICH_STORE_V308+'__'+weekArchiveIdV316(targetDate)))[targetRow].person==='<b>Nováková</b>','Kopie přenese formátování zodpovědné osoby');
+ document.querySelector('.toolsCloseV335').click();renderPreview();
+ const manualDelete=[...document.querySelectorAll('#preview .planRowDeleteV302')].find(b=>b.dataset.planDeleteKeyV302===sourceKey);
+ window.confirm=()=>true;manualDelete.click();window.confirm=originalConfirm;check(loadManualEventsV300().length===1,'Smazání vlastní akce odstraní jen vybranou akci');
+ // A later addition must survive undo, even when the user changes weeks first.
+ const extra={...manual[1],uid:'manual-added-later'};saveManualEventsV308([...loadManualEventsV300(),extra]);
+ setWeekByDate(targetDay);document.querySelector('[data-undo-delete-v338]').click();
+ check(loadManualEventsV300().length===2,'Obnovení v jiném týdnu nezmění jeho akce');document.querySelector('.toolsCloseV335').click();
+ setWeekByDate(parseDate(firstDay));mergeManualEventsV300();renderPreview();
+ check(loadManualEventsV300().length===3&&loadManualEventsV300().some(e=>e.uid===manual[0].uid),'Obnovení vlastní akce zachová pozdější přidanou akci');
+ check(loadJsonMapV300(PLAN_CELL_STORE_V302)[sourceKey].title==='Upravená porada','Obnovená akce si zachová ruční úpravy');
  [...tools.querySelectorAll('button')].find(b=>b.textContent==='Nerozpoznané zkratky').click();check(document.querySelector('.planToolsDialogV335')?.textContent.includes('Adresář'),'Přehled hlásí nedostupný adresář');document.querySelector('.toolsCloseV335').click();
 
  }catch(e){failures.push(e.stack)}

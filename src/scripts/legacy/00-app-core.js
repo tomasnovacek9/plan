@@ -968,8 +968,8 @@ const WEEK_SCOPED_STORES_V316 = new Set([
 ]);
 const WEEK_STORAGE_MIGRATION_V316 = "tydenni_plan_week_storage_migrated_v316";
 
-function weekArchiveIdV316(){
-  const source = parseDate(document.getElementById("weekFrom")?.value || "") || new Date();
+function weekArchiveIdV316(value){
+  const source = parseDate(value || document.getElementById("weekFrom")?.value || "") || new Date();
   const date = new Date(source);
   date.setHours(0,0,0,0);
   date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
@@ -2374,7 +2374,12 @@ function initPlanEditingV302(){
     const key = button.dataset.planDeleteKeyV302;
     if(!key) return;
 
+    const manualItem = loadManualEventsV300().find(item=>item.uid === manualUidFromPlanKeyV309(key));
+    const undoDetail = {key, week:document.getElementById("weekFrom").value,
+      store:scopedStorageKeyV316(manualItem ? MANUAL_EVENTS_STORE_V300 : PLAN_DELETE_STORE_V302),
+      item:manualItem || null};
     if(removeManualEventByUidV309(manualUidFromPlanKeyV309(key))){
+      document.dispatchEvent(new CustomEvent("plan-row-deleted-v338",{detail:undoDetail}));
       renderPreview();
       return;
     }
@@ -2382,6 +2387,7 @@ function initPlanEditingV302(){
     const deleted = loadJsonMapV300(PLAN_DELETE_STORE_V302);
     deleted[key] = true;
     saveJsonMapV300(PLAN_DELETE_STORE_V302, deleted);
+    document.dispatchEvent(new CustomEvent("plan-row-deleted-v338",{detail:undoDetail}));
     renderPreview();
   });
 

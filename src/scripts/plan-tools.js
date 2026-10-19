@@ -88,10 +88,10 @@
     const label=document.createElement('label');label.textContent='Akce';
     const select=document.createElement('select');select.setAttribute('aria-label','Kopírovaná akce');
     list.forEach((item,index)=>{const option=document.createElement('option');option.value=index;option.textContent=`${formatDate(item.date)} · ${item.title||'Bez názvu'}`;select.append(option);});label.append(select);
-    const dateLabel=document.createElement('label');dateLabel.textContent='Nový den';const date=document.createElement('input');date.type='date';date.required=true;date.min=document.getElementById('weekFrom').value;date.max=document.getElementById('weekTo').value;date.value=date.min;dateLabel.append(date);
+    const dateLabel=document.createElement('label');dateLabel.textContent='Nový den';const date=document.createElement('input');date.type='date';date.required=true;date.value=document.getElementById('weekFrom').value;dateLabel.append(date);
     const save=document.createElement('button');save.type='button';save.textContent='Vytvořit kopii';save.className='toolsPrimaryV335';
     save.onclick=()=>{
-      if(!date.value||date.value<date.min||date.value>date.max){date.reportValidity();return;}
+      if(!date.reportValidity()||!date.value)return;
       const original=list[Number(select.value)];
       if(!original)return;
       const oldKey=[original.date,original.uid,'manual'].join('||');
@@ -102,10 +102,55 @@
       else{const match=value.match(/(\d{2}:\d{2})\s*-\s*(\d{2}:\d{2})/);if(match){clone.from=match[1];clone.to=match[2];}}
       clone.originalFrom=clone.from;clone.originalTo=clone.to;
       const newKey=[clone.date,clone.uid,'manual'].join('||');
-      for(const store of [PLAN_STYLE_STORE_V307,PLAN_RICH_STORE_V308]){const map=loadJsonMapV300(store);if(map[oldKey]){map[newKey]=JSON.parse(JSON.stringify(map[oldKey]));saveJsonMapV300(store,map);}}
-      saveManualEventsV308([...list,clone]);window.manualEventsV167=[...list,clone];mergeManualEventsV300();renderAll();dialog.close();
+      const targetWeek=weekArchiveIdV316(date.value);
+      const targetKey=store=>`${store}__${targetWeek}`;
+      const changes=[];
+      for(const store of [PLAN_CELL_STORE_V302,PLAN_STYLE_STORE_V307,PLAN_RICH_STORE_V308]){
+        const sourceMap=loadJsonMapV300(store);
+        if(sourceMap[oldKey]){
+          const targetMap=JSON.parse(localStorage.getItem(targetKey(store))||'{}');
+          targetMap[newKey]=JSON.parse(JSON.stringify(sourceMap[oldKey]));
+          changes.push([targetKey(store),JSON.stringify(targetMap)]);
+        }
+      }
+      const targetList=JSON.parse(localStorage.getItem(targetKey(MANUAL_EVENTS_STORE_V300))||'[]');
+      changes.push([targetKey(MANUAL_EVENTS_STORE_V300),JSON.stringify([...targetList,clone])]);
+      const previous=changes.map(([key])=>[key,localStorage.getItem(key)]);
+      try{changes.forEach(([key,value])=>localStorage.setItem(key,value));}
+      catch(error){previous.forEach(([key,value])=>value===null?localStorage.removeItem(key):localStorage.setItem(key,value));alert('Kopii se nepodařilo uložit.');return;}
+      if(targetWeek===weekArchiveIdV316()){
+        window.manualEventsV167=loadManualEventsV300();mergeManualEventsV300();renderAll();dialog.close();
+      }else{
+        dialog.close();
+        const done=openDialog('Akce zkopírována');
+        const message=document.createElement('p');message.textContent=`Kopie je uložena na ${formatDate(clone.date)}. Původní akce zůstala zachována.`;
+        const show=document.createElement('button');show.textContent='Zobrazit cílový týden';show.className='toolsPrimaryV335';
+        show.onclick=()=>{done.close();setWeekByDate(parseDate(clone.date));importWeekFromCalendar();};done.append(message,show);
+      }
     };
-    dialog.append(label,dateLabel,save);
+    const hint=document.createElement('p');hint.textContent='Vyber libovolný den, i v jiném týdnu. Kopie zachová text, čas, zodpovědnou osobu i formátování.';dialog.append(label,dateLabel,hint,save);
+  }
+  let lastDeletion;
+  function updateUndo(){
+    const button=document.querySelector('[data-undo-delete-v338]');
+    if(button){button.disabled=!lastDeletion;button.title=lastDeletion?`Obnovit akci v týdnu od ${formatDate(lastDeletion.week)}`:'Zatím nebyla smazána žádná akce';}
+  }
+  document.addEventListener('plan-row-deleted-v338',event=>{lastDeletion=event.detail;updateUndo();});
+  function undoDeletion(){
+    if(!lastDeletion)return;
+    const {store,item,key,week}=lastDeletion;
+    try{
+      const data=JSON.parse(localStorage.getItem(store)||(item?'[]':'{}'));
+      if(item){if(!data.some(event=>event.uid===item.uid))data.push(item);}
+      else delete data[key];
+      localStorage.setItem(store,JSON.stringify(data));
+    }catch(error){alert('Smazanou akci se nepodařilo obnovit.');return;}
+    lastDeletion=null;updateUndo();
+    if(weekArchiveIdV316(week)===weekArchiveIdV316()){
+      window.manualEventsV167=loadManualEventsV300();mergeManualEventsV300();renderPreview();
+    }else{
+      const dialog=openDialog('Akce obnovena');const text=document.createElement('p');text.textContent=`Akce byla obnovena v týdnu od ${formatDate(week)}.`;dialog.append(text);
+    }
   }
   function unresolved(){
     const report=window.getUnresolvedTeacherCodesV335?.([...document.querySelectorAll('#preview .personCell')].map(cell=>cell.dataset.planOriginalV302||''));
@@ -119,8 +164,8 @@
   window.addEventListener('load',()=>{
     const shell=document.querySelector('.previewShell');if(!shell)return;
     const bar=document.createElement('div');bar.className='planToolsV335';bar.setAttribute('aria-label','Nástroje plánu');
-    for(const [text,action] of [['Aktuální týden',()=>setCurrentWeekAndImport()],['Kopírovat vlastní akci',duplicate],['Zálohovat úpravy',backup],['Obnovit zálohu',()=>file.click()],['Nerozpoznané zkratky',unresolved]]){
-      const button=document.createElement('button');button.type='button';button.textContent=text;button.onclick=action;bar.append(button);
+    for(const [text,action] of [['Aktuální týden',()=>setCurrentWeekAndImport()],['Kopírovat vlastní akci',duplicate],['Vrátit smazanou akci',undoDeletion],['Zálohovat úpravy',backup],['Obnovit zálohu',()=>file.click()],['Nerozpoznané zkratky',unresolved]]){
+      const button=document.createElement('button');button.type='button';button.textContent=text;button.onclick=action;if(action===undoDeletion){button.dataset.undoDeleteV338='';button.disabled=!lastDeletion;}bar.append(button);
     }
     const file=document.createElement('input');file.type='file';file.accept='.json,application/json';file.hidden=true;file.onchange=()=>{restore(file.files[0]);file.value='';};bar.append(file);shell.prepend(bar);
   });
