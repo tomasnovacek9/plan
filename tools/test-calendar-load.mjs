@@ -23,3 +23,12 @@ await ctx.loadCalendarFromUrl({initial:true});assert.match(preview.innerHTML,/ne
 ctx.fetch=async()=>{throw new Error('Network failure')};await ctx.loadCalendarFromUrl({initial:true});assert.match(preview.innerHTML,/Zkusit načíst znovu/);
 const html=readFileSync('index.html','utf8');assert.doesNotMatch(html,/<script[^>]+cdnjs/);
 console.log('Načítání: viditelný stav, časový limit, úspěch, HTTP chyba, neplatný obsah, síťová chyba a opakování: OK');
+
+const weekFunctions=core.slice(core.indexOf('function setWeekByDate('),core.indexOf('function moveWeek('));
+const fields={weekFrom:{value:''},weekTo:{value:''},eventDate:{value:''}};
+for(const [today,from,to] of [['2026-10-19T12:00:00','2026-10-19','2026-10-25'],['2026-10-25T12:00:00','2026-10-19','2026-10-25'],['2027-01-01T12:00:00','2026-12-28','2027-01-03']]){
+ class FakeDate extends Date{constructor(...args){super(...(args.length?args:[today]));}}
+ const weekCtx=vm.createContext({Date:FakeDate,document:{getElementById:id=>fields[id]},localStorage:{getItem:()=>JSON.stringify({from:'2026-06-01',to:'2026-06-07'})},dateToInput:d=>[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-'),rememberCurrentWeekV324(){},loadWeekNoteIntoInputV300(){},loadSignatureIntoInputV316(){}});
+ vm.runInContext(weekFunctions,weekCtx);weekCtx.setDefaultWeek();assert.equal(fields.weekFrom.value,from);assert.equal(fields.weekTo.value,to);
+}
+console.log('Při otevření se vybere aktuální týden i přes dříve uložené datum: OK');

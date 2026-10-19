@@ -2519,10 +2519,7 @@ function setWeekByDate(baseDate){
 }
 
 function setDefaultWeek(){
-  let saved = null;
-  try{ saved = JSON.parse(localStorage.getItem(LAST_WEEK_STORE_V324) || "null"); }catch(e){}
-  const savedFrom = saved?.from ? parseDate(saved.from) : null;
-  setWeekByDate(savedFrom || new Date());
+  setWeekByDate(new Date());
 }
 
 function setCurrentWeekAndImport(){
