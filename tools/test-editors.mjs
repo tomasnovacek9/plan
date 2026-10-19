@@ -25,6 +25,11 @@ window.addEventListener('load',()=>setTimeout(async()=>{
  showTimeChoicePopoverV307(time());const pop=document.querySelector('.timeChoicePopoverV307');
  const from=pop.querySelector('[data-time-direct-v323="from"]'),to=pop.querySelector('[data-time-direct-v323="to"]');
  const before=time().textContent;
+ const normal=title(),normalStyle=getComputedStyle(normal),normalInset=parseFloat(normalStyle.paddingLeft)+parseFloat(normalStyle.borderLeftWidth);
+ normal.closest('tr').classList.add('repeatedEventV50','repeatColorV50-1');
+ const repeatedStyle=getComputedStyle(normal);check(parseFloat(repeatedStyle.paddingLeft)+parseFloat(repeatedStyle.borderLeftWidth)===normalInset,'Text akce má stejné odsazení s čárkou i bez ní');
+ normal.closest('tr').classList.remove('repeatedEventV50','repeatColorV50-1');
+
  from.value='08:07';to.value='09:13';change(from);change(to);
  check(time().textContent===before,'Změna návrhu neukládá čas');
  to.value='07:00';change(to);check(pop.querySelector('[data-time-save-v327]').disabled,'Neplatný rozsah nelze uložit');

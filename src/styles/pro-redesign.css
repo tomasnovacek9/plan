@@ -1071,8 +1071,9 @@ body{
   background:var(--repeat-background)!important;
 }
 
-/* Mark the start of the action, keeping the time and day cells clear. */
-.previewPage .planTable tbody tr.repeatedEventV50 > .eventCell{
+/* Reserve identical space for the marker in every action row. */
+.previewPage .planTable tbody tr > .eventCell{
+  border-left:0!important;
   position:relative!important;
   padding-left:10px!important;
 }
