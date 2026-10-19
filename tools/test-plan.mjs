@@ -50,6 +50,9 @@ function scenario(name,counts,long=false){
  }
  check(root.querySelectorAll('.planNoteWrapV310').length===1,name+': poznámka zachována');
  check(root.querySelectorAll('.podpisFinal41').length===1,name+': podpis zachován');
+ check(root.querySelectorAll('.docHeader').length===1,name+': hlavička pouze na první stránce');
+ check(pages[0].querySelector('.docHeader'),name+': první stránka má hlavičku');
+ for(const page of pages.slice(1))check(!page.querySelector('.docHeader'),name+': další stránka bez hlavičky');
  shell.remove();root.remove();
 }
 try{scenario('krátký',[2,2,2,2,2]);scenario('hustý',[10,12,9,10,8],true);scenario('dlouhý den',[60,2,2]);}catch(e){failures.push(e.stack);}

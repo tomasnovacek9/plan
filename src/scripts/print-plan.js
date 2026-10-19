@@ -44,8 +44,7 @@
       page.className = 'previewPage printSheet';
       flow = document.createElement('div');
       flow.className = 'printFlow';
-      const header = clean(source.querySelector('.docHeader'));
-      flow.append(header);
+      if (!pages.length) flow.append(clean(source.querySelector('.docHeader')));
       if (!pages.length) {
         const note = source.querySelector('.planNoteSlotV318:has(.planNoteWrapV310),.planNoteWrapV310');
         if (note) flow.append(clean(note));
@@ -161,7 +160,7 @@
     root.setAttribute('role', 'dialog');
     root.setAttribute('aria-modal', 'true');
     root.setAttribute('aria-label', 'Náhled tisku a PDF');
-    root.innerHTML = '<div class="printToolbar"><div><strong>Náhled tisku a PDF</strong><span>Stejný vzhled jako v plánu. Stránky jsou rozdělené mezi řádky akcí. PDF uložíš volbou „Uložit jako PDF“. Ponech A4 na výšku a měřítko 100 %.</span></div><button type="button" data-print>Vytisknout / uložit PDF</button><button type="button" data-close>Zavřít</button></div><div class="printSheets"></div>';
+    root.innerHTML = '<div class="printToolbar"><div><strong>Náhled tisku a PDF</strong><span>Stejný vzhled jako v plánu. Stránky jsou rozdělené mezi řádky akcí. PDF uložíš volbou „Uložit jako PDF“. Ponech A4 na výšku a měřítko 100 %. V tiskovém dialogu vypni „Záhlaví a zápatí“, aby se netiskl odkaz na web.</span></div><button type="button" data-print>Vytisknout / uložit PDF</button><button type="button" data-close>Zavřít</button></div><div class="printSheets"></div>';
     document.body.append(root);
     root.querySelector('[data-print]').onclick = () => window.print();
     root.querySelector('[data-close]').onclick = close;
