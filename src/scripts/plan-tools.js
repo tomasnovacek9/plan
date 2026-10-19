@@ -49,6 +49,25 @@
     dialog.append(heading,close);document.body.append(dialog);dialog.addEventListener('close',()=>dialog.remove());dialog.showModal();
     return dialog;
   }
+  function editSignature(field){
+    const dialog=openDialog('Jméno a funkce v podpisu');
+    const form=document.createElement('form');
+    const nameLabel=document.createElement('label');nameLabel.textContent='Jméno včetně titulů';
+    const name=document.createElement('input');name.type='text';name.required=true;name.maxLength=160;name.value=document.getElementById('signature').value||DEFAULT_SIGNATURE_V310;nameLabel.append(name);
+    const roleLabel=document.createElement('label');roleLabel.textContent='Funkce';
+    const role=document.createElement('input');role.type='text';role.required=true;role.maxLength=160;role.value=signatureRoleValueV312();roleLabel.append(role);
+    const save=document.createElement('button');save.type='submit';save.textContent='Uložit';save.className='toolsPrimaryV335';
+    const reset=document.createElement('button');reset.type='button';reset.textContent='Obnovit výchozí podpis';
+    const hint=document.createElement('p');hint.textContent='Podpis se uloží pro tento týden a použije se také v tisku a PDF.';
+    form.append(nameLabel,roleLabel,hint,save,reset);dialog.append(form);
+    form.onsubmit=event=>{
+      event.preventDefault();
+      if(!form.reportValidity()||!name.value.trim()||!role.value.trim())return;
+      saveSignatureTextV316(name.value);saveSignatureRoleV312(role.value);dialog.close();renderPreview();
+    };
+    reset.onclick=()=>{saveSignatureTextV316(DEFAULT_SIGNATURE_V310);saveSignatureRoleV312(DEFAULT_SIGNATURE_ROLE_V312);dialog.close();renderPreview();};
+    const input=field==='role'?role:name;input.focus();input.select();
+  }
   function editCreatedDate(){
     const key=createdDateKeyV336();
     const authorKey=createdAuthorKeyV337();
@@ -75,8 +94,11 @@
   }
   document.addEventListener('click',event=>{
     if(event.target.closest('#preview [data-edit-created-v336]'))editCreatedDate();
+    const signature=event.target.closest('#preview [data-edit-signature-v339]');if(signature)editSignature(signature.dataset.editSignatureV339);
   });
   document.addEventListener('keydown',event=>{
+    const signature=event.target.closest('#preview [data-edit-signature-v339]');
+    if(signature&&(event.key==='Enter'||event.key===' ')){event.preventDefault();editSignature(signature.dataset.editSignatureV339);return;}
     if(event.target.closest('#preview [data-edit-created-v336]')&&(event.key==='Enter'||event.key===' ')){
       event.preventDefault();editCreatedDate();
     }

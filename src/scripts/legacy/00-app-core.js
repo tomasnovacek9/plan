@@ -2506,7 +2506,7 @@ function renderPreview(){
     </table>
     <div class="podpisFinal41">
       <div class="podpisFinal41Box">
-        <span class="podpisFinal41Name" contenteditable="true" spellcheck="false" data-signature-name-v310="1">${escapeHtml(signature || DEFAULT_SIGNATURE_V310)}</span><span class="podpisFinal41RolePrefix">, </span><span class="podpisFinal41Role" contenteditable="true" spellcheck="false" data-signature-role-v312="1">${escapeHtml(signatureRole || DEFAULT_SIGNATURE_ROLE_V312)}</span>
+        <span class="podpisFinal41Name" data-edit-signature-v339="name" role="button" tabindex="0" title="Upravit jméno a funkci">${escapeHtml(signature || DEFAULT_SIGNATURE_V310)}</span><span class="podpisFinal41RolePrefix">, </span><span class="podpisFinal41Role" data-edit-signature-v339="role" role="button" tabindex="0" title="Upravit jméno a funkci">${escapeHtml(signatureRole || DEFAULT_SIGNATURE_ROLE_V312)}</span>
       </div>
       ${renderSignatureChangeControlsV310(signature || DEFAULT_SIGNATURE_V310, signatureRole || DEFAULT_SIGNATURE_ROLE_V312)}
     </div>

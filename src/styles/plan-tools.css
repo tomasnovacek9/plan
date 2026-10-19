@@ -19,3 +19,8 @@
 .planToolsDialogV335 form>button+button{margin-left:8px}
 
 .planToolsV335 button:disabled{opacity:.45;cursor:default;background:#fff;border-color:#dce4ed}
+
+@media screen{
+  #preview [data-edit-signature-v339]{cursor:pointer}
+  #preview [data-edit-signature-v339]:is(:hover,:focus-visible){outline:2px solid #dce9f5!important;outline-offset:3px;border-radius:2px}
+}
