@@ -63,6 +63,18 @@ window.addEventListener('load',()=>setTimeout(()=>{
  showTimeChoicePopoverV307(time());click('[data-time-mode-v307="time"]');from.value='10:10';change(from);click('[data-time-duration-v327="45"]');check(to.value==='10:55','Rychlá délka akce');
  pop.querySelector('[data-editor-close-v327]').click();
  check(time().textContent==='celý den','Zrušení rychlé volby neukládá návrh');
+
+ const day=()=>document.querySelector('#preview .dayName'),date=()=>document.querySelector('#preview .dayDate');
+ day().click();click('[data-style-color-preset-v309="#b91c1c"]');
+ check(getComputedStyle(day()).color==='rgb(185, 28, 28)','Barva názvu dne');
+ date().click();click('[data-style-color-preset-v309="#047857"]');
+ check(getComputedStyle(date()).color==='rgb(4, 120, 87)','Samostatná barva data');
+ renderPreview();check(getComputedStyle(day()).color==='rgb(185, 28, 28)'&&getComputedStyle(date()).color==='rgb(4, 120, 87)','Barvy dne a data zůstávají po překreslení');
+ const dayPrintRoot=document.createElement('div');dayPrintRoot.id='schoolPrintRoot';const daySheets=document.createElement('div');daySheets.className='printSheets';dayPrintRoot.append(daySheets);document.body.append(dayPrintRoot);buildSchoolPrintPages(document.getElementById('preview'),daySheets);
+ check(getComputedStyle(daySheets.querySelector('.dayName')).color==='rgb(185, 28, 28)','Barva dne v tisku');
+ check(getComputedStyle(daySheets.querySelector('.dayDate')).color==='rgb(4, 120, 87)','Barva data v tisku');dayPrintRoot.remove();
+ day().click();click('[data-style-reset-v327]');check(!day().style.color,'Výchozí vzhled dne');
+ check(day().textContent==='Pondělí','Reset dne nezmění název');
  const cell=title();window.getSelection().removeAllRanges();showPlanStylePopoverV307(cell);click('[data-style-bold-v307]');
  check(cell.style.fontWeight==='850','Tučné pro celou buňku');check(pop.hidden,'Formátování zavře časový editor');
  click('[data-style-color-preset-v309="#047857"]');check(cell.style.color==='rgb(4, 120, 87)','Barva textu');

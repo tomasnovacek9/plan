@@ -1048,7 +1048,7 @@ function planStyleAttrV307(key, field){
   const style = planStyleValueV307(key, field);
   const parts = [];
   if(/^\d{1,2}pt$/.test(String(style.size || ""))) parts.push(`font-size:${style.size}`);
-  if(/^#[0-9a-f]{6}$/i.test(String(style.color || ""))) parts.push(`color:${style.color}${field === "time" || field === "lesson" ? "!important" : ""}`);
+  if(/^#[0-9a-f]{6}$/i.test(String(style.color || ""))) parts.push(`color:${style.color}${["time","lesson","day","date"].includes(field) ? "!important" : ""}`);
   if(style.bold) parts.push("font-weight:850");
   else if(style.boldTouched) parts.push("font-weight:400");
   if(style.italic) parts.push("font-style:italic");
@@ -1223,8 +1223,8 @@ function renderManualRowControlsV316(key){
 function renderDayCellV302(dateKey, d, rowspan){
   return `<td class="dayCell" rowspan="${rowspan}">
     <button type="button" class="dayAddRowV308" title="Přidat řádek k tomuto dni" aria-label="Přidat řádek k tomuto dni" data-add-day-v308="${escapeHtml(dateKey)}">+</button>
-    <div class="dayName">${dayNames[d.getDay()]}</div>
-    <div class="dayDate">${formatDate(dateKey)}</div>
+    <div class="dayName dayColorEditableV331" tabindex="0" role="button" aria-label="Upravit vzhled názvu dne" data-plan-row-key-v302="day||${escapeHtml(dateKey)}" data-plan-field-v302="day"${planStyleAttrV307(`day||${dateKey}`, "day")}>${dayNames[d.getDay()]}</div>
+    <div class="dayDate dayColorEditableV331" tabindex="0" role="button" aria-label="Upravit vzhled data" data-plan-row-key-v302="day||${escapeHtml(dateKey)}" data-plan-field-v302="date"${planStyleAttrV307(`day||${dateKey}`, "date")}>${formatDate(dateKey)}</div>
   </td>`;
 }
 
@@ -1396,7 +1396,7 @@ function positionPopoverV307(pop, target){
 
 function showPlanStylePopoverV307(cell){
   if(!cell?.dataset?.planRowKeyV302 || !cell.dataset.planFieldV302) return;
-  if(cell.getAttribute("contenteditable") !== "true") return;
+  if(cell.getAttribute("contenteditable") !== "true" && !cell.classList.contains("dayColorEditableV331")) return;
   const pop = ensurePlanStylePopoverV307();
   const timeEditor = document.querySelector(".timeChoicePopoverV307");
   if(timeEditor) timeEditor.hidden = true;
@@ -1404,7 +1404,7 @@ function showPlanStylePopoverV307(cell){
   const style = planStyleValueV307(cell.dataset.planRowKeyV302, cell.dataset.planFieldV302);
   pop.dataset.keyV307 = cell.dataset.planRowKeyV302;
   pop.dataset.fieldV307 = cell.dataset.planFieldV302;
-  pop.querySelector("[data-style-heading-v327]").textContent = ({title:"Akce",person:"Zodpovídá",note:"Poznámka"})[cell.dataset.planFieldV302] || "Text";
+  pop.querySelector("[data-style-heading-v327]").textContent = ({title:"Akce",person:"Zodpovídá",note:"Poznámka",day:"Název dne",date:"Datum"})[cell.dataset.planFieldV302] || "Text";
   pop.dataset.boldTouchedV319 = "";
   pop.querySelector("[data-style-size-v307]").value = style.size || "";
   pop.dataset.colorV307 = style.color || "";
@@ -1433,7 +1433,7 @@ function savePlanStyleFromPopoverV307(pop){
   };
   const cell = document.querySelector(`[data-plan-row-key-v302="${CSS.escape(key)}"][data-plan-field-v302="${CSS.escape(field)}"]`);
   if(cell){
-    if(applyStyleToSelectionV308(cell, style)){
+    if(cell.getAttribute("contenteditable") === "true" && applyStyleToSelectionV308(cell, style)){
       saveRichHtmlV308(key, field, cleanEditableHtmlV308(cell));
       cell.classList.add("planEditedCellV302");
       syncRowChangeControlsV304(document.getElementById("preview"), key);
@@ -1449,7 +1449,7 @@ function savePlanStyleFromPopoverV307(pop){
     if(styles[key] && !Object.keys(styles[key]).length) delete styles[key];
     saveJsonMapV300(PLAN_STYLE_STORE_V307, styles);
     cell.style.fontSize = style.size || "";
-    cell.style.color = style.color || "";
+    cell.style.setProperty("color", style.color || "", cell.classList.contains("dayColorEditableV331") ? "important" : "");
     cell.style.fontWeight = style.boldTouched ? (style.bold ? "850" : "400") : (style.bold ? "850" : "");
     cell.style.fontStyle = style.italic ? "italic" : "";
     cell.classList.toggle("planEditedCellV302", isPlanFieldEditedV305(key, field, cell.dataset.planOriginalV302 || ""));
@@ -1792,6 +1792,12 @@ function initResponsibleEditingV300(){
   });
 
   preview.addEventListener("keydown", event=>{
+    const dayLabel = event.target.closest(".dayColorEditableV331");
+    if(dayLabel && (event.key === "Enter" || event.key === " ")){
+      event.preventDefault();
+      showPlanStylePopoverV307(dayLabel);
+      return;
+    }
     const cell = event.target.closest(".responsibleCellV213");
     if(!cell) return;
 
@@ -1889,7 +1895,7 @@ function initPlanEditingV302(){
       if(!cell) return;
       const text = editableTextV318(cell, true);
       clearPlanVisualEditV320(key, field);
-      saveRichHtmlV308(key, field, escapeHtml(text).replace(/\n/g,"<br>"));
+      if(!cell.classList.contains("dayColorEditableV331")) saveRichHtmlV308(key, field, escapeHtml(text).replace(/\n/g,"<br>"));
       renderPreview();
       const fresh = preview.querySelector(`[data-plan-row-key-v302="${CSS.escape(key)}"][data-plan-field-v302="${CSS.escape(field)}"]`);
       if(fresh) showPlanStylePopoverV307(fresh);
@@ -2107,6 +2113,12 @@ function initPlanEditingV302(){
   });
 
   preview.addEventListener("keydown", event=>{
+    const dayLabel = event.target.closest(".dayColorEditableV331");
+    if(dayLabel && (event.key === "Enter" || event.key === " ")){
+      event.preventDefault();
+      showPlanStylePopoverV307(dayLabel);
+      return;
+    }
     const cell = event.target.closest(".planEditableCellV302");
     if(!cell) return;
 
@@ -2260,6 +2272,13 @@ function initPlanEditingV302(){
       preview.classList.add("suppressRowHoverV321");
       addPreviewManualRowV308(addDay.dataset.addDayV308);
       setTimeout(()=>preview.classList.remove("suppressRowHoverV321"), 700);
+      return;
+    }
+
+    const dayLabel = event.target.closest(".dayColorEditableV331");
+    if(dayLabel){
+      event.preventDefault();
+      showPlanStylePopoverV307(dayLabel);
       return;
     }
 
