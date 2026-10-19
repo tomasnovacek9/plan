@@ -42,9 +42,12 @@ function isReservation(ev){
   return /rezervovaná učebna|změnit učebnu/i.test(ev.summary || "");
 }
 function isSubjectEvent(ev){
-  const hasCalendarOnlyFields = !!(ev.location || ev.classes || ev.teachers || ev.description);
-  if(ev.subject && !hasCalendarOnlyFields) return true;
-  return /test|čtvrtlet|slovíčka|lesson|unit|diktát|písemná práce|opakování/i.test(ev.summary || "");
+  // EduPage subject metadata identifies classroom entries even when their title
+  // contains only the topic (and class/teacher/location metadata is also present).
+  if(String(ev.subject || "").trim()) return true;
+  const title = String(ev.summary || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  return /(^|[^a-z0-9])(?:test(?:y|u|em|um|ech|ik|iky)?|zkouseni|prezkouseni|pisemk[ayueou]*|diktat(?:y|u|em)?|ctvrtletk[ayueou]*|slovicka|lesson|unit|opakovani)(?=$|[^a-z0-9])/.test(title)
+    || /(?:pisemn[aeouy]|kontrolni|ctvrtletni|pololetni)\s+prac[ei]|overovani\s+znalosti|proverk[ayueou]*/.test(title);
 }
 function eventTitleFromCalendar(ev){
   const parts = [];
