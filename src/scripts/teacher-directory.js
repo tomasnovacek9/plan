@@ -1,4 +1,4 @@
-import { expandTeacherList } from '../shared/teachers.js';
+import { expandTeacherList } from '../shared/teachers.js?v=20261019-dan-alias-v16';
 let directory = [];
 window.expandPlanTeacherNamesV333 = text => expandTeacherList(text,directory);
 try {
