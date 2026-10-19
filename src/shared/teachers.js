@@ -21,6 +21,12 @@ export function resolveTeacherCode(code, people) {
   if (!/^[\p{L}.\s-]+$/u.test(value) || /^(TU|AJ|CJ|M|TV)$/i.test(value)) return raw;
   const normalized = normalizeTeacher(value);
   if (normalized.length < 3) return raw;
+  // Explicitly confirmed by the school; resolve against the current directory.
+  const confirmedSurname = {dan:'dankova'}[normalized];
+  if(confirmedSurname){
+    const confirmed = people.filter(p=>normalizeTeacher(p.surname)===confirmedSurname);
+    return confirmed.length===1 ? raw.replace(value,confirmed[0].surname) : raw;
+  }
   // A complete name is already explicit and must not be shortened.
   if (people.some(p=>normalizeTeacher(p.firstName+p.surname)===normalized)) return raw;
   const possibilities = [{prefix:normalized,initial:''}];

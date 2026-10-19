@@ -6,6 +6,8 @@ import {onRequestGet} from '../functions/teachers.json.js';
 const people=[{firstName:'Tomáš',surname:'Nováček'},{firstName:'Lada',surname:'Novotná'},{firstName:'Monika',surname:'Daňková'},{firstName:'Pavla',surname:'Pilátová'},{firstName:'Renáta',surname:'Klusáková'}];
 for(const [code,expected] of [['Nov','Nov'],['Nováč','Nováček'],['NovT','Nováček'],['Nov L.','Novotná'],['T. Nov','Nováček'],['TNov','Nováček'],['Daň','Daňková'],['Pil','Pilátová'],['XYZ','XYZ'],['TU','TU'],['Pavla Pilátová','Pavla Pilátová']]) assert.equal(resolveTeacherCode(code,people),expected,code);
 assert.equal(expandTeacherList('Daň, Pil; Nov / XYZ',people),'Daňková, Pilátová; Nov / XYZ');
+assert.equal(resolveTeacherCode('Dan',[...people,{firstName:'Michaela',surname:'Dančová'}]),'Daňková');
+assert.equal(resolveTeacherCode('Dan',[{firstName:'Michaela',surname:'Dančová'}]),'Dan');
 assert.equal(resolveTeacherCode('Pil',[...people,{firstName:'Jana',surname:'Pilátová'}]),'Pil');
 const fixture='<section id="text19_SubpageContent_1"><div>Mgr. Monika Daňková</div><div>Šimon Burian</div><div>Vedení školy</div><div>Mgr. Monika Daňková</div></section><script>fake</script>';
 assert.equal(parseTeacherPage(fixture).length,2);assert.deepEqual(parseTeacherPage('<div>Mgr. Monika Daňková</div>'),[]);
