@@ -44,3 +44,15 @@ body.schoolPrintOpen{overflow:hidden!important}
 }
 
 #schoolPrintRoot .printOversize{height:auto!important;min-height:273mm!important}
+
+#schoolPrintRoot [data-print-count-v328]{display:inline-block;margin-left:10px;padding:4px 9px;border-radius:7px;background:#eaf1f8;color:#24527a;font-size:12px;font-weight:650}
+#schoolPrintRoot .printPageNumberV328{position:absolute;left:12mm;right:12mm;bottom:4mm;text-align:right;font:11px Arial,sans-serif;color:#64748b;border-top:1px solid #e2e8f0;padding-top:5px}
+@media screen{
+  #schoolPrintRoot .printSheet{position:relative!important;margin-bottom:44px!important;outline:1px solid #d4dce5}
+  #schoolPrintRoot .printSheet::before{content:attr(data-page-label);position:absolute;top:-19px;left:0;color:#56677a;font:600 11px Arial,sans-serif;letter-spacing:.2px}
+  #schoolPrintRoot .printSheets{padding-top:40px}
+}
+@media print{
+  #schoolPrintRoot .printPageNumberV328{left:0;right:0;bottom:0}
+  #schoolPrintRoot .printSheet::before{display:none!important}
+}

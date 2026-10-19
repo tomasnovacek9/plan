@@ -150,6 +150,16 @@
       flow.append(end);
       if (!fits()) page.classList.add('printOversize');
     }
+    pages.forEach((sheet,index)=>{
+      const label = `Strana ${index + 1} z ${pages.length}`;
+      sheet.dataset.pageLabel = label;
+      const footer = document.createElement("div");
+      footer.className = "printPageNumberV328";
+      footer.textContent = label;
+      sheet.append(footer);
+    });
+    const counter = target.closest("#schoolPrintRoot")?.querySelector("[data-print-count-v328]");
+    if(counter) counter.textContent = `Celkem stran: ${pages.length}`;
     return pages;
   }
 
@@ -160,7 +170,7 @@
     root.setAttribute('role', 'dialog');
     root.setAttribute('aria-modal', 'true');
     root.setAttribute('aria-label', 'Náhled tisku a PDF');
-    root.innerHTML = '<div class="printToolbar"><div><strong>Náhled tisku a PDF</strong><span>Stejný vzhled jako v plánu. Stránky jsou rozdělené mezi řádky akcí. PDF uložíš volbou „Uložit jako PDF“. Ponech A4 na výšku a měřítko 100 %. V tiskovém dialogu vypni „Záhlaví a zápatí“, aby se netiskl odkaz na web.</span></div><button type="button" data-print>Vytisknout / uložit PDF</button><button type="button" data-close>Zavřít</button></div><div class="printSheets"></div>';
+    root.innerHTML = '<div class="printToolbar"><div><strong>Náhled tisku a PDF <b data-print-count-v328></b></strong><span>Stejný vzhled jako v plánu. Stránky jsou rozdělené mezi řádky akcí. PDF uložíš volbou „Uložit jako PDF“. Ponech A4 na výšku a měřítko 100 %. V tiskovém dialogu vypni „Záhlaví a zápatí“, aby se netiskl odkaz na web.</span></div><button type="button" data-print>Vytisknout / uložit PDF</button><button type="button" data-close>Zavřít</button></div><div class="printSheets"></div>';
     document.body.append(root);
     root.querySelector('[data-print]').onclick = () => window.print();
     root.querySelector('[data-close]').onclick = close;

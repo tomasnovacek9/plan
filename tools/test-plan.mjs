@@ -44,6 +44,8 @@ function scenario(name,counts,long=false){
    for(const property of ['backgroundColor','fontSize','fontWeight','color'])check(getComputedStyle(original)[property]===getComputedStyle(clone)[property],name+': zachovaný vzhled '+property);
    check(clone.nextElementSibling.textContent===original.nextElementSibling.textContent,name+': zachovaná osoba');
  }
+ check(root.querySelectorAll('.printPageNumberV328').length===pages.length,name+': číslo na každé straně');
+ check(pages.at(-1).querySelector('.printPageNumberV328').textContent==='Strana '+pages.length+' z '+pages.length,name+': správný celkový počet');
  for(const page of pages){
  check(page.querySelectorAll('.eventCell').length>0,name+': stránka obsahuje akce');
  check(page.querySelector('.printFlow').getBoundingClientRect().height<=parseFloat(getComputedStyle(page).height)-29,name+': obsah se vejde na A4');
