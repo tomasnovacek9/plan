@@ -1,8 +1,8 @@
-import { expandTeacherList } from '../shared/teachers.js?v=20261019-no-ap-v20';
+import { expandTeacherList } from '../shared/teachers.js?v=20261019-kre-zem-v21';
 let directory = [];
 window.expandPlanTeacherNamesV333 = text => expandTeacherList(text,directory);
 try {
-  const response = await fetch('/teachers.json?v=20261019-no-ap-v20',{signal:AbortSignal.timeout(10000)});
+  const response = await fetch('/teachers.json?v=20261019-kre-zem-v21',{signal:AbortSignal.timeout(10000)});
   if(response.ok){
     const data = await response.json();
     if(Array.isArray(data.teachers)) directory = data.teachers.filter(p=>typeof p.firstName==='string' && typeof p.surname==='string');

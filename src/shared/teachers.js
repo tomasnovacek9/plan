@@ -27,7 +27,7 @@ export function resolveTeacherCode(code, people) {
   const normalized = normalizeTeacher(value);
   if (normalized.length < 3) return raw;
   // School-confirmed corrections while the public website is being updated.
-  const correction = {brl:{surname:'Brlicová'},ondr:{surname:'Ondráčková'},kon:{firstName:'Eva',surname:'Konečná'}}[normalized];
+  const correction = {brl:{surname:'Brlicová'},ondr:{surname:'Ondráčková'},kon:{firstName:'Eva',surname:'Konečná'},kre:{surname:'Krejčí'},zem:{surname:'Zemanová'}}[normalized];
   if(correction){
     const matches = people.filter(p=>normalizeTeacher(p.surname)===normalizeTeacher(correction.surname) && (!correction.firstName || normalizeTeacher(p.firstName)===normalizeTeacher(correction.firstName)));
     return matches.length>1 ? raw : raw.replace(value,matches[0]?.surname || correction.surname);

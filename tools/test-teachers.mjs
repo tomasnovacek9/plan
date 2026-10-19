@@ -45,3 +45,8 @@ console.log('Potvrzené opravy Brl, Ondr a Kon fungují i před aktualizací web
 
 assert.equal(resolveTeacherCode('XYZ(AP)',people),'XYZ');
 assert.equal(expandTeacherList('Pil (AP), XYZ(AP)',people),'Pilátová, XYZ');
+
+assert.equal(resolveTeacherCode('Kre',[{firstName:'Veronika',surname:'Krejčí'},{firstName:'Michaela',surname:'Křenková'}]),'Krejčí');
+assert.equal(resolveTeacherCode('Zem',people),'Zemanová');
+assert.equal(resolveTeacherCode('KRE',people),'Krejčí');
+console.log('Potvrzené zkratky Kre → Krejčí a Zem → Zemanová: OK');
