@@ -1,0 +1,50 @@
+/* Compact editors with direct input, explicit actions and persistent context. */
+.planStylePopoverV307,.timeChoicePopoverV307{
+  display:grid!important;align-items:stretch!important;gap:16px!important;
+  width:360px!important;max-width:calc(100vw - 24px)!important;
+  max-height:calc(100vh - 24px)!important;overflow:auto!important;
+  padding:18px!important;border:1px solid #dce3eb!important;border-radius:18px!important;
+  background:#fff!important;box-shadow:0 16px 48px #17203326,0 2px 6px #1720330a!important;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;
+}
+.planStylePopoverV307{width:300px!important}
+.editorHeadingV327{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.editorHeadingV327 strong{display:block;font-size:16px;line-height:1.35;font-weight:700;color:#172033}
+.editorEyebrowV327{display:block;margin-bottom:4px;font-size:9px;font-weight:750;letter-spacing:1px;color:#718096}
+.editorHeadingV327 button{width:30px!important;height:30px!important;min-height:30px!important;padding:0!important;border:0!important;border-radius:50%!important;background:#f2f4f7!important;color:#64748b!important;font-size:21px!important;font-weight:400!important;box-shadow:none!important}
+.timeChoiceTabsV307{display:grid!important;grid-template-columns:1fr 1.25fr 1fr!important;gap:3px!important;padding:4px!important;border-radius:11px;background:#f1f4f7}
+.timeChoiceTabsV307 button{height:34px!important;padding:0 5px!important;background:transparent!important;border:0!important;border-radius:8px!important;box-shadow:none!important;color:#607082!important;font-weight:650!important;font-size:11px!important}
+.timeChoiceTabsV307 button.active{background:#fff!important;color:#155a94!important;box-shadow:0 1px 4px #17203316!important}
+.timeChoicePanelV307{display:grid!important;grid-template-columns:1fr!important;gap:14px!important;align-items:stretch!important}
+.timeChoicePopoverV307 [hidden]{display:none!important}
+.timeQuickInputsV323,.lessonFieldsV327{display:grid!important;grid-template-columns:1fr 1fr!important;gap:12px!important}
+.timeQuickInputsV323 label,.lessonFieldsV327 label,.styleTypeRowV327 label{display:grid!important;grid-template-columns:1fr!important;gap:7px!important;padding:0!important;margin:0!important;border:0!important;background:transparent!important;color:#59697a!important;font-size:11px!important;font-weight:650!important}
+.timeQuickInputsV323 input,.lessonFieldsV327 select{box-sizing:border-box!important;width:100%!important;min-width:0!important;height:46px!important;padding:9px 11px!important;border:1px solid #d8e1eb!important;border-radius:10px!important;background:#fff!important;color:#172033!important;outline:none!important;font-family:inherit!important;font-size:16px!important;font-weight:650!important;font-variant-numeric:tabular-nums!important}
+.lessonFieldsV327 select{font-size:12px!important;padding:9px 5px!important}
+.timeQuickInputsV323 input:focus,.lessonFieldsV327 select:focus,.planStylePopoverV307 select:focus{border-color:#3575ad!important;box-shadow:0 0 0 3px #155a9414!important}
+.editorQuickV327{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.editorQuickV327>span{flex-basis:100%;font-size:10px;color:#718096;margin-bottom:1px}
+.editorQuickV327 button{height:28px!important;min-height:28px!important;border:1px solid #e1e7ee!important;background:#f8fafc!important;color:#4b6075!important;font-size:11px!important;font-weight:600!important;border-radius:7px!important;box-shadow:none!important}
+.allDayHintV327{margin:0;padding:14px;border:1px solid #e4eaf0;border-radius:10px;background:#f8fafc;color:#526173;font-size:12px;line-height:1.6}
+.timeResultV327{padding:12px 14px;border-radius:10px;background:#f3f7fb;border:1px solid #e6edf5}
+.timeResultV327>span{display:block;font-size:10px;color:#6b7c8e;margin-bottom:4px}
+.timeResultV327 strong{display:block;color:#244e75;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
+.timeResultV327 small{display:block;color:#b42318;font-size:11px;line-height:1.5;margin-top:4px}
+.timeResultV327 small:empty{display:none}
+.editorActionsV327{display:flex;justify-content:flex-end;gap:8px;border-top:1px solid #edf1f5;padding-top:14px}
+.editorActionsV327 button{height:36px!important;padding:0 14px!important;min-height:36px!important;font-size:12px!important;font-weight:650!important;border-radius:9px!important;box-shadow:none!important}
+.editorActionsV327 [data-time-save-v327]{border-color:#155a94!important;background:#155a94!important;color:#fff!important}
+.editorActionsV327 [data-time-save-v327]:disabled{opacity:.45;cursor:not-allowed!important}
+.styleTypeRowV327{display:grid;grid-template-columns:1fr auto;align-items:end;gap:14px}
+.planStylePopoverV307 .styleTypeRowV327 select{max-width:none!important;width:100%!important;height:36px!important;min-height:36px!important;background:#fff!important;border-radius:9px!important}
+.styleEmphasisV327{display:flex;gap:5px}
+.styleEmphasisV327 button{width:36px!important;height:36px!important;font-size:16px!important;border-radius:9px!important}
+.styleColorLabelV327{margin-bottom:-8px;font-size:11px;font-weight:650;color:#59697a}
+.planStylePopoverV307 .planColorPresetsV309{grid-template-columns:repeat(6,1fr)!important;gap:9px!important}
+.planStylePopoverV307 .planColorPresetsV309 button{width:28px!important;height:28px!important;min-height:28px!important;border:3px solid #fff!important;border-radius:50%!important;padding:0!important;box-shadow:0 0 0 1px #dbe2ea!important}
+.planStylePopoverV307 .planColorPresetsV309 button.active{box-shadow:0 0 0 2px #94a3b8!important}
+.styleEditorFooterV327{display:grid;gap:12px;border-top:1px solid #edf1f5;padding-top:12px}
+.styleEditorFooterV327 span{font-size:10px;color:#718096;line-height:1.6}
+.styleEditorFooterV327 button{justify-self:start;background:#f8fafc!important;font-size:11px!important;font-weight:600!important;box-shadow:none!important}
+.planStylePopoverV307 button:focus-visible,.timeChoicePopoverV307 button:focus-visible{outline:2px solid #3575ad!important;outline-offset:3px!important}
+@media print{.planStylePopoverV307,.timeChoicePopoverV307{display:none!important}}

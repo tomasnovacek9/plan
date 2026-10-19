@@ -118,3 +118,15 @@ CHROME_BIN="/cesta/k/chrome" npm test
 
 Test používá krátký plán, hustý týden a dlouhý den. Výjimečný záznam delší než
 celá stránka se může rozdělit, aby se žádný text neodřízl.
+
+## Úprava času a textu
+
+Kliknutím na čas v tabulce otevřeš editor s přesným časem, rozsahem vyučovacích
+hodin a celodenním režimem. Rozsahy lze předvyplnit rychlými volbami. Čas se
+uloží až tlačítkem „Uložit změny“; „Zrušit“ a Escape návrh zahodí.
+
+Kliknutí do Akce nebo Zodpovídá otevře formátování velikosti, barvy, tučného
+písma a kurzívy. Platí pro označený text nebo celou buňku; ukládá se automaticky.
+„Výchozí vzhled“ odstraní formátování a zachová text.
+
+Funkční test editorů: `CHROME_BIN="/cesta/k/chrome" npm run test:editors`.
