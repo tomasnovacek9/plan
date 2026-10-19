@@ -2111,6 +2111,11 @@ function initPlanEditingV302(){
   }));
 
   preview.addEventListener("focusin", event=>{
+    if(event.target.closest("button")){
+      stylePopover.hidden = true;
+      timePopover.hidden = true;
+      return;
+    }
     const cell = event.target.closest(".planEditableCellV302");
     if(cell){
       cell.dataset.beforeV302 = cellTextV300(cell);
@@ -2311,7 +2316,7 @@ function initPlanEditingV302(){
     }
 
     const editableCell = event.target.closest(".planEditableCellV302");
-    if(editableCell && editableCell.getAttribute("contenteditable") === "true"){
+    if(editableCell && editableCell.getAttribute("contenteditable") === "true" && !event.target.closest("button")){
       showPlanStylePopoverV307(editableCell);
     }else if(!event.target.closest(".planStylePopoverV307")){
       stylePopover.hidden = true;

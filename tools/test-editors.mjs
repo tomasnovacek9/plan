@@ -104,6 +104,12 @@ window.addEventListener('load',()=>setTimeout(async()=>{
  const fresh=title();window.getSelection().removeAllRanges();const range=document.createRange();range.setStart(fresh.firstChild,0);range.setEnd(fresh.firstChild,6);window.getSelection().addRange(range);showPlanStylePopoverV307(fresh);click('[data-style-bold-v307]');
  check(fresh.querySelector('span[style*="font-weight"]')?.textContent==='Porada','Formátování výběru textu');
 
+
+ const deleteButton=document.querySelector('#preview .planRowDeleteV302');const originalConfirm=window.confirm;
+ showPlanStylePopoverV307(person());deleteButton.focus();check(document.querySelector('.planStylePopoverV307').hidden,'Přechod na mazání zavře formátování');
+ window.confirm=()=>{check(document.querySelector('.planStylePopoverV307').hidden,'Mazání neotevře formátování před potvrzením');return false;};deleteButton.click();
+ check(document.querySelector('#preview .eventCell'),'Zrušení mazání zachová událost');
+ window.confirm=()=>true;const deletedKey=deleteButton.dataset.planDeleteKeyV302;deleteButton.click();check(isRowDeletedV302(deletedKey),'Potvrzené mazání funguje');window.confirm=originalConfirm;
  events=Array.from({length:55},(_,i)=>({uid:'scroll'+i,id:'scroll'+i,source:'calendar',date:'2026-10-19',from:'08:00',to:'08:45',title:'Akce pro kontrolu rolování '+i,person:'Nováková'}));renderPreview();
  await openSchoolPrintPreview();
  check(!document.querySelector('#pdfArea .pageBreakGuideV322'),'Hlavní náhled neobsahuje odhadované konce stran');
