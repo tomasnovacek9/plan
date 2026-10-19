@@ -1041,25 +1041,59 @@ body{
   background:#fff!important;
 }
 
-/* Keep repeat colors on both cells, including alternating and edited rows.
-   Hover and focus must not recolor the row or its spanning day cell. */
-.previewPage .planTable tbody tr.repeatColorV50-1 > td:is(.eventCell, .personCell){
-  background:#fff8dd!important;
+/* Repeat colors cover every event cell, including edited and alternating rows. */
+.previewPage .repeatColorV50-1{
+  --repeat-background:#fff8dd;
+  --repeat-accent:#c9a400;
 }
-.previewPage .planTable tbody tr.repeatColorV50-2 > td:is(.eventCell, .personCell){
-  background:#fff0e2!important;
+.previewPage .repeatColorV50-2{
+  --repeat-background:#fff0e2;
+  --repeat-accent:#d98236;
 }
-.previewPage .planTable tbody tr.repeatColorV50-3 > td:is(.eventCell, .personCell){
-  background:#eefbf3!important;
+.previewPage .repeatColorV50-3{
+  --repeat-background:#eefbf3;
+  --repeat-accent:#22a06b;
 }
-.previewPage .planTable tbody tr.repeatColorV50-4 > td:is(.eventCell, .personCell){
-  background:#f4f3ff!important;
+.previewPage .repeatColorV50-4{
+  --repeat-background:#f4f3ff;
+  --repeat-accent:#7c6cf2;
 }
-.previewPage .planTable tbody tr.repeatColorV50-5 > td:is(.eventCell, .personCell){
-  background:#fff1f1!important;
+.previewPage .repeatColorV50-5{
+  --repeat-background:#fff1f1;
+  --repeat-accent:#d14343;
 }
-.previewPage .planTable tbody tr.repeatColorV50-6 > td:is(.eventCell, .personCell){
-  background:#fdf2fa!important;
+.previewPage .repeatColorV50-6{
+  --repeat-background:#fdf2fa;
+  --repeat-accent:#c241a0;
+}
+
+.previewPage .planTable tbody tr.repeatedEventV50 > td:not(.dayCell){
+  background:var(--repeat-background)!important;
+}
+
+/* The time cell starts the event row; the spanning day cell stays unchanged. */
+.previewPage .planTable tbody tr.repeatedEventV50 > .timeCell{
+  position:relative!important;
+  padding-left:10px!important;
+}
+
+.previewPage .planTable tbody tr.repeatedEventV50 > .timeCell::before{
+  content:""!important;
+  display:block!important;
+  position:absolute;
+  left:2px;
+  top:4px;
+  bottom:4px;
+  width:3px;
+  border-radius:3px;
+  background:var(--repeat-accent)!important;
+  pointer-events:none;
+}
+
+@media screen{
+  .previewPage:not(.suppressRowHoverV321) .planTable tbody tr:hover:not(:has(> .dayCell:hover)) > td:not(.dayCell){
+    box-shadow:inset 0 0 0 9999px rgba(120,113,108,.12)!important;
+  }
 }
 
 .previewPage tr[class*="repeatColorV50-"] > td{
