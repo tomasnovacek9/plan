@@ -1048,7 +1048,7 @@ function planStyleAttrV307(key, field){
   const style = planStyleValueV307(key, field);
   const parts = [];
   if(/^\d{1,2}pt$/.test(String(style.size || ""))) parts.push(`font-size:${style.size}`);
-  if(/^#[0-9a-f]{6}$/i.test(String(style.color || ""))) parts.push(`color:${style.color}`);
+  if(/^#[0-9a-f]{6}$/i.test(String(style.color || ""))) parts.push(`color:${style.color}${field === "time" || field === "lesson" ? "!important" : ""}`);
   if(style.bold) parts.push("font-weight:850");
   else if(style.boldTouched) parts.push("font-weight:400");
   if(style.italic) parts.push("font-style:italic");
@@ -1165,10 +1165,10 @@ function renderEditableCellV302(className, key, field, original, html, suffixHtm
 
 function renderEditablePartV302(className, key, field, original, fallback, editable = true){
   const value = planCellValueV302(key, field, original);
-  const edited = String(value) !== String(original) || (field !== "time" && field !== "lesson" && planFieldHasVisualEditV320(key, field));
+  const edited = String(value) !== String(original) || planFieldHasVisualEditV320(key, field);
   const shown = value || fallback || "";
   const title = edited ? ` title="${escapeHtml(planEditedTitleV303(field, original))}"` : "";
-  const styleAttr = field === "time" || field === "lesson" ? "" : planStyleAttrV307(key, field);
+  const styleAttr = planStyleAttrV307(key, field);
   return `<span class="${className} planEditableCellV302${edited ? " planEditedCellV302" : ""}" contenteditable="${editable ? "true" : "false"}" spellcheck="false" data-plan-row-key-v302="${escapeHtml(key)}" data-plan-field-v302="${escapeHtml(field)}" data-plan-original-v302="${escapeHtml(original)}"${title}${styleAttr}>${escapeHtml(shown) || "&nbsp;"}</span>`;
 }
 
@@ -1479,11 +1479,29 @@ function ensureTimeChoicePopoverV307(){
     </div>
     <div class="timeChoicePanelV307" data-time-panel-v307="allDay" hidden><p class="allDayHintV327">Akce bez časového omezení. V plánu se zobrazí „celý den“.</p></div>
     <div class="timeResultV327" aria-live="polite"><span>V plánu se zobrazí</span><strong data-time-summary-v327></strong><small data-time-error-v327 role="alert"></small></div>
+    <div class="timeColorsV330"><span>Barvy v plánu</span>${[["time","Čas"],["lesson","Vyučovací hodiny"]].map(([field,label])=>`<div><label>${label}<input type="color" data-time-color-v330="${field}" aria-label="Barva: ${label}"></label><button type="button" data-time-color-default-v330="${field}">Výchozí</button></div>`).join("")}</div>
     <div class="editorActionsV327"><button type="button" data-editor-close-v327>Zrušit</button><button type="button" data-time-save-v327>Uložit změny</button></div>
     <button type="button" data-time-apply-v307 hidden></button><button type="button" data-lesson-apply-v307 hidden></button>
   `;
   document.body.appendChild(pop);
   return pop;
+}
+
+function saveTimeColorsV330(pop){
+  const key = pop.dataset.keyV307;
+  const styles = loadJsonMapV300(PLAN_STYLE_STORE_V307);
+  for(const field of ["time","lesson"]){
+    const color = pop.querySelector(`[data-time-color-v330='${field}']`).dataset.draftColorV330 || "";
+    const style = {...(styles[key]?.[field] || {})};
+    if(/^#[0-9a-f]{6}$/i.test(color)) style.color = color;
+    else delete style.color;
+    if(Object.keys(style).length){
+      if(!styles[key]) styles[key] = {};
+      styles[key][field] = style;
+    }else if(styles[key]) delete styles[key][field];
+  }
+  if(styles[key] && !Object.keys(styles[key]).length) delete styles[key];
+  saveJsonMapV300(PLAN_STYLE_STORE_V307, styles);
 }
 
 function updateTimeChoiceSummaryV327(pop){
@@ -1492,7 +1510,18 @@ function updateTimeChoiceSummaryV327(pop){
   const to = getTimeSplitValueV310(pop, "to");
   const valid = mode === "allDay" || (/^\d{2}:\d{2}$/.test(from) && /^\d{2}:\d{2}$/.test(to) && to > from);
   const lesson = lessonLabelV161(from, to);
-  pop.querySelector("[data-time-summary-v327]").textContent = mode === "allDay" ? "Celý den" : from && to ? `${from}–${to}${lesson ? ` · ${lesson}` : ""}` : "Doplň začátek a konec";
+  const summary = pop.querySelector("[data-time-summary-v327]");
+  summary.replaceChildren();
+  const timePreview = document.createElement("span");
+  timePreview.textContent = mode === "allDay" ? "Celý den" : from && to ? `${from}–${to}` : "Doplň začátek a konec";
+  timePreview.style.color = pop.querySelector("[data-time-color-v330='time']")?.dataset.draftColorV330 || "";
+  summary.append(timePreview);
+  if(mode !== "allDay" && lesson){
+    const lessonPreview = document.createElement("span");
+    lessonPreview.textContent = ` · ${lesson}`;
+    lessonPreview.style.color = pop.querySelector("[data-time-color-v330='lesson']")?.dataset.draftColorV330 || "";
+    summary.append(lessonPreview);
+  }
   pop.querySelector("[data-time-error-v327]").textContent = valid ? "" : "Konec musí být později než začátek. Vyplň oba časy.";
   pop.querySelector("[data-time-save-v327]").disabled = !valid;
   return valid;
@@ -1587,6 +1616,12 @@ function showTimeChoicePopoverV307(cell){
   const key = cell.dataset.planRowKeyV302;
   if(!key) return;
   pop.dataset.keyV307 = key;
+  for(const field of ["time","lesson"]){
+    const color = planStyleValueV307(key, field).color || "";
+    const input = pop.querySelector(`[data-time-color-v330='${field}']`);
+    input.dataset.draftColorV330 = color;
+    input.value = color || (field === "time" ? "#344054" : "#64748b");
+  }
   setChoiceListValueV307(pop, "[data-lesson-list-v307='from']", "", "1");
   setChoiceListValueV307(pop, "[data-lesson-list-v307='to']", "", "1");
   const timeSource = document.querySelector(`[data-plan-row-key-v302="${CSS.escape(key)}"][data-plan-field-v302="time"]`);
@@ -1726,6 +1761,7 @@ function resetPlanFieldV304(button){
 
   const overrides = loadJsonMapV300(PLAN_CELL_STORE_V302);
   clearPlanVisualEditV320(key, field);
+  if(field === "time" || field === "lesson") clearPlanVisualEditV320(key, field === "time" ? "lesson" : "time");
   if(overrides[key]){
     delete overrides[key][field];
     if(field === "time" || field === "lesson"){
@@ -1906,8 +1942,18 @@ function initPlanEditingV302(){
       updateTimeChoiceSummaryV327(timePopover);
       return;
     }
+    const defaultColor = event.target.closest("[data-time-color-default-v330]");
+    if(defaultColor){
+      const field = defaultColor.dataset.timeColorDefaultV330;
+      const input = timePopover.querySelector(`[data-time-color-v330='${field}']`);
+      input.dataset.draftColorV330 = "";
+      input.value = field === "time" ? "#344054" : "#64748b";
+      updateTimeChoiceSummaryV327(timePopover);
+      return;
+    }
     if(event.target.closest("[data-time-save-v327]")){
       if(!updateTimeChoiceSummaryV327(timePopover)) return;
+      saveTimeColorsV330(timePopover);
       const mode = timePopover.querySelector("[data-time-mode-v307].active")?.dataset.timeModeV307;
       if(mode === "allDay"){
         saveTimeChoiceV307(timePopover.dataset.keyV307,"celý den","");
@@ -2003,7 +2049,18 @@ function initPlanEditingV302(){
     }
   });
 
+  timePopover.addEventListener("input", event=>{
+    if(event.target.matches("[data-time-color-v330]")){
+      event.target.dataset.draftColorV330 = event.target.value;
+      updateTimeChoiceSummaryV327(timePopover);
+    }
+  });
   timePopover.addEventListener("change", event=>{
+    if(event.target.matches("[data-time-color-v330]")){
+      event.target.dataset.draftColorV330 = event.target.value;
+      updateTimeChoiceSummaryV327(timePopover);
+      return;
+    }
     const lesson = event.target.closest("select[data-lesson-list-v307]");
     if(lesson){
       if(lesson.dataset.lessonListV307 === "to"){

@@ -48,3 +48,10 @@
 .styleEditorFooterV327 button{justify-self:start;background:#f8fafc!important;font-size:11px!important;font-weight:600!important;box-shadow:none!important}
 .planStylePopoverV307 button:focus-visible,.timeChoicePopoverV307 button:focus-visible{outline:2px solid #3575ad!important;outline-offset:3px!important}
 @media print{.planStylePopoverV307,.timeChoicePopoverV307{display:none!important}}
+
+.timeColorsV330{display:grid;gap:9px;border-top:1px solid #edf1f5;padding-top:12px}
+.timeColorsV330>span{font-size:11px;font-weight:650;color:#59697a}
+.timeColorsV330>div{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.timeColorsV330 label{display:flex;align-items:center;justify-content:space-between;flex:1;gap:12px;font-size:12px;color:#475569}
+.timeColorsV330 input[type=color]{width:34px;height:28px;padding:2px;border:1px solid #d8e1eb;border-radius:7px;background:#fff;cursor:pointer}
+.timeChoicePopoverV307 .timeColorsV330 button{font-size:10px!important;font-weight:600!important;height:26px!important;min-height:26px!important;box-shadow:none!important}
