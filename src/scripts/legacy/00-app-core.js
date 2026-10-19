@@ -770,6 +770,19 @@ function todayTextV300(){
   return `${String(d.getDate()).padStart(2,"0")}. ${String(d.getMonth()+1).padStart(2,"0")}. ${d.getFullYear()}`;
 }
 
+function createdDateKeyV336(){
+  return "tydenni_plan_created_date_v336_" + document.getElementById("weekFrom").value;
+}
+function createdDateValueV336(){
+  const value = localStorage.getItem(createdDateKeyV336()) || "";
+  const parsed = /^\d{4}-\d{2}-\d{2}$/.test(value) ? parseDate(value) : null;
+  return parsed && dateToInput(parsed) === value ? value : dateToInput(new Date());
+}
+function createdDateTextV336(){
+  const [year, month, day] = createdDateValueV336().split("-");
+  return `${day}. ${month}. ${year}`;
+}
+
 function applyDisplayBodyClassesV300(){
   const hideWeekend = localStorage.getItem("tydenni_plan_hide_weekend_v184") === "1";
   const hideCreated = localStorage.getItem("tydenni_plan_hide_created_v184") === "1";
@@ -2485,7 +2498,7 @@ function renderPreview(){
       </div>
       ${renderSignatureChangeControlsV310(signature || DEFAULT_SIGNATURE_V310, signatureRole || DEFAULT_SIGNATURE_ROLE_V312)}
     </div>
-    <div class="createdDateV184">Vytvořeno: ${todayTextV300()}</div>
+    <div class="createdDateV184"><span data-edit-created-v336 role="button" tabindex="0" title="Upravit datum vytvoření">Vytvořeno: ${createdDateTextV336()}</span></div>
 
     `;
 }

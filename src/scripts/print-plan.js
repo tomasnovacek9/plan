@@ -24,6 +24,10 @@
       }
       if (style.display === 'none') clones[index].style.setProperty('display', 'none', 'important');
     });
+    copy.querySelectorAll('[data-edit-created-v336]').forEach(el => {
+      el.style.setProperty('border-bottom', '0', 'important');
+      ['data-edit-created-v336','role','tabindex','title'].forEach(attr => el.removeAttribute(attr));
+    });
     copy.querySelectorAll('button,.pageBreakGuideV322,.signatureChangeToolsV310,.planRowChangeToolsV304,.manualRowControlsV316,.planFieldResetV304').forEach(el => el.remove());
     [copy, ...copy.querySelectorAll('[id],[contenteditable]')].forEach(el => {
       el.removeAttribute('id');

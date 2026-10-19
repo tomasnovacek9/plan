@@ -49,6 +49,32 @@
     dialog.append(heading,close);document.body.append(dialog);dialog.addEventListener('close',()=>dialog.remove());dialog.showModal();
     return dialog;
   }
+  function editCreatedDate(){
+    const key=createdDateKeyV336();
+    const dialog=openDialog('Datum vytvoření');
+    const label=document.createElement('label');label.textContent='Vytvořeno dne';
+    const input=document.createElement('input');input.type='date';input.required=true;input.value=createdDateValueV336();label.append(input);
+    const hint=document.createElement('p');hint.textContent='Datum se uloží pro tento týden a objeví se také v tisku a PDF.';
+    const form=document.createElement('form');
+    const save=document.createElement('button');save.type='submit';save.textContent='Uložit';save.className='toolsPrimaryV335';
+    const reset=document.createElement('button');reset.type='button';reset.textContent='Používat aktuální datum';
+    form.append(label,hint,save,reset);dialog.append(form);
+    form.onsubmit=event=>{
+      event.preventDefault();
+      if(!input.reportValidity()||!input.value)return;
+      localStorage.setItem(key,input.value);dialog.close();renderPreview();
+    };
+    reset.onclick=()=>{localStorage.removeItem(key);dialog.close();renderPreview();};
+    input.focus();
+  }
+  document.addEventListener('click',event=>{
+    if(event.target.closest('#preview [data-edit-created-v336]'))editCreatedDate();
+  });
+  document.addEventListener('keydown',event=>{
+    if(event.target.closest('#preview [data-edit-created-v336]')&&(event.key==='Enter'||event.key===' ')){
+      event.preventDefault();editCreatedDate();
+    }
+  });
   function duplicate(){
     const list=loadManualEventsV300();
     if(!list.length){alert('V tomto týdnu zatím nejsou žádné vlastní akce ke kopírování.');return;}

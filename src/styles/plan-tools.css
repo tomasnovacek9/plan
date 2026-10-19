@@ -11,3 +11,9 @@
 .planToolsDialogV335 .toolsCloseV335{position:absolute;top:18px;right:16px;font-size:11px}
 .planToolsDialogV335 .toolsPrimaryV335{background:#155a94;color:#fff;border-color:#155a94}
 @media print{.planToolsV335,.planToolsDialogV335{display:none!important}}
+
+@media screen{
+  #preview [data-edit-created-v336]{cursor:pointer;border-bottom:1px dashed #b8c6d5;border-radius:2px}
+  #preview [data-edit-created-v336]:is(:hover,:focus-visible){color:#155a94;outline:2px solid #dce9f5;outline-offset:3px}
+}
+.planToolsDialogV335 form>button+button{margin-left:8px}
