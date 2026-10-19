@@ -116,17 +116,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue);box-shadow:0 0 
   position:relative;
   color:#172033;
 }
-.previewPage::after{
-  content:"";
-  position:absolute;
-  right:18mm;
-  bottom:28mm;
-  width:70mm;
-  height:70mm;
-  background:url("../../../src/assets/generated/image-bf0189964fa8.png") center/contain no-repeat;
-  opacity:.025;
-  pointer-events:none;
-}
+
 .docHeader{
   display:grid;
   grid-template-columns:26mm 1fr;
