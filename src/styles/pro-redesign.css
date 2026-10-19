@@ -944,32 +944,6 @@ body{
   background:#fff!important;
 }
 
-.pageBreakGuideV322{
-  position:absolute!important;
-  left:0!important;
-  right:0!important;
-  z-index:30!important;
-  height:0!important;
-  border-top:1px dashed rgba(220,38,38,.85)!important;
-  pointer-events:none!important;
-}
-
-.pageBreakGuideV322 span{
-  position:absolute!important;
-  right:0!important;
-  top:-9px!important;
-  padding:2px 6px!important;
-  border:1px solid rgba(220,38,38,.35)!important;
-  border-radius:999px!important;
-  background:#fff!important;
-  color:#b91c1c!important;
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
-  font-size:10px!important;
-  font-weight:850!important;
-  line-height:1!important;
-  box-shadow:0 1px 4px rgba(15,23,42,.08)!important;
-}
-
 .calendarRequiredV300{
   min-height:180mm;
   display:flex;

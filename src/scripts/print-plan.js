@@ -44,7 +44,27 @@
       page.className = 'previewPage printSheet';
       flow = document.createElement('div');
       flow.className = 'printFlow';
-      if (!pages.length) flow.append(clean(source.querySelector('.docHeader')));
+      if (!pages.length) {
+        const header = clean(source.querySelector('.docHeader'));
+        header.style.setProperty('width','100%','important');
+        header.style.setProperty('box-sizing','border-box','important');
+        header.style.setProperty('grid-template-columns','minmax(0,1fr) 132px','important');
+        header.style.setProperty('gap','12px','important');
+        header.style.setProperty('padding-right','8px','important');
+        header.querySelectorAll('.docHeaderTextV93,.docHeaderTextV93 > *').forEach(el=>{
+          el.style.setProperty('width','auto','important');
+          el.style.setProperty('min-width','0','important');
+        });
+        const logo = header.querySelector('.docLogo');
+        if(logo){
+          logo.style.setProperty('width','124px','important');
+          logo.style.setProperty('height','104px','important');
+          logo.style.setProperty('max-width','100%','important');
+          logo.style.setProperty('object-fit','contain','important');
+          logo.style.setProperty('transform','none','important');
+        }
+        flow.append(header);
+      }
       if (!pages.length) {
         const note = source.querySelector('.planNoteSlotV318:has(.planNoteWrapV310),.planNoteWrapV310');
         if (note) flow.append(clean(note));
@@ -67,7 +87,7 @@
     newPage();
     for (const group of groups) {
       const day = group[0].querySelector('.dayCell');
-      const makeChunk = (rows, continued) => {
+      const makeChunk = (rows, continued, continues = false) => {
         const section = document.createElement('tbody');
         section.className = 'printDayGroup';
         for (const row of rows) {
@@ -80,6 +100,12 @@
         if (continued) {
           const hint = document.createElement('small');
           hint.textContent = 'pokračování';
+          label.append(hint);
+        }
+        if(continues){
+          const hint = document.createElement('small');
+          hint.className = 'printDayContinuesV335';
+          hint.textContent = 'pokračuje na další straně →';
           label.append(hint);
         }
         section.firstElementChild.prepend(label);
@@ -95,7 +121,7 @@
       for (const row of group) {
         batch.push(row);
         chunk.remove();
-        chunk = makeChunk(batch, continued);
+        chunk = makeChunk(batch, continued, true);
         body.parentNode.append(chunk);
         if (!fits() && batch.length === 1 && body.parentNode.querySelectorAll('.printDayGroup').length > 1) {
           chunk.remove();
@@ -105,11 +131,11 @@
         if (!fits() && batch.length > 1) {
           chunk.remove();
           batch.pop();
-          body.parentNode.append(makeChunk(batch, continued));
+          body.parentNode.append(makeChunk(batch, continued, true));
           newPage();
           continued = true;
           batch = [row];
-          chunk = makeChunk(batch, continued);
+          chunk = makeChunk(batch, continued, true);
           body.parentNode.append(chunk);
         }
         if (!fits()) {
@@ -117,7 +143,9 @@
           page.classList.add('printOversize');
         }
       }
+      chunk.querySelector('.printDayContinuesV335')?.remove();
     }
+    // The final chunk of each split day has no forward continuation marker.
     const end = document.createElement('div');
     end.className = 'printEnding';
     const signature = source.querySelector('.podpisFinal41');
@@ -137,7 +165,18 @@
         const label = lastGroup.querySelector('.dayCell').cloneNode(true);
         label.rowSpan = 1;
         if (lastGroup.children.length > 1) {
-          lastGroup.querySelector('.dayCell').rowSpan--;
+          const previousLabel = lastGroup.querySelector('.dayCell');
+          previousLabel.rowSpan--;
+          if(!previousLabel.querySelector('.printDayContinuesV335')){
+            const hint = document.createElement('small');
+            hint.className = 'printDayContinuesV335';
+            hint.textContent = 'pokračuje na další straně →';
+            previousLabel.append(hint);
+          }
+          label.querySelector('.printDayContinuesV335')?.remove();
+          if(![...label.querySelectorAll('small')].some(el=>el.textContent==='pokračování')){
+            const hint = document.createElement('small');hint.textContent='pokračování';label.append(hint);
+          }
           lastRow.prepend(label);
         }
         carry = document.createElement('tbody');

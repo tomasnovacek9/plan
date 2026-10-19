@@ -139,3 +139,15 @@ nahradí příjmením pouze při jediné shodě podle začátku příjmení, př
 jména (např. `NovT`, `Nov T.` nebo `T. Nov`). Více možností, neznámá zkratka nebo
 neúplný adresář ponechají původní text. Výpadek adresáře neblokuje kalendář.
 Původní události a klíče ručních úprav se při doplnění příjmení nemění.
+
+## Nástroje plánu
+
+Nad náhledem jsou dostupné návrat na aktuální týden, kopírování vlastní akce do
+jiného dne stejného týdne, stažení JSON zálohy, obnovení zálohy a přehled zkratek,
+pro které není jednoznačné příjmení. Záloha obsahuje uložené vlastní úpravy ze
+všech týdnů v tomto prohlížeči. Obnovení vyžaduje potvrzení nahrazení shodných
+položek; jiné položky zůstávají zachované.
+
+Hlavní náhled neukazuje odhadované konce stran. Skutečné listy jsou v tiskovém
+náhledu, kde je u rozděleného dne na první části „pokračuje na další straně“
+a na následující „pokračování“. Automatické nahrávání na SharePoint není zapojeno.

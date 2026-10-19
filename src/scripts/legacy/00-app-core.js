@@ -2377,24 +2377,6 @@ function renderPlanNoteFinalV193(message){
   return `<div class="planNoteFinalV193">${escapeHtml(txt).replace(/\n/g,"<br>")}</div>`;
 }
 
-function updatePageBreakGuidesV322(){
-  const page = document.getElementById("pdfArea");
-  if(!page) return;
-  page.querySelectorAll(".pageBreakGuideV322").forEach(el=>el.remove());
-  if(document.body.classList.contains("pdfExportingV205")) return;
-  const pageHeightPx = 281 * 96 / 25.4;
-  page.style.minHeight = "";
-  const contentHeight = page.scrollHeight;
-  const count = Math.floor((contentHeight - 1) / pageHeightPx);
-  for(let i = 1; i <= count; i++){
-    const guide = document.createElement("div");
-    guide.className = "pageBreakGuideV322";
-    guide.style.top = `${pageHeightPx * i}px`;
-    guide.innerHTML = `<span>Konec stránky ${i}</span>`;
-    page.appendChild(guide);
-  }
-}
-
 function prioritizeRepeatedAllDayV326(items, dateKey, repeatClasses){
   // Keep the original indices used by saved row overrides.
   const priority = item=>{
@@ -2493,7 +2475,6 @@ function renderPreview(){
     <div class="createdDateV184">Vytvořeno: ${todayTextV300()}</div>
 
     `;
-  requestAnimationFrame(updatePageBreakGuidesV322);
 }
 
 function renderAll(){ renderLists(); renderPreview(); }

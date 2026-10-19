@@ -6,13 +6,14 @@ import assert from 'node:assert/strict';
 const chrome=process.env.CHROME_BIN;
 if(!chrome) throw new Error('Nastav CHROME_BIN na Chrome nebo Chromium.');
 let html=readFileSync('index.html','utf8').replace(/<script\b[^>]*>[\s\S]*?<\/script>/g,'').replace(/<link\b[^>]*>/g,'');
-const css=['src/styles/legacy/bundle.css','src/styles/pro-redesign.css','src/styles/editors.css','src/styles/print-plan.css'].map(f=>readFileSync(f,'utf8')).join('\n');
+const css=['src/styles/legacy/bundle.css','src/styles/pro-redesign.css','src/styles/editors.css','src/styles/print-plan.css','src/styles/plan-tools.css'].map(f=>readFileSync(f,'utf8')).join('\n');
 html=html.replace('</head>',`<base href="${new URL('../',import.meta.url).href}"><style>${css}</style></head>`);
 const core=readFileSync('src/scripts/legacy/00-app-core.js','utf8');
 const print=readFileSync('src/scripts/print-plan.js','utf8');
+const planTools=readFileSync('src/scripts/plan-tools.js','utf8');
 const test=`
 window.addEventListener('load',()=>setTimeout(async()=>{
- const failures=[];let checks=0;
+ const failures=[];let checks=0;window.alert=message=>failures.push('Nečekané upozornění: '+message);
  const check=(ok,msg)=>{checks++;if(!ok)failures.push(msg)};
  const change=el=>el.dispatchEvent(new Event('change',{bubbles:true}));
  const click=selector=>document.querySelector(selector).click();
@@ -102,19 +103,34 @@ window.addEventListener('load',()=>setTimeout(async()=>{
 
  events=Array.from({length:55},(_,i)=>({uid:'scroll'+i,id:'scroll'+i,source:'calendar',date:'2026-10-19',from:'08:00',to:'08:45',title:'Akce pro kontrolu rolování '+i,person:'Nováková'}));renderPreview();
  await openSchoolPrintPreview();
+ check(!document.querySelector('#pdfArea .pageBreakGuideV322'),'Hlavní náhled neobsahuje odhadované konce stran');
  const modal=document.getElementById('schoolPrintRoot'),scroll=modal.querySelector('.printSheets'),bar=modal.querySelector('.printToolbar');
+ const printLogo=modal.querySelector('.docLogo');if(printLogo){const r=printLogo.getBoundingClientRect(),flow=modal.querySelector('.printFlow').getBoundingClientRect();check(r.right<=flow.right&&r.left>=flow.left,'Logo se celé vejde do tiskové šířky');}
  const topBefore=bar.getBoundingClientRect().top;scroll.scrollTop=400;
  check(scroll.scrollTop>0,'Tiskové listy lze rolovat');
  check(bar.getBoundingClientRect().top===topBefore,'Horní lišta se při rolování nehýbe');
  check(scroll.getBoundingClientRect().top>=bar.getBoundingClientRect().bottom,'Listy začínají pod horní lištou');
  const br=bar.getBoundingClientRect();check(document.elementFromPoint(br.left+20,br.top+20)?.closest('.printToolbar'),'Listy nepřekrývají horní lištu');
  modal.querySelector('[data-close]').click();
+ const tools=document.querySelector('.planToolsV335');check(tools,'Nástroje plánu jsou dostupné');
+ const valid=validatePlanBackupV335(JSON.stringify({format:'school-plan-backup',version:1,entries:[['tydenni_plan_note_test','test']]}));check(valid.length===1,'Platná záloha projde validací');
+ let rejected=false;try{validatePlanBackupV335(JSON.stringify({format:'school-plan-backup',version:1,entries:[['foreign-key','test']]}))}catch{rejected=true}check(rejected,'Záloha odmítne cizí položky');
+ const rich=validatePlanBackupV335(JSON.stringify({format:'school-plan-backup',version:1,entries:[['tydenni_plan_rich_html_v308',JSON.stringify({row:{title:'<img src=x onerror=alert(1)>Text'}})]]}));check(!rich[0][1].includes('onerror'),'Obnovení odstraní nebezpečné HTML');
+ setWeekByDate(new Date(2020,0,6));[...tools.querySelectorAll('button')].find(b=>b.textContent==='Aktuální týden').click();
+ const today=new Date(),monday=new Date(today);monday.setDate(today.getDate()-(today.getDay()||7)+1);check(document.getElementById('weekFrom').value===dateToInput(monday),'Tlačítko vrací aktuální týden');
+ const firstDay=document.getElementById('weekFrom').value;const secondDay=new Date(parseDate(firstDay));secondDay.setDate(secondDay.getDate()+1);
+ saveManualEventsV308([{uid:'manual-source',date:firstDay,from:'08:00',to:'08:45',title:'Vlastní porada',person:'Nováková'}]);mergeManualEventsV300();renderAll();
+ [...tools.querySelectorAll('button')].find(b=>b.textContent==='Kopírovat vlastní akci').click();
+ const copyDialog=document.querySelector('.planToolsDialogV335');copyDialog.querySelector('input[type=date]').value=dateToInput(secondDay);copyDialog.querySelector('.toolsPrimaryV335').click();
+ const manual=loadManualEventsV300();check(manual.length===2&&manual[0].uid!==manual[1].uid,'Kopie má nové ID');check(manual[1].date===dateToInput(secondDay)&&manual[1].title==='Vlastní porada','Kopie zachová obsah a změní den');
+ [...tools.querySelectorAll('button')].find(b=>b.textContent==='Nerozpoznané zkratky').click();check(document.querySelector('.planToolsDialogV335')?.textContent.includes('Adresář'),'Přehled hlásí nedostupný adresář');document.querySelector('.toolsCloseV335').click();
+
  }catch(e){failures.push(e.stack)}
  if(!location.hash.includes('preview')){document.head.innerHTML='';document.body.innerHTML='<pre id="test-result">'+JSON.stringify({checks,failures})+'</pre>';}
  else{showTimeChoicePopoverV307(time());}
 },100));
 `;
-html=html.replace('</body>',`<script>window.fetch=async()=>{throw new Error('Offline test')};</script><script>${core}</script><script>${print}</script><script>${test}</script></body>`);
+html=html.replace('</body>',`<script>window.fetch=async()=>{throw new Error('Offline test')};</script><script>${core}</script><script>${print}</script><script>${planTools}</script><script>${test}</script></body>`);
 const dir=mkdtempSync(path.join(tmpdir(),'plan-editors-test-'));const fixture=path.join(dir,'test.html');writeFileSync(fixture,html);
 const result=spawnSync(chrome,['--headless','--no-sandbox','--disable-gpu','--window-size=1280,1000',`--user-data-dir=${dir}/profile`,'--virtual-time-budget=1500','--dump-dom',`file://${fixture}`],{encoding:'utf8',timeout:60000,maxBuffer:4*1024*1024});
 const match=result.stdout?.match(/<pre id="test-result">([^<]+)<\/pre>/);if(!match)throw new Error(`Test nedoběhl: ${result.error||result.stderr?.slice(-1000)}`);

@@ -52,6 +52,8 @@ function scenario(name,counts,long=false){
  }
  check(root.querySelectorAll('.planNoteWrapV310').length===1,name+': poznámka zachována');
  check(root.querySelectorAll('.podpisFinal41').length===1,name+': podpis zachován');
+ if(counts[0]>35){check(root.querySelector('.printDayContinuesV335'),name+': první část označuje pokračování');check(!pages.at(-1).querySelector('.printDayContinuesV335'),name+': poslední část bez dalšího pokračování');}
+
  check(root.querySelectorAll('.docHeader').length===1,name+': hlavička pouze na první stránce');
  check(pages[0].querySelector('.docHeader'),name+': první stránka má hlavičku');
  for(const page of pages.slice(1))check(!page.querySelector('.docHeader'),name+': další stránka bez hlavičky');

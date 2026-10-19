@@ -1,0 +1,13 @@
+.planToolsV335{display:flex;flex-wrap:wrap;gap:7px;padding:0 0 12px;border-bottom:1px solid #e4eaf1;margin-bottom:14px}
+.planToolsV335 button{padding:7px 10px;border:1px solid #dce4ed;border-radius:8px;background:#fff;color:#38516c;font:600 11px Arial,sans-serif;cursor:pointer}
+.planToolsV335 button:hover{background:#f1f6fb;border-color:#b9cce0}
+.planToolsDialogV335{width:min(440px,calc(100vw - 32px));padding:24px;border:1px solid #dce4ed;border-radius:16px;box-shadow:0 18px 70px #17203333;color:#24364b;font-family:Arial,sans-serif}
+.planToolsDialogV335::backdrop{background:#17203366}
+.planToolsDialogV335 h2{margin:0 0 18px;font-size:18px;padding-right:50px}
+.planToolsDialogV335 p{font-size:13px;line-height:1.6}
+.planToolsDialogV335 label{display:grid;gap:7px;margin:16px 0;font-size:12px;font-weight:600}
+.planToolsDialogV335 input,.planToolsDialogV335 select{width:100%;padding:10px;border:1px solid #cfd9e4;border-radius:8px;background:#fff;color:#24364b}
+.planToolsDialogV335 button{padding:9px 12px;border:1px solid #dce4ed;border-radius:8px;cursor:pointer;background:#fff;color:#38516c;font-weight:600}
+.planToolsDialogV335 .toolsCloseV335{position:absolute;top:18px;right:16px;font-size:11px}
+.planToolsDialogV335 .toolsPrimaryV335{background:#155a94;color:#fff;border-color:#155a94}
+@media print{.planToolsV335,.planToolsDialogV335{display:none!important}}
