@@ -13,7 +13,8 @@
     "preview": "vite preview --host 0.0.0.0 --port 4173",
     "check": "npm run build:legacy && npm run check:js && npm run check:links",
     "check:js": "node tools/check-js-syntax.mjs",
-    "check:links": "node tools/check-local-links.mjs"
+    "check:links": "node tools/check-local-links.mjs",
+    "test": "node tools/test-plan.mjs"
   },
   "devDependencies": {
     "vite": "^5.4.11"

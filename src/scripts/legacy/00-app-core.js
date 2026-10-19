@@ -2241,6 +2241,16 @@ function updatePageBreakGuidesV322(){
   }
 }
 
+function prioritizeRepeatedAllDayV326(items, dateKey, repeatClasses){
+  // Keep the original indices used by saved row overrides.
+  const priority = item=>{
+    const key = planRowKeyV302(item.event,dateKey,item.originalIndex);
+    const time = planCellValueV302(key, "time", timePlainV302(item.event));
+    return /celý den|cely den/i.test(time) && repeatClasses.has(item.event) ? 0 : 1;
+  };
+  return items.sort((a,b)=>priority(a) - priority(b));
+}
+
 function renderPreview(){
   applyDisplayBodyClassesV300();
   const from=document.getElementById("weekFrom").value;
@@ -2259,6 +2269,7 @@ function renderPreview(){
     const dayItems=sortEvents(events.filter(e=>e.date===dateKey))
       .map((event, originalIndex)=>({event, originalIndex}))
       .filter(item=>!isRowDeletedV302(planRowKeyV302(item.event,dateKey,item.originalIndex)));
+    prioritizeRepeatedAllDayV326(dayItems, dateKey, repeatClasses);
     const weekendClass = (d.getDay() === 0 || d.getDay() === 6) ? " weekendRowV184" : "";
     if(dayItems.length===0){
       const rowKey = `empty||${dateKey}`;

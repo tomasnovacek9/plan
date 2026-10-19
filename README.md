@@ -100,3 +100,23 @@ EDUPAGE_ICS_URL=https://...
 ```
 
 Pokud proxy jeste neni nastavena, aplikace stale funguje pres rucni import `.ics` souboru.
+
+## Tisk a PDF
+
+Tlačítko **Tisk / export** otevře společný náhled A4. Volba **Vytisknout / uložit PDF**
+spustí systémový tisk; pro PDF vyber „Uložit jako PDF“. Ponech A4 na výšku,
+měřítko 100 % a vypni automatické záhlaví a zápatí prohlížeče.
+
+Dny se drží pohromadě, pokud se vejdou na jednu stránku. Delší den se rozdělí
+mezi akcemi a zopakuje datum s označením „pokračování“. Poznámka a podpis jsou
+na konci. Opakované celodenní akce jsou v daném dni první; klíče uložených úprav
+zůstávají zachované.
+
+Test řazení: `npm test`. Test skutečného rozložení v Chrome/Chromium:
+
+```bash
+CHROME_BIN="/cesta/k/chrome" npm test
+```
+
+Test používá krátký plán, hustý týden a dlouhý den. Výjimečný záznam delší než
+celá stránka se může rozdělit, aby se žádný text neodřízl.
