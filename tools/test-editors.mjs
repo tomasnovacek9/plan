@@ -11,7 +11,7 @@ html=html.replace('</head>',`<base href="${new URL('../',import.meta.url).href}"
 const core=readFileSync('src/scripts/legacy/00-app-core.js','utf8');
 const print=readFileSync('src/scripts/print-plan.js','utf8');
 const test=`
-window.addEventListener('load',()=>setTimeout(()=>{
+window.addEventListener('load',()=>setTimeout(async()=>{
  const failures=[];let checks=0;
  const check=(ok,msg)=>{checks++;if(!ok)failures.push(msg)};
  const change=el=>el.dispatchEvent(new Event('change',{bubbles:true}));
@@ -36,7 +36,9 @@ window.addEventListener('load',()=>setTimeout(()=>{
  click('[data-time-save-v327]');check(time().textContent==='08:55 - 11:40','Rozsah hodin dopočítá čas');
  showTimeChoicePopoverV307(time());
  const timeColor=pop.querySelector('[data-time-color-v330="time"]'),lessonColor=pop.querySelector('[data-time-color-v330="lesson"]');
- timeColor.value='#b91c1c';timeColor.dispatchEvent(new Event('input',{bubbles:true}));lessonColor.value='#047857';lessonColor.dispatchEvent(new Event('input',{bubbles:true}));
+ click('[data-time-color-preset-v332="time"][data-color-v332="#b91c1c"]');click('[data-time-color-preset-v332="lesson"][data-color-v332="#047857"]');
+ check(!pop.querySelector('input[type=color]'),'Editor používá paletu bez kapátka');
+ check(pop.querySelector('[data-time-color-preset-v332="time"][data-color-v332="#b91c1c"]').getAttribute('aria-pressed')==='true','Vybraná barva je označená');
  check(getComputedStyle(time()).color!=='rgb(185, 28, 28)','Návrh barvy se neukládá před potvrzením');
  click('[data-time-save-v327]');
  check(getComputedStyle(time()).color==='rgb(185, 28, 28)','Barva času překoná původní styly');
@@ -87,6 +89,16 @@ window.addEventListener('load',()=>setTimeout(()=>{
  const rect=document.querySelector('.planStylePopoverV307').getBoundingClientRect();check(rect.left>=0&&rect.right<=innerWidth,'Panel se vejde do okna');
  const fresh=title();window.getSelection().removeAllRanges();const range=document.createRange();range.setStart(fresh.firstChild,0);range.setEnd(fresh.firstChild,6);window.getSelection().addRange(range);showPlanStylePopoverV307(fresh);click('[data-style-bold-v307]');
  check(fresh.querySelector('span[style*="font-weight"]')?.textContent==='Porada','Formátování výběru textu');
+
+ events=Array.from({length:55},(_,i)=>({uid:'scroll'+i,id:'scroll'+i,source:'calendar',date:'2026-10-19',from:'08:00',to:'08:45',title:'Akce pro kontrolu rolování '+i,person:'Nováková'}));renderPreview();
+ await openSchoolPrintPreview();
+ const modal=document.getElementById('schoolPrintRoot'),scroll=modal.querySelector('.printSheets'),bar=modal.querySelector('.printToolbar');
+ const topBefore=bar.getBoundingClientRect().top;scroll.scrollTop=400;
+ check(scroll.scrollTop>0,'Tiskové listy lze rolovat');
+ check(bar.getBoundingClientRect().top===topBefore,'Horní lišta se při rolování nehýbe');
+ check(scroll.getBoundingClientRect().top>=bar.getBoundingClientRect().bottom,'Listy začínají pod horní lištou');
+ const br=bar.getBoundingClientRect();check(document.elementFromPoint(br.left+20,br.top+20)?.closest('.printToolbar'),'Listy nepřekrývají horní lištu');
+ modal.querySelector('[data-close]').click();
  }catch(e){failures.push(e.stack)}
  if(!location.hash.includes('preview')){document.head.innerHTML='';document.body.innerHTML='<pre id="test-result">'+JSON.stringify({checks,failures})+'</pre>';}
  else{showTimeChoicePopoverV307(time());}

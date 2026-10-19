@@ -1289,6 +1289,10 @@ function planStyleSizeOptionsV307(selected = ""){
   }).join("");
 }
 
+function planTextColorsV332(){
+  return [["#172033","Tmavá"],["#155a94","Modrá"],["#b91c1c","Červená"],["#047857","Zelená"],["#a16207","Zlatá"],["#6d28d9","Fialová"]];
+}
+
 function ensurePlanStylePopoverV307(){
   let pop = document.querySelector(".planStylePopoverV307");
   if(pop) return pop;
@@ -1302,7 +1306,7 @@ function ensurePlanStylePopoverV307(){
     <div class="styleTypeRowV327"><label>Velikost<select data-style-size-v307 aria-label="Velikost textu">${planStyleSizeOptionsV307()}</select></label><div class="styleEmphasisV327"><button type="button" data-style-bold-v307 aria-label="Tučné" aria-pressed="false" title="Tučné">B</button><button type="button" data-style-italic-v307 aria-label="Kurzíva" aria-pressed="false" title="Kurzíva"><i>I</i></button></div></div>
     <div class="styleColorLabelV327">Barva textu</div>
     <div class="planColorPresetsV309" aria-label="Barva textu">
-      ${[["#172033","Tmavá"],["#155a94","Modrá"],["#b91c1c","Červená"],["#047857","Zelená"],["#a16207","Zlatá"],["#6d28d9","Fialová"]].map(([color,label])=>`<button type="button" data-style-color-preset-v309="${color}" style="--preset:${color}" aria-label="${label}" title="${label}"></button>`).join("")}
+      ${planTextColorsV332().map(([color,label])=>`<button type="button" data-style-color-preset-v309="${color}" style="--preset:${color}" aria-label="${label}" title="${label}"></button>`).join("")}
     </div>
     <div class="styleEditorFooterV327"><span>Označený text nebo celá buňka.<br>Změny se ukládají automaticky.</span><button type="button" data-style-reset-v327>Výchozí vzhled</button></div>
   `;
@@ -1479,7 +1483,7 @@ function ensureTimeChoicePopoverV307(){
     </div>
     <div class="timeChoicePanelV307" data-time-panel-v307="allDay" hidden><p class="allDayHintV327">Akce bez časového omezení. V plánu se zobrazí „celý den“.</p></div>
     <div class="timeResultV327" aria-live="polite"><span>V plánu se zobrazí</span><strong data-time-summary-v327></strong><small data-time-error-v327 role="alert"></small></div>
-    <div class="timeColorsV330"><span>Barvy v plánu</span>${[["time","Čas"],["lesson","Vyučovací hodiny"]].map(([field,label])=>`<div><label>${label}<input type="color" data-time-color-v330="${field}" aria-label="Barva: ${label}"></label><button type="button" data-time-color-default-v330="${field}">Výchozí</button></div>`).join("")}</div>
+    <div class="timeColorsV330"><span>Barvy v plánu</span>${[["time","Čas"],["lesson","Vyučovací hodiny"]].map(([field,label])=>`<div class="timeColorGroupV332"><span>${label}</span><div class="timeColorOptionsV332" role="group" aria-label="Barva: ${label}">${planTextColorsV332().map(([color,name])=>`<button type="button" data-time-color-preset-v332="${field}" data-color-v332="${color}" style="--preset:${color}" aria-label="${label}: ${name}" title="${name}" aria-pressed="false"></button>`).join("")}<button type="button" data-time-color-default-v330="${field}">Výchozí</button></div><input type="hidden" data-time-color-v330="${field}"></div>`).join("")}</div>
     <div class="editorActionsV327"><button type="button" data-editor-close-v327>Zrušit</button><button type="button" data-time-save-v327>Uložit změny</button></div>
     <button type="button" data-time-apply-v307 hidden></button><button type="button" data-lesson-apply-v307 hidden></button>
   `;
@@ -1505,6 +1509,12 @@ function saveTimeColorsV330(pop){
 }
 
 function updateTimeChoiceSummaryV327(pop){
+  pop.querySelectorAll("[data-time-color-preset-v332]").forEach(button=>{
+    const field = button.dataset.timeColorPresetV332;
+    const active = pop.querySelector(`[data-time-color-v330='${field}']`).dataset.draftColorV330 === button.dataset.colorV332;
+    button.classList.toggle("active",active);
+    button.setAttribute("aria-pressed",String(active));
+  });
   const mode = pop.querySelector("[data-time-mode-v307].active")?.dataset.timeModeV307 || "time";
   const from = getTimeSplitValueV310(pop, "from");
   const to = getTimeSplitValueV310(pop, "to");
@@ -1945,6 +1955,14 @@ function initPlanEditingV302(){
       setChoiceListValueV307(timePopover,"[data-lesson-list-v307='from']","",from);
       setChoiceListValueV307(timePopover,"[data-lesson-list-v307='to']","",to);
       syncTimeChoiceTimeFromLessonsV307(timePopover);
+      updateTimeChoiceSummaryV327(timePopover);
+      return;
+    }
+    const colorPreset = event.target.closest("[data-time-color-preset-v332]");
+    if(colorPreset){
+      const input = timePopover.querySelector(`[data-time-color-v330='${colorPreset.dataset.timeColorPresetV332}']`);
+      input.value = colorPreset.dataset.colorV332;
+      input.dataset.draftColorV330 = colorPreset.dataset.colorV332;
       updateTimeChoiceSummaryV327(timePopover);
       return;
     }

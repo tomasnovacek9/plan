@@ -60,3 +60,10 @@
 .previewPage .dayColorEditableV331:hover{outline:1px solid #155a9433;outline-offset:2px}
 .previewPage .dayColorEditableV331:focus-visible{outline:2px solid #3575ad;outline-offset:2px}
 @media print{.previewPage .dayColorEditableV331{outline:none!important}}
+
+.timeColorsV330 .timeColorGroupV332{display:grid;gap:7px}
+.timeColorGroupV332>span{font-size:11px;color:#59697a}
+.timeColorOptionsV332{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.timeChoicePopoverV307 .timeColorOptionsV332 [data-time-color-preset-v332]{width:26px!important;height:26px!important;min-height:26px!important;padding:0!important;border:3px solid #fff!important;border-radius:50%!important;background:var(--preset)!important;box-shadow:0 0 0 1px #dbe2ea!important}
+.timeChoicePopoverV307 .timeColorOptionsV332 [data-time-color-preset-v332].active{box-shadow:0 0 0 2px #64748b!important}
+.timeColorOptionsV332 [data-time-color-default-v330]{margin-left:auto}
