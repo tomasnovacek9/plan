@@ -979,7 +979,7 @@ body{
 }
 
 .previewPage .dateColV308{
-  width:19.5mm!important;
+  width:24mm!important;
 }
 
 .previewPage .timeColV308{
@@ -1085,6 +1085,11 @@ body{
 }
 
 .previewPage .dayCell{
+  width:24mm!important;
+  min-width:24mm!important;
+  max-width:none!important;
+  padding-left:2mm!important;
+  padding-right:2mm!important;
   position:relative!important;
   background:#f8fbff!important;
   color:#164e85!important;

@@ -33,7 +33,7 @@ function check(ok,msg){checks++;if(!ok)failures.push(msg);}
 function scenario(name,counts,long=false){
  const source=document.createElement('div');source.id='preview';
  let n=0;
- source.innerHTML='<div class="docHeader"><div><div class="docSchoolFullV93">Základní škola</div><div class="docTitle">TÝDENNÍ PLÁN</div><div class="docDates">19.–25. 10. 2026</div></div></div><table class="planTable"><colgroup><col class="dateColV308"><col class="timeColV308"><col class="eventColV308"><col class="personColV308"></colgroup><thead><tr><th>Datum</th><th>Hodina</th><th>Akce</th><th>Zodpovídá</th></tr></thead><tbody>'+counts.map((count,day)=>Array.from({length:count},(_,r)=>'<tr class="repeatedEventV50 repeatColorV50-'+(day%6+1)+'">'+(r===0?'<td class="dayCell" rowspan="'+count+'"><div class="dayName">Den '+day+'</div><div class="dayDate">19. 10.</div></td>':'')+'<td class="timeCell">08:00–09:00</td><td class="eventCell" data-test-id="'+(n++)+'">'+(long?'Dlouhý název školní akce a podrobný popis. '.repeat(5):'Školní akce')+'</td><td class="personCell">Nováková, Schollerová<br>Florek Klimešová, Ondráčková<br><span>Křenková a Zemanová</span></td></tr>').join('')).join('')+'</tbody></table><div class="planNoteWrapV310">Důležitá poznámka k týdnu.</div><div class="podpisFinal41">Ředitel školy</div><div class="createdDateV184">Vytvořeno 19. 10. 2026</div>';
+ source.innerHTML='<div class="docHeader"><div><div class="docSchoolFullV93">Základní škola</div><div class="docTitle">TÝDENNÍ PLÁN</div><div class="docDates">19.–25. 10. 2026</div></div></div><table class="planTable"><colgroup><col class="dateColV308"><col class="timeColV308"><col class="eventColV308"><col class="personColV308"></colgroup><thead><tr><th>Datum</th><th>Hodina</th><th>Akce</th><th>Zodpovídá</th></tr></thead><tbody>'+counts.map((count,day)=>Array.from({length:count},(_,r)=>'<tr class="repeatedEventV50 repeatColorV50-'+(day%6+1)+'">'+(r===0?'<td class="dayCell" rowspan="'+count+'"><div class="dayName">Pondělí '+day+'</div><div class="dayDate">19.10.2026</div></td>':'')+'<td class="timeCell">08:00–09:00</td><td class="eventCell" data-test-id="'+(n++)+'">'+(long?'Dlouhý název školní akce a podrobný popis. '.repeat(5):'Školní akce')+'</td><td class="personCell">Nováková, Schollerová<br>Florek Klimešová, Ondráčková<br><span>Křenková a Zemanová</span></td></tr>').join('')).join('')+'</tbody></table><div class="planNoteWrapV310">Důležitá poznámka k týdnu.</div><div class="podpisFinal41">Ředitel školy</div><div class="createdDateV184">Vytvořeno 19. 10. 2026</div>';
  const shell=document.createElement('div');shell.className='previewPage';shell.append(source);document.body.append(shell);
  const root=document.createElement('div');root.id='schoolPrintRoot';root.innerHTML='<div class="printSheets"></div>';document.body.append(root);
  const weekendCount=counts.at(-1);
@@ -57,12 +57,24 @@ function scenario(name,counts,long=false){
  check(root.querySelectorAll('.weekendRowV184').length===weekendCount,name+': zapnutý víkend je v tiskovém náhledu');
  const printedCells=[...root.querySelectorAll('.eventCell,.personCell')];
  const beforePrint=printedCells.map(cell=>({width:cell.getBoundingClientRect().width,height:cell.getBoundingClientRect().height,text:cell.textContent}));
+ function checkDaySpacing(){
+   for(const cell of root.querySelectorAll('.dayCell')){
+     const rect=cell.getBoundingClientRect(),style=getComputedStyle(cell);
+     check(Math.abs(parseFloat(style.paddingLeft)-parseFloat(style.paddingRight))<.1,name+': stejné odsazení dne z obou stran');
+     for(const label of cell.querySelectorAll('.dayName,.dayDate')){
+       const range=document.createRange();range.selectNodeContents(label);const text=range.getBoundingClientRect();
+       check(text.left>=rect.left+5&&text.right<=rect.right-5,name+': den a celé datum mají prostor od okrajů');
+     }
+   }
+ }
+ checkDaySpacing();
  const date=root.querySelector('.createdDateV184');
  check(date?.textContent==='Vytvořeno 19. 10. 2026',name+': datum vytvoření zachováno');
  // Activate the actual print styles to catch screen/print visibility differences.
  const mediaRules=[...document.styleSheets].flatMap(sheet=>[...sheet.cssRules]).filter(rule=>rule instanceof CSSMediaRule);
  const originalMedia=mediaRules.map(rule=>rule.media.mediaText);
  mediaRules.forEach(rule=>{if(rule.media.mediaText==='print')rule.media.mediaText='all';else if(rule.media.mediaText==='screen')rule.media.mediaText='not all';});
+ checkDaySpacing();
  printedCells.forEach((cell,i)=>{
    const rect=cell.getBoundingClientRect();
    check(Math.abs(rect.width-beforePrint[i].width)<1,name+': tisk zachová šířku sloupce');
