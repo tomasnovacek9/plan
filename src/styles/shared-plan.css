@@ -5,3 +5,5 @@
 .sharedPlanStatusV340 button{padding:6px 9px;border:1px solid currentColor;border-radius:6px;background:#fff;color:inherit;font:600 11px Arial,sans-serif;cursor:pointer}
 .sharedPlanLoadingV340 #preview,.sharedPlanLoadingV340 .planToolsV335{pointer-events:none;opacity:.6}
 @media print{.sharedPlanStatusV340{display:none!important}}
+
+.sharedPlanStatusV340[hidden]{display:none!important}

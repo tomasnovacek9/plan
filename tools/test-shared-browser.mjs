@@ -42,8 +42,9 @@ try{
    localStorage.setItem('tydenni_plan_week_storage_migrated_v316','1');localStorage.setItem('test-seeded','1');
   }
  },{manualKey});
- const saved=page=>page.locator('.sharedPlanStatusV340[data-state=saved]').waitFor({timeout:15000});
+ const saved=page=>page.locator('.sharedPlanStatusV340[data-state=saved]').waitFor({state:'attached',timeout:15000});
  await Promise.all([pageA.goto(address),pageB.goto(address)]);await Promise.all([saved(pageA),saved(pageB)]);
+ assert.equal(await pageA.locator('.sharedPlanStatusV340').isVisible(),false,'Po úspěšném načtení se nezobrazuje hláška o společném uložení');
  assert.equal(JSON.parse(sqlite.prepare('SELECT payload FROM shared_plan_state').get().payload)[JSON.stringify([manualKey,'manual-shared-test'])],undefined,'Staré místní údaje nepřepíšou společný plán');
  assert.ok(await pageA.evaluate(()=>!!localStorage.getItem('tydenni_plan_before_shared_v340')),'Původní místní data mají zálohu');
  assert.equal(await pageA.getByRole('button',{name:'Převést místní úpravy',exact:true}).count(),0,'Převodní tlačítko není dostupné ani při zachované místní záloze');
@@ -132,6 +133,16 @@ try{
  await pageC.getByRole('button',{name:'Obnovit neodeslané změny'}).waitFor({timeout:10000});await pageC.getByRole('button',{name:'Obnovit neodeslané změny'}).click();
  await pageC.getByRole('button',{name:'Převzít změny'}).click();await saved(pageC);
  await pageB.waitForFunction(()=>document.querySelector('#preview .createdDateV184')?.textContent.includes('Obnovený autor'),{},{timeout:12000});
+ for(const width of [1440,1024,390]){
+  await pageC.setViewportSize({width,height:900});
+  const fit=await pageC.evaluate(()=>{
+   const paper=document.getElementById('pdfArea').getBoundingClientRect();
+   const buttons=[...document.querySelectorAll('#preview .planRowChangeToolsV304>button')];
+   return {count:buttons.length,inside:buttons.every(button=>{const rect=button.getBoundingClientRect();return rect.left>=paper.left+4&&rect.right<=paper.right-8;}),overflow:getComputedStyle(document.querySelector('.previewShell')).overflowX};
+  });
+  assert.ok(fit.count>0&&fit.inside,'Ikony jsou uvnitř bílé plochy při šířce '+width);
+  assert.equal(fit.overflow,'auto');
+ }
  assert.deepEqual(errors,[]);
  console.log('Dva nezávislé prohlížeče + nový čtenář: zachování místní zálohy bez převodního tlačítka, sdílení, souběžné úpravy, konflikt, výpadek, opakované otevření a bezpečné HTML: OK');
 }finally{await browser.close();await new Promise(resolve=>server.close(resolve));sqlite.close();}

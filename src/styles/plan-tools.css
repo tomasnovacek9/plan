@@ -30,3 +30,12 @@
 .previewPage .planRowMoveV341:disabled{opacity:.3;cursor:default}
 .previewPage .planRowMoveV341:focus-visible{outline:2px solid #3575ad;outline-offset:2px}
 @media print{.planRowMoveV341{display:none!important}}
+
+/* Keep the A4 content width and reserve a separate white area for editing tools. */
+@media screen{
+  .previewShell{min-width:0;overflow-x:auto!important}
+  #pdfArea{width:calc(210mm + 120px)!important;padding-right:calc(12mm + 120px)!important}
+  #preview .planRowChangeToolsV304{width:110px!important;max-width:110px!important;flex-wrap:wrap!important;align-content:center!important}
+  #preview .planRowChangeToolsV304>button{flex:0 0 auto}
+  #preview .personCell:has(.planRowMoveV341){height:50px}
+}

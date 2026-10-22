@@ -221,3 +221,12 @@ den nepřekročí. Tlačítko ↺ vrátí výchozí pořadí celé skupiny, osta
 zůstanou zachované. Po změně času se staré pořadí pro původní čas nepoužije.
 Pořadí se ukládá do metadat buněk a sdílí se s kolegy. Zdrojové akce ani jejich
 klíče se nemění. Tisk/PDF zachovají výsledné pořadí a ovládací šipky vynechají.
+
+
+## Prostor pro editaci
+
+Běžné úspěšné ukládání nezobrazuje informační pruh. Počáteční načítání, chyby,
+konflikty a obnova neodeslané práce zůstávají dostupné. Vedle obsahu A4 je
+v editoru vyhrazený bílý prostor pro šipky i ikony změn; ovládání se zalamuje
+a má dostatečnou výšku řádku. Na úzké obrazovce lze náhledem posouvat vodorovně.
+Šířka samotné tabulky i tiskového dokumentu zůstává stejná.

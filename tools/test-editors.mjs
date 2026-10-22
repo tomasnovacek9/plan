@@ -32,12 +32,19 @@ window.addEventListener('load',()=>setTimeout(async()=>{
  check(orderedTitles()[0]==='Nová celodenní','Nově přidaná neopakovaná celodenní akce je nahoře');
  const secondCell=[...document.querySelectorAll('#preview .eventCell')].find(cell=>cell.textContent==='Druhá v osm');const secondKey=secondCell.dataset.planRowKeyV302;
  const firstCell=[...document.querySelectorAll('#preview .eventCell')].find(cell=>cell.textContent==='První v osm');const firstKey=firstCell.dataset.planRowKeyV302;
- saveJsonMapV300(PLAN_CELL_STORE_V302,{[secondKey]:{title:'Přejmenovaná druhá'}});renderPreview();
+ saveJsonMapV300(PLAN_CELL_STORE_V302,{[secondKey]:{title:'Přejmenovaná druhá',person:'Upravená osoba',time:'08.00 - 09.30',lesson:'2. hodina'}});renderPreview();
  document.querySelector('[data-row-order-key-v341="'+CSS.escape(secondKey)+'"][data-row-order-v341=up]').click();
  check(orderedTitles().join('|')==='Nová celodenní|Přejmenovaná druhá|První v osm|Akce v deset','Šipka mění pouze pořadí akcí se stejným začátkem');
  check(loadJsonMapV300(PLAN_CELL_STORE_V302)[secondKey].title==='Přejmenovaná druhá','Změna pořadí zachová přepsaný text');
  check(JSON.stringify(events)===beforeOrderEvents,'Řazení nesmaže ani nepřepíše žádnou zdrojovou akci');
  renderPreview();check(orderedTitles()[1]==='Přejmenovaná druhá','Vlastní pořadí přetrvá překreslení');
+ const paper=document.getElementById('pdfArea').getBoundingClientRect();
+ const orderTools=document.querySelector('#preview .personCell[data-plan-row-key-v302="'+CSS.escape(secondKey)+'"] .planRowChangeToolsV304');
+ check(orderTools.querySelectorAll('button').length>=6,'Ověření řádku se šipkami a všemi ikonami změn');
+ check([...orderTools.querySelectorAll('button')].every(button=>{const rect=button.getBoundingClientRect();return rect.left>=paper.left+4&&rect.right<=paper.right-8;}),'Všechny ikony se vejdou do bílé plochy');
+ const rowBounds=orderTools.closest('tr').getBoundingClientRect(),toolBounds=orderTools.getBoundingClientRect();
+ check(toolBounds.top>=rowBounds.top&&toolBounds.bottom<=rowBounds.bottom,'Zalomené ikony nepřekrývají sousední řádky');
+
  check(document.querySelector('#preview .eventCell[data-plan-row-key-v302="'+CSS.escape(firstKey)+'"]').closest('tr').querySelector('[data-row-order-v341=down]')?.disabled,'Poslední akce ve skupině nemůže pod jiný čas');
  const orderPrint=document.createElement('div');document.body.append(orderPrint);buildSchoolPrintPages(document.getElementById('preview'),orderPrint);
  check([...orderPrint.querySelectorAll('.eventCell')].map(cell=>cell.textContent.trim()).filter(Boolean).join('|')===orderedTitles().join('|'),'Tisk zachovává zvolené pořadí');

@@ -16,10 +16,11 @@ function savePending(){nativeSet.call(localStorage,pendingKey,JSON.stringify([..
 function otherQueues(){return Object.keys(localStorage).filter(key=>key.startsWith(pendingPrefix)&&key!==pendingKey&&localStorage.getItem(key)!=='[]');}
 function editing(){return !!document.querySelector('dialog[open]') || document.activeElement?.matches('input,textarea,select,[contenteditable="true"]') || !!document.activeElement?.closest('.planStylePopoverV307') || [...document.querySelectorAll('.timeChoicePopoverV307')].some(el=>!el.hidden);}
 function status(text,state='saved'){
-  label.textContent=text;bar.dataset.state=state;actions.replaceChildren();
+  label.textContent=state==='saved'?'':text;bar.dataset.state=state;actions.replaceChildren();
   if(state==='error')actions.append(button('Zkusit znovu',()=>ready?flush():initialize()));
   if(state==='conflict')actions.append(button('Použít společnou verzi',()=>resolve(false)),button('Zachovat moje změny',()=>resolve(true)));
   if(ready&&otherQueues().length)actions.append(button('Obnovit neodeslané změny',recoverPending));
+  bar.hidden=(state==='saved'||(state==='saving'&&ready))&&!actions.children.length;
 }
 function enqueue(changes){
   for(const change of changes){
@@ -95,7 +96,7 @@ async function flush(){
     }
     savePending();
     if(difference(toRecords(readEntries()),remote).length||sent.length)applyRemote(remote);
-    if(!conflict)status(pending.size?'Ukládám společné změny…':'Společný plán · změny uloženy pro všechny',pending.size?'saving':'saved');
+    if(!conflict)status(pending.size?'Ukládám společné změny…':'',pending.size?'saving':'saved');
   }catch(error){status(pending.size?'Změny nejsou odeslané. Připojení ke společnému plánu selhalo.':'Spojení se společným plánem vypadlo. Zkouším ho obnovit.','error');console.error(error);}
   finally{sending.clear();busy=false;if(pending.size&&!conflict)timer=setTimeout(flush,4000);}
 }
@@ -137,7 +138,7 @@ async function initialize(){
     const {data}=await request();remote=data.records;
     nativeSet.call(localStorage,'tydenni_plan_shared_initialized_v340','1');
     ready=true;document.body.classList.remove('sharedPlanLoadingV340');applyRemote(remote);
-    if(!conflict)status(pending.size?'Čekající úpravy se odesílají…':'Společný plán · změny uloženy pro všechny',pending.size?'saving':'saved');
+    if(!conflict)status(pending.size?'Čekající úpravy se odesílají…':'',pending.size?'saving':'saved');
   }catch(error){status('Společný plán se nenačetl. Úpravy jsou zatím pozastavené.','error');console.error(error);}
   finally{busy=false;if(ready&&pending.size&&!conflict)flush();}
 }
