@@ -1,6 +1,6 @@
 # Generator tydenniho planu
 
-Cista staticka verze aplikace pro pripravu tydenniho planu skoly.
+Webová aplikace pro přípravu týdenního plánu školy s kalendářem EduPage a společným ukládáním přes Cloudflare Pages Functions a D1.
 
 ## Co umi
 
@@ -8,7 +8,7 @@ Cista staticka verze aplikace pro pripravu tydenniho planu skoly.
 - importovat `.ics` soubor rucne,
 - filtrovat rezervace a beznou vyuku,
 - pridavat, upravovat a mazat rucni zaznamy,
-- ukladat stav do prohlizece pres `localStorage`,
+- sdílet vlastní úpravy mezi uživateli přes server a ponechat místní zálohu v prohlížeči,
 - psat poznamku ke konkretnimu tydnu,
 - upravovat bunky `Zodpovida` primo v nahledu,
 - tisknout a exportovat A4 PDF.
@@ -143,7 +143,7 @@ Původní události a klíče ručních úprav se při doplnění příjmení ne
 ## Nástroje plánu
 
 Nad náhledem jsou dostupné návrat na aktuální týden, kopírování vlastní akce do
-jiného dne stejného týdne, stažení JSON zálohy, obnovení zálohy a přehled zkratek,
+libovolného dne včetně jiného týdne, stažení JSON zálohy, obnovení zálohy a přehled zkratek,
 pro které není jednoznačné příjmení. Záloha obsahuje uložené vlastní úpravy ze
 všech týdnů v tomto prohlížeči. Obnovení vyžaduje potvrzení nahrazení shodných
 položek; jiné položky zůstávají zachované.
@@ -151,3 +151,54 @@ položek; jiné položky zůstávají zachované.
 Hlavní náhled neukazuje odhadované konce stran. Skutečné listy jsou v tiskovém
 náhledu, kde je u rozděleného dne na první části „pokračuje na další straně“
 a na následující „pokračování“. Automatické nahrávání na SharePoint není zapojeno.
+
+
+## Společné ukládání
+
+Společný plán je přístupný k prohlížení i úpravám všem, kteří otevřou odkaz.
+Nejde o přihlášení do EduPage; zdrojový kalendář se nemění.
+Sdílí se vlastní akce, úpravy buněk, smazání, formátování, týdenní poznámky,
+podpis, datum a autor vytvoření a zobrazení víkendu či data vytvoření.
+Otevřený týden zůstává volbou jednotlivého uživatele.
+
+`functions/shared-plan.json.js` vyžaduje vazbu D1 databáze **PLAN_DB**.
+Schéma je v `migrations/0001_shared_plan.sql`. Před nasazením této verze:
+
+1. Vytvořit samostatnou D1 databázi `plan-shared-db` ve stávajícím účtu Cloudflare.
+2. Spustit na nové databázi SQL migraci `migrations/0001_shared_plan.sql`.
+3. Připojit databázi k produkčnímu Pages projektu `plan` jako `PLAN_DB`.
+4. Nasadit nový kód a zkontrolovat `/shared-plan.json` a dvě oddělená otevření aplikace.
+
+**Vytvoření databáze a zapnutí v produkci vyžaduje potvrzení uživatele.**
+Při nedostupném společném úložišti první načtení pozastaví editaci a zobrazí
+chybu s možností opakování. Aplikace neoznačuje lokální uložení za společné.
+U dalších výpadků se čekající změny zachovají místně a po připojení se odešlou.
+Každé otevření má vlastní frontu změn. Po zavření jiného okna lze jeho čekající
+frontu převzít tlačítkem „Obnovit neodeslané změny“.
+
+Před prvním přechodem z místního ukládání se původní sdílené položky uloží pod
+`tydenni_plan_before_shared_v340`. Následně se načte společná verze. Původní
+místní práce se automaticky nezveřejňuje ani nepřepisuje práci kolegů.
+Tlačítko **Převést místní úpravy** ukáže souhrn odlišných údajů a umožní je
+výslovně převést. Převádějí se pouze přítomné místní údaje; absence v místní
+záloze nevymaže společné položky. Původní záloha se ponechá.
+Kolegyně může také před přechodem stáhnout „Zálohovat úpravy“.
+
+Změny se odesílají po 500 ms; jiná otevření kontrolují společný plán každé
+4 sekundy, když jsou viditelná. Aktivní psaní, dialog a rozpracovaná úprava času
+se nepřekreslují. Nezávislé údaje se slučují; současné změny stejného údaje
+vyžadují volbu společné nebo vlastní verze. Přijetí společné verze zachová
+ostatní nekonfliktní místní změny a odloží původní návrh do místní zálohy.
+Server používá podmíněný zápis podle revize a ukládá historii úspěšných verzí.
+
+Test serveru a slučování: `npm run test:shared` (také součást `npm test`).
+Integrační test tří oddělených prohlížečů s lokální databází:
+
+```bash
+CHROME_BIN="/cesta/k/chrome" npm run test:shared:browser
+```
+
+Test potřebuje dostupný balíček `playwright`; alternativně proměnná
+`PLAYWRIGHT_MODULE` určuje cestu k jeho `index.mjs`. Testuje převod místních dat,
+přenos běžných úprav, metadata, souběh, konflikt, výpadek připojení,
+opakované otevření, nového čtenáře a sanitizaci sdíleného formátovaného textu.

@@ -1083,7 +1083,11 @@ function planStyleAttrV307(key, field){
 
 function planRichHtmlValueV308(key, field){
   const rich = loadJsonMapV300(PLAN_RICH_STORE_V308);
-  return rich[key]?.[field] || "";
+  const html = rich[key]?.[field] || "";
+  if(!html) return "";
+  const template = document.createElement("template");
+  template.innerHTML = String(html);
+  return cleanEditableHtmlV308(template.content);
 }
 
 function cleanEditableHtmlV308(cell){

@@ -1,6 +1,6 @@
 /* Small local workflows. No uploads and no changes to calendar source data. */
 (() => {
-  const allowedKey = key => /^(tydenni_plan_|tydenniPlanData$)/.test(key);
+  const allowedKey = key => /^(tydenni_plan_|tydenniPlanData$)/.test(key) && !key.startsWith('tydenni_plan_shared_');
   const snapshot = () => Object.keys(localStorage).filter(allowedKey).map(key=>[key,localStorage.getItem(key)]);
   function backup(){
     const data={format:'school-plan-backup',version:1,createdAt:new Date().toISOString(),entries:snapshot()};
