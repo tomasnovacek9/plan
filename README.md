@@ -155,6 +155,11 @@ a na následující „pokračování“. Automatické nahrávání na SharePoin
 
 ## Společné ukládání
 
+Zapnutí schváleno uživatelem 22. 10. 2026. Produkční projekt `plan` používá
+samostatnou databázi `plan-shared-db` (`0affabfd-9be3-4c9b-8186-01b47e554542`)
+připojenou přes vazbu `PLAN_DB`. Nastavení vazby je v Cloudflare Pages, není
+součástí statických souborů.
+
 Společný plán je přístupný k prohlížení i úpravám všem, kteří otevřou odkaz.
 Nejde o přihlášení do EduPage; zdrojový kalendář se nemění.
 Sdílí se vlastní akce, úpravy buněk, smazání, formátování, týdenní poznámky,
