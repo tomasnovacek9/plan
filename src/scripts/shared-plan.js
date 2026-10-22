@@ -20,7 +20,6 @@ function status(text,state='saved'){
   if(state==='error')actions.append(button('Zkusit znovu',()=>ready?flush():initialize()));
   if(state==='conflict')actions.append(button('Použít společnou verzi',()=>resolve(false)),button('Zachovat moje změny',()=>resolve(true)));
   if(ready&&otherQueues().length)actions.append(button('Obnovit neodeslané změny',recoverPending));
-  if(ready&&localStorage.getItem(backupKey))actions.append(button('Převést místní úpravy',importLocal));
 }
 function enqueue(changes){
   for(const change of changes){
@@ -110,34 +109,6 @@ function resolve(keepLocal){
     for(const [id,change]of pending)if((conflict[id]??null)!==change.before&&(conflict[id]??null)!==change.after)pending.delete(id);
   }
   remote=conflict;conflict=null;savePending();applyRemote(remote);status('Aktualizuji společný plán…','saving');flush();
-}
-function describeChange(change){
-  const [key,...path]=JSON.parse(change.id),value=JSON.parse(change.after);
-  const fields={title:'Akce',person:'Zodpovídá',time:'Čas',lesson:'Vyučovací hodiny',note:'Poznámka',day:'Den',date:'Datum',color:'Barva',size:'Velikost písma',bold:'Tučné písmo',boldTouched:'Formátování',italic:'Kurzíva'};
-  let name=key.includes('manual_events')?'Vlastní akce':key.includes('signature_text')?'Jméno v podpisu':key.includes('signature_role')?'Funkce v podpisu':key.includes('created_date')?'Datum vytvoření':key.includes('created_author')?'Vytvořil':key.includes('week_notes')?'Týdenní poznámka':key.includes('deleted_rows')?'Skrytá akce':key.includes('hide_weekend')?'Skrýt víkend':key.includes('hide_created')?'Skrýt datum vytvoření':fields[path.at(-1)]||'Úprava plánu';
-  const date=path[0]?.split('||')[0];
-  const week=key.match(/(\d{4}-W\d{2})$/)?.[1];
-  const where=/^\d{4}-\d{2}-\d{2}$/.test(date||'')?formatDate(date):week?`týden ${week.slice(6)}/${week.slice(0,4)}`:'';
-  const text=key.includes('manual_events')?value.title||'Bez názvu':key.includes('rich_html')?'Formátovaný text':typeof value==='boolean'?(value?'ano':'ne'):String(value);
-  return `${name}${where?' · '+where:''}: ${text.slice(0,180)}`;
-}
-function importLocal(){
-  if(!ready||busy||pending.size||conflict){status('Nejprve dokonči uložení nebo vyřeš rozdílné úpravy.',conflict?'conflict':'saving');return;}
-  let desired,changes;
-  try{
-    desired=toRecords(JSON.parse(localStorage.getItem(backupKey)||'{}'));
-    changes=Object.entries(desired).filter(([id,value])=>(remote[id]??null)!==value).map(([id,after])=>({id,before:remote[id]??null,after}));
-  }catch{alert('Místní zálohu se nepodařilo načíst. Použij staženou zálohu úprav.');return;}
-  const dialog=document.createElement('dialog');dialog.className='planToolsDialogV335';
-  const heading=document.createElement('h2');heading.textContent='Převést místní úpravy';
-  const text=document.createElement('p');text.textContent=changes.length?`Místní záloha obsahuje ${changes.length} odlišných údajů. Jejich převodem se změní společný plán pro všechny. Ostatní společné údaje zůstanou zachované. Původní místní záloha se ponechá.`:'Všechny údaje z místní zálohy už jsou ve společném plánu.';
-  const list=document.createElement('ul');list.className='sharedPlanImportListV340';
-  for(const change of changes){
-    const row=document.createElement('li');row.textContent=describeChange(change);list.append(row);
-  }
-  const close=button('Zavřít',()=>dialog.close());close.className='toolsCloseV335';dialog.append(heading,close,text,list);
-  if(changes.length){const save=button('Převést do společného plánu',()=>{dialog.close();enqueue(changes);applyRemote(remote);flush();});save.className='toolsPrimaryV335';dialog.append(save);}
-  document.body.append(dialog);dialog.addEventListener('close',()=>dialog.remove());dialog.showModal();
 }
 function recoverPending(){
   if(conflict||pending.size){status('Nejprve dokonči současné úpravy.',conflict?'conflict':'saving');return;}

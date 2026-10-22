@@ -44,10 +44,13 @@ try{
  },{manualKey});
  const saved=page=>page.locator('.sharedPlanStatusV340[data-state=saved]').waitFor({timeout:15000});
  await Promise.all([pageA.goto(address),pageB.goto(address)]);await Promise.all([saved(pageA),saved(pageB)]);
- assert.equal(JSON.parse(sqlite.prepare('SELECT payload FROM shared_plan_state').get().payload)[JSON.stringify([manualKey,'manual-shared-test'])],undefined,'Místní data se nezveřejní bez převodu');
+ assert.equal(JSON.parse(sqlite.prepare('SELECT payload FROM shared_plan_state').get().payload)[JSON.stringify([manualKey,'manual-shared-test'])],undefined,'Staré místní údaje nepřepíšou společný plán');
  assert.ok(await pageA.evaluate(()=>!!localStorage.getItem('tydenni_plan_before_shared_v340')),'Původní místní data mají zálohu');
- await pageA.getByRole('button',{name:'Převést místní úpravy',exact:true}).click();
- await pageA.getByRole('button',{name:'Převést do společného plánu'}).click();await saved(pageA);
+ assert.equal(await pageA.getByRole('button',{name:'Převést místní úpravy',exact:true}).count(),0,'Převodní tlačítko není dostupné ani při zachované místní záloze');
+ await pageA.evaluate(({manualKey})=>{
+  const backup=JSON.parse(localStorage.getItem('tydenni_plan_before_shared_v340'));
+  saveManualEventsV308(JSON.parse(backup[manualKey]));mergeManualEventsV300();renderAll();
+ },{manualKey});await saved(pageA);
  await pageB.locator('#preview .eventCell').filter({hasText:'Místní akce kolegyně'}).waitFor({timeout:12000});
  const manualRow=page=>page.locator('#preview tr').filter({has:page.locator('[data-plan-row-key-v302="2026-10-19||manual-shared-test||manual"]')}).last();
  const title=page=>page.locator('#preview .eventCell[data-plan-row-key-v302="2026-10-19||manual-shared-test||manual"]');
@@ -113,5 +116,5 @@ try{
  await pageC.getByRole('button',{name:'Převzít změny'}).click();await saved(pageC);
  await pageB.waitForFunction(()=>document.querySelector('#preview .createdDateV184')?.textContent.includes('Obnovený autor'),{},{timeout:12000});
  assert.deepEqual(errors,[]);
- console.log('Dva nezávislé prohlížeče + nový čtenář: převod místní zálohy, sdílení, souběžné úpravy, konflikt, výpadek, opakované otevření a bezpečné HTML: OK');
+ console.log('Dva nezávislé prohlížeče + nový čtenář: zachování místní zálohy bez převodního tlačítka, sdílení, souběžné úpravy, konflikt, výpadek, opakované otevření a bezpečné HTML: OK');
 }finally{await browser.close();await new Promise(resolve=>server.close(resolve));sqlite.close();}

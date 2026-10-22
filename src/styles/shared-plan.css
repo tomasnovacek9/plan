@@ -3,6 +3,5 @@
 .sharedPlanStatusV340[data-state=error],.sharedPlanStatusV340[data-state=conflict]{background:#fff5e9;border-color:#e9c89d;color:#794e18}
 .sharedPlanStatusV340>div{display:flex;gap:6px;flex-wrap:wrap}
 .sharedPlanStatusV340 button{padding:6px 9px;border:1px solid currentColor;border-radius:6px;background:#fff;color:inherit;font:600 11px Arial,sans-serif;cursor:pointer}
-.sharedPlanImportListV340{max-height:240px;overflow:auto;padding-left:18px;font-size:11px;overflow-wrap:anywhere}
 .sharedPlanLoadingV340 #preview,.sharedPlanLoadingV340 .planToolsV335{pointer-events:none;opacity:.6}
 @media print{.sharedPlanStatusV340{display:none!important}}

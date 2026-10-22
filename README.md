@@ -184,10 +184,9 @@ frontu převzít tlačítkem „Obnovit neodeslané změny“.
 Před prvním přechodem z místního ukládání se původní sdílené položky uloží pod
 `tydenni_plan_before_shared_v340`. Následně se načte společná verze. Původní
 místní práce se automaticky nezveřejňuje ani nepřepisuje práci kolegů.
-Tlačítko **Převést místní úpravy** ukáže souhrn odlišných údajů a umožní je
-výslovně převést. Převádějí se pouze přítomné místní údaje; absence v místní
-záloze nevymaže společné položky. Původní záloha se ponechá.
-Kolegyně může také před přechodem stáhnout „Zálohovat úpravy“.
+Jednorázový převod dosavadních místních úprav byl dokončen. Na žádost uživatele
+bylo tlačítko „Převést místní úpravy“ odstraněno; původní místní záloha zůstává
+uložená. Nové úpravy se sdílí automaticky.
 
 Změny se odesílají po 500 ms; jiná otevření kontrolují společný plán každé
 4 sekundy, když jsou viditelná. Aktivní psaní, dialog a rozpracovaná úprava času
@@ -204,6 +203,6 @@ CHROME_BIN="/cesta/k/chrome" npm run test:shared:browser
 ```
 
 Test potřebuje dostupný balíček `playwright`; alternativně proměnná
-`PLAYWRIGHT_MODULE` určuje cestu k jeho `index.mjs`. Testuje převod místních dat,
+`PLAYWRIGHT_MODULE` určuje cestu k jeho `index.mjs`. Testuje zachování místní zálohy bez převodního tlačítka,
 přenos běžných úprav, metadata, souběh, konflikt, výpadek připojení,
 opakované otevření, nového čtenáře a sanitizaci sdíleného formátovaného textu.
