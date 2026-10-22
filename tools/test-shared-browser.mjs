@@ -49,9 +49,26 @@ try{
  assert.equal(await pageA.getByRole('button',{name:'Převést místní úpravy',exact:true}).count(),0,'Převodní tlačítko není dostupné ani při zachované místní záloze');
  await pageA.evaluate(({manualKey})=>{
   const backup=JSON.parse(localStorage.getItem('tydenni_plan_before_shared_v340'));
-  saveManualEventsV308(JSON.parse(backup[manualKey]));mergeManualEventsV300();renderAll();
+  saveManualEventsV308([...JSON.parse(backup[manualKey]),
+   {uid:'manual-same-time-test',date:'2026-10-19',from:'08:00',to:'09:00',title:'Akce se stejným začátkem',person:'Krejčí'},
+   {uid:'manual-all-day-sort-test',date:'2026-10-19',from:'',to:'',title:'Nová celodenní akce',person:'Nováková'}]);mergeManualEventsV300();renderAll();
  },{manualKey});await saved(pageA);
  await pageB.locator('#preview .eventCell').filter({hasText:'Místní akce kolegyně'}).waitFor({timeout:12000});
+ const sharedOrder=page=>page.evaluate(()=>[...document.querySelectorAll('#preview .eventCell')].map(cell=>cell.textContent.trim()));
+ let order=await sharedOrder(pageB);
+ assert.ok(order.indexOf('Nová celodenní akce')<order.indexOf('Místní akce kolegyně'),'Dodatečně přidaná celodenní akce je před časovanými');
+ const secondKey='2026-10-19||manual-same-time-test||manual';
+ await pageA.locator('#preview .personCell[data-plan-row-key-v302="'+secondKey+'"]').focus();
+ await pageA.locator('[data-row-order-key-v341="'+secondKey+'"][data-row-order-v341=up]').click();await saved(pageA);
+ await pageB.waitForFunction(()=>{
+  const titles=[...document.querySelectorAll('#preview .eventCell')].map(cell=>cell.textContent.trim());
+  return titles.indexOf('Akce se stejným začátkem')<titles.indexOf('Místní akce kolegyně');
+ },{},{timeout:12000});
+ await pageB.locator('[data-row-order-key-v341="'+secondKey+'"][data-row-order-v341=reset]').click();await saved(pageB);
+ await pageA.waitForFunction(()=>{
+  const titles=[...document.querySelectorAll('#preview .eventCell')].map(cell=>cell.textContent.trim());
+  return titles.indexOf('Místní akce kolegyně')<titles.indexOf('Akce se stejným začátkem');
+ },{},{timeout:12000});
  const manualRow=page=>page.locator('#preview tr').filter({has:page.locator('[data-plan-row-key-v302="2026-10-19||manual-shared-test||manual"]')}).last();
  const title=page=>page.locator('#preview .eventCell[data-plan-row-key-v302="2026-10-19||manual-shared-test||manual"]');
  const person=page=>page.locator('#preview .personCell[data-plan-row-key-v302="2026-10-19||manual-shared-test||manual"]');

@@ -22,6 +22,29 @@ window.addEventListener('load',()=>setTimeout(async()=>{
  const person=()=>document.querySelector('#preview .personCell');
  try{
  localStorage.clear();document.getElementById('weekFrom').value='2026-10-19';document.getElementById('weekTo').value='2026-10-25';
+ events=[
+ {id:'order-first',uid:'order-first',date:'2026-10-19',from:'08:00',to:'08:45',title:'První v osm',person:'Nováková',source:'calendar'},
+ {id:'order-second',uid:'order-second',date:'2026-10-19',from:'08:00',to:'09:00',title:'Druhá v osm',person:'Krejčí',source:'calendar'},
+ {id:'order-ten',uid:'order-ten',date:'2026-10-19',from:'10:00',to:'10:45',title:'Akce v deset',person:'Nováková',source:'calendar'},
+ {id:'manual-order-all',uid:'manual-order-all',date:'2026-10-19',from:'',to:'',title:'Nová celodenní',person:'Krejčí',manualV167:true,source:'manual'}];renderAll();
+ const beforeOrderEvents=JSON.stringify(events);
+ const orderedTitles=()=>[...document.querySelectorAll('#preview .eventCell')].map(cell=>cellTextV300(cell)).filter(Boolean);
+ check(orderedTitles()[0]==='Nová celodenní','Nově přidaná neopakovaná celodenní akce je nahoře');
+ const secondCell=[...document.querySelectorAll('#preview .eventCell')].find(cell=>cell.textContent==='Druhá v osm');const secondKey=secondCell.dataset.planRowKeyV302;
+ const firstCell=[...document.querySelectorAll('#preview .eventCell')].find(cell=>cell.textContent==='První v osm');const firstKey=firstCell.dataset.planRowKeyV302;
+ saveJsonMapV300(PLAN_CELL_STORE_V302,{[secondKey]:{title:'Přejmenovaná druhá'}});renderPreview();
+ document.querySelector('[data-row-order-key-v341="'+CSS.escape(secondKey)+'"][data-row-order-v341=up]').click();
+ check(orderedTitles().join('|')==='Nová celodenní|Přejmenovaná druhá|První v osm|Akce v deset','Šipka mění pouze pořadí akcí se stejným začátkem');
+ check(loadJsonMapV300(PLAN_CELL_STORE_V302)[secondKey].title==='Přejmenovaná druhá','Změna pořadí zachová přepsaný text');
+ check(JSON.stringify(events)===beforeOrderEvents,'Řazení nesmaže ani nepřepíše žádnou zdrojovou akci');
+ renderPreview();check(orderedTitles()[1]==='Přejmenovaná druhá','Vlastní pořadí přetrvá překreslení');
+ check(document.querySelector('#preview .eventCell[data-plan-row-key-v302="'+CSS.escape(firstKey)+'"]').closest('tr').querySelector('[data-row-order-v341=down]')?.disabled,'Poslední akce ve skupině nemůže pod jiný čas');
+ const orderPrint=document.createElement('div');document.body.append(orderPrint);buildSchoolPrintPages(document.getElementById('preview'),orderPrint);
+ check([...orderPrint.querySelectorAll('.eventCell')].map(cell=>cell.textContent.trim()).filter(Boolean).join('|')===orderedTitles().join('|'),'Tisk zachovává zvolené pořadí');
+ check(!orderPrint.querySelector('.planRowMoveV341'),'Šipky se netisknou');orderPrint.remove();
+ document.querySelector('[data-row-order-key-v341="'+CSS.escape(secondKey)+'"][data-row-order-v341=reset]').click();
+ check(orderedTitles().join('|')==='Nová celodenní|První v osm|Přejmenovaná druhá|Akce v deset','Lze obnovit výchozí pořadí bez ztráty úprav');
+ saveJsonMapV300(PLAN_CELL_STORE_V302,{});
  events=[{id:'test',uid:'test',date:'2026-10-19',from:'08:00',to:'08:45',title:'Porada pedagogů',person:'Nováková',source:'calendar'}];renderAll();
  showTimeChoicePopoverV307(time());const pop=document.querySelector('.timeChoicePopoverV307');
  const from=pop.querySelector('[data-time-direct-v323="from"]'),to=pop.querySelector('[data-time-direct-v323="to"]');

@@ -1235,8 +1235,9 @@ function renderRowChangeControlsV304(key, fields){
   const buttons = fields
     && merged.map(item=>`<button type="button" class="planFieldResetV304 planFieldReset-${escapeHtml(item.visual || item.field)}V305" contenteditable="false" title="Vrátit změnu: ${escapeHtml(labels[item.visual || item.field] || item.field)}" data-plan-reset-key-v304="${escapeHtml(key)}" data-plan-reset-field-v304="${escapeHtml(item.field)}"><span class="planResetIconV305">${escapeHtml(icons[item.visual || item.field] || "•")}</span><b>↩</b></button>`);
 
-  if(!buttons.length) return "";
-  return `<div class="planRowChangeToolsV304" contenteditable="false" aria-label="Ruční změny v řádku">${buttons.join("")}</div>`;
+  const orderControls = renderRowOrderControlsV341(key);
+  if(!buttons.length && !orderControls) return "";
+  return `<div class="planRowChangeToolsV304" contenteditable="false" aria-label="Ruční změny a pořadí v řádku">${orderControls}${buttons.join("")}</div>`;
 }
 
 function isRowDeletedV302(key){
@@ -1828,6 +1829,16 @@ function initResponsibleEditingV300(){
 
   preview.__responsibleStableV300 = true;
 
+  preview.addEventListener("mousedown",event=>{
+    const button = event.target.closest("[data-row-order-v341]");
+    if(!button || button.disabled || event.button!==0) return;
+    // Commit an edited cell before its toolbar is replaced on blur.
+    const key = button.dataset.rowOrderKeyV341, action = button.dataset.rowOrderV341;
+    event.preventDefault();event.stopPropagation();
+    if(document.activeElement?.matches('[contenteditable="true"]')) document.activeElement.blur();
+    movePlanRowV341(key,action);
+  });
+
   preview.addEventListener("focusin", event=>{
     const cell = event.target.closest(".responsibleCellV213");
     if(cell) cell.dataset.beforeV300 = cellTextV300(cell);
@@ -1856,6 +1867,12 @@ function initResponsibleEditingV300(){
   });
 
   preview.addEventListener("mousedown", event=>{
+    const orderButton = event.target.closest("[data-row-order-v341]");
+    if(orderButton){
+      event.preventDefault();event.stopPropagation();
+      movePlanRowV341(orderButton.dataset.rowOrderKeyV341,orderButton.dataset.rowOrderV341);
+      return;
+    }
     const resetButton = event.target.closest(".planFieldResetV304");
     if(!resetButton) return;
 
@@ -2360,6 +2377,12 @@ function initPlanEditingV302(){
       timePopover.hidden = true;
     }
 
+    const orderButton = event.target.closest("[data-row-order-v341]");
+    if(orderButton){
+      event.preventDefault();event.stopPropagation();
+      movePlanRowV341(orderButton.dataset.rowOrderKeyV341,orderButton.dataset.rowOrderV341);
+      return;
+    }
     const resetButton = event.target.closest(".planFieldResetV304");
     if(resetButton){
       event.preventDefault();
@@ -2421,13 +2444,88 @@ function renderPlanNoteFinalV193(message){
 }
 
 function prioritizeRepeatedAllDayV326(items, dateKey, repeatClasses){
-  // Keep the original indices used by saved row overrides.
-  const priority = item=>{
-    const key = planRowKeyV302(item.event,dateKey,item.originalIndex);
-    const time = planCellValueV302(key, "time", timePlainV302(item.event));
-    return /celý den|cely den/i.test(time) && repeatClasses.has(item.event) ? 0 : 1;
+  // Sort copies while preserving the original indices used by saved row edits.
+  const overrides = loadJsonMapV300(PLAN_CELL_STORE_V302);
+  const rank = item=>{
+    const saved = overrides[planRowKeyV302(item.event,dateKey,item.originalIndex)];
+    return Number.isFinite(saved?.order) && saved.orderTime===planTimeGroupV341(item,dateKey) ? saved.order : Number.MAX_SAFE_INTEGER;
   };
-  return items.sort((a,b)=>priority(a) - priority(b));
+  return items.sort((a,b)=>{
+    const timeA = planTimeGroupV341(a,dateKey), timeB = planTimeGroupV341(b,dateKey);
+    if(timeA !== timeB) return timeA - timeB;
+    const custom = rank(a) - rank(b);
+    if(custom) return custom;
+    if(timeA === -1){
+      const repeated = Number(repeatClasses.has(b.event)) - Number(repeatClasses.has(a.event));
+      if(repeated) return repeated;
+    }
+    return a.originalIndex - b.originalIndex;
+  });
+}
+
+function planTimeGroupV341(item,dateKey){
+  const key = planRowKeyV302(item.event,dateKey,item.originalIndex);
+  const time = String(planCellValueV302(key,"time",timePlainV302(item.event)) || "");
+  if(/celý den|cely den/i.test(time)) return -1;
+  const match = time.match(/(\d{1,2})[.:](\d{2})/);
+  return match ? Number(match[1])*60 + Number(match[2]) : 24*60;
+}
+
+function orderedDayItemsV341(dateKey,repeatClasses = repeatClassMapV300(events)){
+  const items = sortEvents(events.filter(event=>event.date===dateKey))
+    .map((event,originalIndex)=>({event,originalIndex}))
+    .filter(item=>!isRowDeletedV302(planRowKeyV302(item.event,dateKey,item.originalIndex)));
+  return prioritizeRepeatedAllDayV326(items,dateKey,repeatClasses);
+}
+
+function sameTimeItemsV341(key){
+  const dateKey = String(key).split("||")[0];
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) return [];
+  const items = orderedDayItemsV341(dateKey);
+  const current = items.find(item=>planRowKeyV302(item.event,dateKey,item.originalIndex)===key);
+  if(!current) return [];
+  return items.filter(item=>planTimeGroupV341(item,dateKey)===planTimeGroupV341(current,dateKey));
+}
+
+function renderRowOrderControlsV341(key){
+  const items = sameTimeItemsV341(key);
+  if(items.length<2) return "";
+  const dateKey = key.split("||")[0];
+  const index = items.findIndex(item=>planRowKeyV302(item.event,dateKey,item.originalIndex)===key);
+  const custom = loadJsonMapV300(PLAN_CELL_STORE_V302);
+  const button = (action,label,text,disabled=false)=>`<button type="button" class="planRowMoveV341" contenteditable="false" data-row-order-key-v341="${escapeHtml(key)}" data-row-order-v341="${action}" title="${label}" aria-label="${label}"${disabled ? " disabled" : ""}>${text}</button>`;
+  return button("up","Posunout výš mezi akcemi se stejným začátkem","↑",index===0)
+    + button("down","Posunout níž mezi akcemi se stejným začátkem","↓",index===items.length-1)
+    + (items.some(item=>Number.isFinite(custom[planRowKeyV302(item.event,dateKey,item.originalIndex)]?.order) && custom[planRowKeyV302(item.event,dateKey,item.originalIndex)].orderTime===planTimeGroupV341(item,dateKey)) ? button("reset","Obnovit výchozí pořadí akcí se stejným začátkem","↺") : "");
+}
+
+function movePlanRowV341(key,action){
+  const group = sameTimeItemsV341(key);
+  if(group.length<2) return;
+  const dateKey = key.split("||")[0];
+  const current = group.findIndex(item=>planRowKeyV302(item.event,dateKey,item.originalIndex)===key);
+  if(action!=="reset"){
+    const next = current + (action==="up" ? -1 : action==="down" ? 1 : 0);
+    if(next===current || next<0 || next>=group.length) return;
+    [group[current],group[next]] = [group[next],group[current]];
+  }
+  const overrides = loadJsonMapV300(PLAN_CELL_STORE_V302);
+  group.forEach((item,index)=>{
+    const rowKey = planRowKeyV302(item.event,dateKey,item.originalIndex);
+    if(action==="reset"){
+      if(overrides[rowKey]){
+        delete overrides[rowKey].order;
+        delete overrides[rowKey].orderTime;
+        if(!Object.keys(overrides[rowKey]).length) delete overrides[rowKey];
+      }
+    }else{
+      overrides[rowKey] ||= {};
+      overrides[rowKey].order = index;
+      overrides[rowKey].orderTime = planTimeGroupV341(item,dateKey);
+    }
+  });
+  saveJsonMapV300(PLAN_CELL_STORE_V302,overrides);
+  renderPreview();
 }
 
 function renderPreview(){
@@ -2445,10 +2543,7 @@ function renderPreview(){
   let rowIndex = 0;
   weekDates.forEach(d=>{
     const dateKey=dateToInput(d);
-    const dayItems=sortEvents(events.filter(e=>e.date===dateKey))
-      .map((event, originalIndex)=>({event, originalIndex}))
-      .filter(item=>!isRowDeletedV302(planRowKeyV302(item.event,dateKey,item.originalIndex)));
-    prioritizeRepeatedAllDayV326(dayItems, dateKey, repeatClasses);
+    const dayItems=orderedDayItemsV341(dateKey,repeatClasses);
     const weekendClass = (d.getDay() === 0 || d.getDay() === 6) ? " weekendRowV184" : "";
     if(dayItems.length===0){
       const rowKey = `empty||${dateKey}`;

@@ -24,3 +24,9 @@
   #preview [data-edit-signature-v339]{cursor:pointer}
   #preview [data-edit-signature-v339]:is(:hover,:focus-visible){outline:2px solid #dce9f5!important;outline-offset:3px;border-radius:2px}
 }
+
+.previewPage .planRowMoveV341{display:grid;place-items:center;width:20px;height:20px;min-height:20px;padding:0;border:1px solid #c7d5e3;border-radius:6px;background:#fff;color:#24527a;font:700 14px Arial,sans-serif;cursor:pointer}
+.previewPage .planRowMoveV341:hover:not(:disabled){background:#eaf2fa;border-color:#8caac6}
+.previewPage .planRowMoveV341:disabled{opacity:.3;cursor:default}
+.previewPage .planRowMoveV341:focus-visible{outline:2px solid #3575ad;outline-offset:2px}
+@media print{.planRowMoveV341{display:none!important}}

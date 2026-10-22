@@ -7,7 +7,10 @@ import { spawnSync } from 'node:child_process';
 
 const core = readFileSync('src/scripts/legacy/00-app-core.js', 'utf8');
 const sorting = core.slice(core.indexOf('function prioritizeRepeatedAllDayV326'), core.indexOf('function renderPreview(){'));
+let savedOrder={};
 const ctx = vm.createContext({
+  PLAN_CELL_STORE_V302:'test',
+  loadJsonMapV300:()=>savedOrder,
   planRowKeyV302: (e, date, index) => `${e.id}:${index}`,
   planCellValueV302: (key, field, value) => key === 'edited:3' ? 'celý den' : value,
   timePlainV302: e => e.from || 'celý den'
@@ -18,7 +21,15 @@ const items = events.map((event, originalIndex) => ({event, originalIndex}));
 ctx.prioritizeRepeatedAllDayV326(items, '2026-10-19', new Map(events.slice(2).map(e => [e, true])));
 assert.deepEqual(items.map(x=>x.event.id), ['repeat','edited','single','timed']);
 assert.deepEqual(items.map(x=>x.originalIndex), [2,3,0,1]);
-console.log('Řazení opakovaných celodenních akcí a zachování klíčů: OK');
+const sample=[{id:'morning',from:'08:00'},{id:'noon',from:'12:00'},{id:'newAllDay'},{id:'morning2',from:'8.00'},{id:'midnight',from:'00:00'}];
+const order=()=>ctx.prioritizeRepeatedAllDayV326(sample.map((event,originalIndex)=>({event,originalIndex})),'2026-10-19',new Map());
+assert.deepEqual(order().map(item=>item.event.id),['newAllDay','midnight','morning','morning2','noon'],'Všechny celodenní akce předcházejí časovaným včetně půlnoci');
+savedOrder={'morning:0':{order:1,orderTime:480,title:'Upravený název'},'morning2:3':{order:0,orderTime:480}};
+assert.deepEqual(order().map(item=>item.event.id),['newAllDay','midnight','morning2','morning','noon'],'Vlastní pořadí platí jen uvnitř stejného začátku');
+assert.deepEqual(order().map(item=>item.originalIndex),[2,4,3,0,1],'Pořadí nemění klíče uložených úprav');
+savedOrder={'morning:0':{order:1,orderTime:720}};
+assert.deepEqual(order().map(item=>item.event.id),['newAllDay','midnight','morning','morning2','noon'],'Po změně času se nepoužije pořadí z jiného času');
+console.log('Celodenní akce nahoře, časové řazení, vlastní pořadí při stejném začátku a zachování klíčů: OK');
 
 const chrome = process.env.CHROME_BIN;
 if (!chrome) {

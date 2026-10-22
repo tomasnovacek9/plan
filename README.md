@@ -206,3 +206,18 @@ Test potřebuje dostupný balíček `playwright`; alternativně proměnná
 `PLAYWRIGHT_MODULE` určuje cestu k jeho `index.mjs`. Testuje zachování místní zálohy bez převodního tlačítka,
 přenos běžných úprav, metadata, souběh, konflikt, výpadek připojení,
 opakované otevření, nového čtenáře a sanitizaci sdíleného formátovaného textu.
+
+
+## Pořadí akcí
+
+Všechny celodenní akce jsou před akcemi s časem, včetně dodatečně přidaných
+vlastních akcí. Bez ručního nastavení jsou opakované celodenní akce první
+mezi celodenními. Časované akce se řadí podle začátku zobrazeného v plánu,
+tedy i po ruční změně času.
+
+Při shodném začátku se vedle řádku zobrazí šipky nahoru/dolů. Celodenní akce
+tvoří jednu skupinu. Šipky mění pořadí pouze v této skupině; jiný čas ani jiný
+den nepřekročí. Tlačítko ↺ vrátí výchozí pořadí celé skupiny, ostatní úpravy
+zůstanou zachované. Po změně času se staré pořadí pro původní čas nepoužije.
+Pořadí se ukládá do metadat buněk a sdílí se s kolegy. Zdrojové akce ani jejich
+klíče se nemění. Tisk/PDF zachovají výsledné pořadí a ovládací šipky vynechají.
