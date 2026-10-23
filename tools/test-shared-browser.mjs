@@ -167,7 +167,7 @@ try{
    return {count:buttons.length,inside:buttons.every(button=>{const rect=button.getBoundingClientRect();return rect.left>=paper.left+4&&rect.right<=paper.right-8;}),overflow:getComputedStyle(document.querySelector('.previewShell')).overflowX};
   });
   assert.ok(fit.count>0&&fit.inside,'Ikony jsou uvnitř bílé plochy při šířce '+width);
-  assert.equal(fit.overflow,width<=768?'visible':'auto');
+  assert.equal(fit.overflow,'auto');
   const layout=await pageC.evaluate(()=>{
    const row=document.querySelector('#preview .eventCell').closest('tr');
    const overflow=document.documentElement.scrollWidth>innerWidth;
@@ -180,8 +180,7 @@ try{
     measuring:document.body.classList.contains('measuringPrintV343')};
    target.remove();return result;
   });
-  assert.equal(layout.rowDisplay,width<=768?'grid':'table-row','Mobilní bloky / desktopová tabulka');
-  if(width<=768) assert.equal(layout.overflow,false,'Mobilní stránka nemá vodorovný posuvník '+width+': '+JSON.stringify(layout.offenders));
+  assert.equal(layout.rowDisplay,'table-row','Na všech zařízeních je původní tabulka');
   assert.equal(layout.printed,layout.expected,'Tisk obsahuje všechny viditelné akce i z telefonu');
   assert.equal(layout.tableDisplay,'table','Tisk zachovává tabulku');
   assert.ok(layout.width>780&&layout.width<810,'Tisk zachovává A4');

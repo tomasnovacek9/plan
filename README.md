@@ -228,7 +228,7 @@ klíče se nemění. Tisk/PDF zachovají výsledné pořadí a ovládací šipky
 Běžné úspěšné ukládání nezobrazuje informační pruh. Počáteční načítání, chyby,
 konflikty a obnova neodeslané práce zůstávají dostupné. Vedle obsahu A4 je
 v editoru vyhrazený bílý prostor pro šipky i ikony změn; ovládání se zalamuje
-a má dostatečnou výšku řádku. Na telefonu a tabletu na výšku se plán automaticky přepne do bloků dnů.
+a má dostatečnou výšku řádku. Na úzké obrazovce lze tabulkou posouvat vodorovně a přiblížit ji gestem.
 Šířka samotné tabulky i tiskového dokumentu zůstává stejná.
 
 
@@ -241,11 +241,15 @@ a zavření panelu. Enter už nepřidává novou událost. Zalomení se uchová 
 i formátovaném textu, při sdílení, kopírování, obnovení vzhledu a v tisku/PDF.
 
 
-## Telefon a tablet
+## Zobrazení a přímé PDF
 
-Do šířky 700 px a na tabletu na výšku do 1000 px se místo tabulky zobrazí
-bloky dnů s časem, akcí a zodpovědnou osobou pod sebou. Tlačítka pro přidání,
-smazání a pořadí jsou viditelná bez najetí myší a mají větší dotykovou plochu.
-Na PC a větším tabletu na šířku zůstává původní tabulka. Jde o stejná data
-i editaci. Tisk při měření dočasně použije původní rozložení, takže PDF a A4
-nepřebírají mobilní vzhled. Mobilní pravidla platí pouze pro obrazovku a #preview.
+Na všech zařízeních zůstává stejná tabulka. Na malé dotykové obrazovce
+se zobrazí celý dokument a dovoluje přiblížení gestem. Původní Tisk / export je zachován. Nové Otevřít PDF
+vytvoří přímo soubor PDF a otevře jej v nové kartě; při blokování nové karty
+se soubor stáhne. PDF lze tisknout v prohlížeči PDF.
+
+Export používá stejné naměřené stránky jako tiskový náhled, vektorové čáry,
+barvy a skutečný text s vloženými českými fonty. Převádí viditelný text
+i formátování, žádné úpravy dat neprovádí. Lokálně hostované pdf-lib 1.17.1,
+@pdf-lib/fontkit 1.1.1 a fonty Roboto se načtou až při exportu. Licence
+jsou přiloženy u souborů v src/vendor/pdf a src/assets/fonts.

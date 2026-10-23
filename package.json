@@ -16,6 +16,7 @@
     "check:links": "node tools/check-local-links.mjs",
     "test": "node tools/test-calendar-load.mjs && node tools/test-calendar-filter.mjs && node tools/test-teachers.mjs && node tools/test-plan.mjs && node tools/test-shared-plan.mjs",
     "test:editors": "node tools/test-editors.mjs",
+    "test:pdf": "node tools/test-direct-pdf.mjs",
     "test:shared": "node tools/test-shared-plan.mjs",
     "test:shared:browser": "node tools/test-shared-browser.mjs"
   },

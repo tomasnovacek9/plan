@@ -1,0 +1,5 @@
+/* Keep the familiar table on every device; the viewport permits pinch zoom. */
+.actions:has(.directPdfV344){height:auto!important;grid-template-rows:28px 28px 32px!important}
+.actions .directPdfV344{display:flex!important;align-items:center!important;justify-content:center!important;grid-column:2 / 4!important;grid-row:3!important;background:#155a94!important;color:#fff!important;border:1px solid #155a94!important;border-radius:8px!important;font-weight:700!important;cursor:pointer}
+.directPdfV344:disabled{opacity:.6;cursor:wait}
+@media print{.directPdfV344{display:none!important}}

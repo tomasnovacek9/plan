@@ -36,13 +36,7 @@
     return copy;
   }
 
-  // Measure the canonical desktop document even when opened from a phone.
   function build(source, target) {
-    document.body.classList.add('measuringPrintV343');
-    try { return buildDocument(source, target); }
-    finally { document.body.classList.remove('measuringPrintV343'); }
-  }
-  function buildDocument(source, target) {
     target.replaceChildren();
     const pages = [];
     const table = source.querySelector('.planTable');
@@ -276,6 +270,18 @@
     }
   });
   window.addEventListener('beforeprint', () => { if (!root) prepare(); });
+  window.createSchoolPrintSnapshot = () => {
+    const source = document.getElementById('preview');
+    if (!source?.querySelector('.planTable')) throw new Error('Nejdřív načti nebo vytvoř plán.');
+    const host = document.createElement('div');
+    host.id = 'schoolPrintRoot';
+    host.setAttribute('aria-hidden','true');
+    host.style.cssText = 'position:fixed;left:-12000px;right:auto;top:0;width:1000px;height:1200px;pointer-events:none';
+    const target = document.createElement('div'); target.className = 'printSheets'; host.append(target);
+    document.body.append(host);
+    try { return {pages:build(source,target),remove:()=>host.remove()}; }
+    catch(error) { host.remove(); throw error; }
+  };
   window.buildSchoolPrintPages = build;
   window.openSchoolPrintPreview = open;
 })();
