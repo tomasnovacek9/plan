@@ -26,6 +26,16 @@
     const style=getComputedStyle(element);
     return style.display!=='none'&&style.visibility!=='hidden'&&Number(style.opacity)!==0;
   }
+  function documentTitle() {
+    const date = id => {
+      const value = document.getElementById(id)?.value || '';
+      const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+      return match ? `${match[3]}.${match[2]}.${match[1]}` : '';
+    };
+    const from = date('weekFrom'), to = date('weekTo');
+    const range = from && to && from !== to ? `${from}–${to}` : from || to;
+    return range ? `Týdenní plán ${range}` : 'Týdenní plán';
+  }
   async function generate() {
     document.activeElement?.blur();
     await dependencies();await document.fonts.ready;
@@ -34,8 +44,7 @@
       await Promise.all(snapshot.pages.flatMap(page=>[...page.querySelectorAll('img')].map(img=>img.decode())));
       const {PDFDocument,pushGraphicsState,popGraphicsState,concatTransformationMatrix}=PDFLib;
       const pdf=await PDFDocument.create();pdf.registerFontkit(window.fontkit);
-      const rangeLabel=document.querySelector('#preview .docDates')?.textContent.trim()||'Týdenní plán';
-      const title='Týdenní plán '+rangeLabel;
+      const title=documentTitle();
       pdf.setTitle(title);pdf.setCreator('Generátor týdenního plánu školy');pdf.setLanguage('cs-CZ');
       const fonts=new Map(),images=new Map();
       async function fontFor(style) {
@@ -131,8 +140,11 @@
     const label=button.textContent;button.disabled=true;button.textContent='Připravuji PDF…';
     try {
       const result=await generate(),url=URL.createObjectURL(new Blob([result.bytes],{type:'application/pdf'}));
+      // A blob viewer alone loses the filename when saving. Download the named
+      // file as part of this export, then keep opening the PDF for reading/printing.
+      const link=document.createElement('a');link.href=url;link.download=result.filename;
+      document.body.append(link);link.click();link.remove();
       if(tab&&!tab.closed)tab.location.replace(url);
-      else {const link=document.createElement('a');link.href=url;link.download=result.filename;link.click();}
       // Keep the PDF alive while its viewer is open; revoke after that tab closes.
       const timer=setInterval(()=>{if(!tab||tab.closed){URL.revokeObjectURL(url);clearInterval(timer);}},30000);
     } catch(error) {tab?.close();console.error(error);alert('PDF se nepodařilo vytvořit. '+error.message+' Stávající Tisk / export můžeš dál použít.');}

@@ -51,6 +51,7 @@ try {
   return {bytes:Array.from(result.bytes),pages:result.pages,actual:parsed.getPageCount(),expected,filename:result.filename,
    fontCount:parsed.getPages().reduce((n,page)=>n+(page.node.Resources()?.lookup(PDFLib.PDFName.of('Font'),PDFLib.PDFDict)?.keys().length||0),0)};
  });
+ assert.equal(result.filename,'Týdenní plán 19.10.2026–25.10.2026.pdf','Název používá zvolený týden');
  assert.ok(result.pages>1);assert.equal(result.pages,result.expected);assert.equal(result.actual,result.expected);assert.ok(result.fontCount>0);
  assert.equal(Buffer.from(result.bytes).subarray(0,5).toString(),'%PDF-');
  const {writeFile}=await import('node:fs/promises');await writeFile('/tmp/plan-direct-test.pdf',Buffer.from(result.bytes));
@@ -62,7 +63,9 @@ try {
   await page.locator('.directPdfV344').waitFor();
  }
  await page.setViewportSize({width:1440,height:900});
- const popupEvent=context.waitForEvent('page');await page.locator('.directPdfV344').click();const popup=await popupEvent;
+ const popupEvent=context.waitForEvent('page'),downloadEvent=page.waitForEvent('download');
+ await page.locator('.directPdfV344').click();const popup=await popupEvent,download=await downloadEvent;
+ assert.equal(download.suggestedFilename(),result.filename,'Skutečně stažený soubor má automatický název');
  await popup.waitForURL('blob:**',{timeout:30000});assert.equal(await page.locator('.outputPrintPdfV313').isVisible(),true);
  await popup.close();
  await page.locator('.outputPrintPdfV313').click();await page.locator('#schoolPrintRoot .printSheet').first().waitFor();
@@ -74,6 +77,11 @@ try {
  assert.equal(await phone.locator('meta[name=viewport]').getAttribute('content'),'width=1040','Celá tabulka se vejde na telefon a dovolí přiblížení');
  assert.equal(await phone.locator('#preview .eventCell').first().evaluate(el=>getComputedStyle(el.closest('tr')).display),'table-row');
  await mobile.close();
+ const crossYear=await page.evaluate(async()=>{
+  document.getElementById('weekFrom').value='2026-12-28';document.getElementById('weekTo').value='2027-01-03';
+  return (await generateSchoolPdf()).filename;
+ });
+ assert.equal(crossYear,'Týdenní plán 28.12.2026–03.01.2027.pdf','Název správně zachytí přelom roku');
  assert.deepEqual(errors,[]);
  console.log('Přímé vektorové PDF: '+result.pages+' stran, vložené fonty, A4, původní tabulka, otevření PDF i původní tisk fungují. Soubor /tmp/plan-direct-test.pdf');
 } finally {await browser.close();await new Promise(resolve=>server.close(resolve));sqlite.close();}

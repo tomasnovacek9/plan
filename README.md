@@ -245,8 +245,9 @@ i formátovaném textu, při sdílení, kopírování, obnovení vzhledu a v tis
 
 Na všech zařízeních zůstává stejná tabulka. Na malé dotykové obrazovce
 se zobrazí celý dokument a dovoluje přiblížení gestem. Původní Tisk / export je zachován. Nové Otevřít PDF
-vytvoří přímo soubor PDF a otevře jej v nové kartě; při blokování nové karty
-se soubor stáhne. PDF lze tisknout v prohlížeči PDF.
+vytvoří přímo soubor PDF, stáhne jej pod názvem podle zvoleného týdne
+(např. „Týdenní plán 19.10.2026–25.10.2026.pdf“) a otevře jej v nové kartě.
+Při blokování nové karty se soubor stáhne. PDF lze tisknout v prohlížeči PDF.
 
 Export používá stejné naměřené stránky jako tiskový náhled, vektorové čáry,
 barvy a skutečný text s vloženými českými fonty. Převádí viditelný text
