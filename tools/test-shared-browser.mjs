@@ -133,6 +133,32 @@ try{
  await pageC.getByRole('button',{name:'Obnovit neodeslané změny'}).waitFor({timeout:10000});await pageC.getByRole('button',{name:'Obnovit neodeslané změny'}).click();
  await pageC.getByRole('button',{name:'Převzít změny'}).click();await saved(pageC);
  await pageB.waitForFunction(()=>document.querySelector('#preview .createdDateV184')?.textContent.includes('Obnovený autor'),{},{timeout:12000});
+ // Enter inserts actual browser line breaks; navigation is explicit or uses Tab.
+ await title(pageA).fill('První řádek akce');await title(pageA).press('End');await title(pageA).press('Enter');await pageA.keyboard.type('Druhý řádek akce');
+ assert.ok(await title(pageA).evaluate(el=>document.activeElement===el),'Enter nepřeskočí z Akce');
+ await title(pageA).press('Tab');await pageA.waitForFunction(()=>document.activeElement?.dataset.planFieldV302==='person');assert.ok(await person(pageA).evaluate(el=>document.activeElement===el),'Tab přejde do Zodpovídá');
+ await person(pageA).focus();await person(pageA).evaluate(el=>{
+  const range=document.createRange();range.selectNodeContents(el);
+  const controls=el.querySelector(':scope > button, :scope > .planRowChangeToolsV304');if(controls)range.setEndBefore(controls);
+  const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);
+ });await pageA.keyboard.type('První osoba');await person(pageA).press('End');await person(pageA).press('Enter');await pageA.keyboard.type('Druhá osoba');
+ assert.ok(await person(pageA).evaluate(el=>document.activeElement===el),'Enter nepřeskočí ze Zodpovídá');
+ await pageA.getByRole('button',{name:'Hotovo',exact:true}).click();await saved(pageA);
+ await pageB.waitForFunction(()=>{
+  const key='2026-10-19||manual-shared-test||manual';
+  const a=document.querySelector('.eventCell[data-plan-row-key-v302="'+key+'"]'),b=document.querySelector('.personCell[data-plan-row-key-v302="'+key+'"]');
+  return a&&b&&multilineCellTextV342(a).includes('První řádek akce\nDruhý řádek akce')&&multilineCellTextV342(b).includes('První osoba\nDruhá osoba');
+ },{},{timeout:12000});
+ await pageB.reload();await saved(pageB);await title(pageB).filter({hasText:'Druhý řádek akce'}).waitFor();
+ assert.ok(await title(pageB).evaluate(el=>multilineCellTextV342(el).includes('\n')),'Zalomení přežije opětovné načtení');
+ const beforeNext=await pageB.evaluate(()=>loadManualEventsV300().length);
+ await title(pageB).focus();await pageB.getByRole('button',{name:'Další → Zodpovídá',exact:true}).click();
+ await pageB.waitForFunction(()=>document.activeElement?.dataset.planFieldV302==='person');
+ await pageB.getByRole('button',{name:'Další akce +',exact:true}).click();
+ await pageB.locator('.timeChoicePopoverV307:not([hidden])').waitFor();
+ assert.equal(await pageB.evaluate(()=>loadManualEventsV300().length),beforeNext+1,'Tlačítko další akce přidá právě jednu událost a otevře její čas');
+ await pageB.locator('.timeChoicePopoverV307 [data-editor-close-v327]').first().click();
+
  for(const width of [1440,1024,390]){
   await pageC.setViewportSize({width,height:900});
   const fit=await pageC.evaluate(()=>{

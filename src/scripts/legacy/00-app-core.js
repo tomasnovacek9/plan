@@ -524,7 +524,7 @@ function focusManualTitleByUidV310(uid){
 
 function focusManualPersonByKeyV320(key){
   if(!key) return;
-  requestAnimationFrame(()=>{
+  queueMicrotask(()=>{
     const personCell = document.querySelector(`[data-plan-row-key-v302="${CSS.escape(key)}"][data-plan-field-v302="person"]`);
     if(!personCell) return;
     personCell.focus();
@@ -542,6 +542,15 @@ function focusManualPersonByKeyV320(key){
     const selection = window.getSelection?.();
     selection?.removeAllRanges();
     selection?.addRange(range);
+  });
+}
+
+function focusPlanTitleByKeyV342(key){
+  queueMicrotask(()=>{
+    const cell=document.querySelector(`[data-plan-row-key-v302="${CSS.escape(key)}"][data-plan-field-v302="title"]`);
+    if(!cell)return;
+    cell.focus();const range=document.createRange();range.selectNodeContents(cell);range.collapse(false);
+    const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);
   });
 }
 
@@ -1093,13 +1102,22 @@ function planRichHtmlValueV308(key, field){
 function cleanEditableHtmlV308(cell){
   const clone = cell?.cloneNode(true);
   clone?.querySelectorAll("button,.planStylePopoverV307,.timeChoicePopoverV307,.planRowDeleteV302,.planRowChangeToolsV304,.planFieldResetV304,.manualRowControlsV316").forEach(el=>el.remove());
+  const sanitizeChildren = parent=>{
+    let html="";
+    for(const node of Array.from(parent?.childNodes || [])){
+      const block=node.nodeType===Node.ELEMENT_NODE && /^(DIV|P)$/.test(node.tagName);
+      if(block && html && !/<br>$/.test(html))html+="<br>";
+      html+=sanitize(node);
+    }
+    return html;
+  };
   const sanitize = node=>{
     if(node.nodeType === Node.TEXT_NODE) return escapeHtml(node.textContent || "");
     if(node.nodeType !== Node.ELEMENT_NODE) return "";
     const tag = node.tagName;
     if(tag === "BR") return "<br>";
-    const inner = Array.from(node.childNodes).map(sanitize).join("");
-    if(tag === "DIV" || tag === "P") return `${inner}<br>`;
+    const inner = sanitizeChildren(node);
+    if(tag === "DIV" || tag === "P") return /<br>$/.test(inner) ? inner : `${inner}<br>`;
     if(tag !== "SPAN") return inner;
     const allowed = [];
     const size = node.style?.fontSize || "";
@@ -1113,7 +1131,7 @@ function cleanEditableHtmlV308(cell){
     if(/italic/i.test(fontStyle)) allowed.push("font-style:italic");
     return allowed.length ? `<span style="${escapeHtml(allowed.join(";"))}">${inner}</span>` : inner;
   };
-  return Array.from(clone?.childNodes || []).map(sanitize).join("").replace(/(<br>\s*)+$/i, "").trim();
+  return sanitizeChildren(clone).replace(/(<br>\s*)+$/i, "").trim();
 }
 
 function saveRichHtmlV308(key, field, html){
@@ -1313,6 +1331,13 @@ function timeChoiceMinuteValuesV310(){
   return Array.from({length:12}, (_, i)=>String(i * 5).padStart(2,"0"));
 }
 
+function multilineCellTextV342(cell){
+  const template=document.createElement("template");
+  template.innerHTML=cleanEditableHtmlV308(cell);
+  template.content.querySelectorAll("br").forEach(br=>br.replaceWith(document.createTextNode("\n")));
+  return (template.content.textContent||"").replace(/\u00a0/g," ").replace(/[ \t]+\n/g,"\n").trim();
+}
+
 function planStyleSizeOptionsV307(selected = ""){
   const sizes = ["", "7pt", "8pt", "9pt", "10pt", "11pt", "12pt", "13pt", "14pt", "15pt", "16pt", "18pt"];
   return sizes.map(size=>{
@@ -1340,6 +1365,7 @@ function ensurePlanStylePopoverV307(){
     <div class="planColorPresetsV309" aria-label="Barva textu">
       ${planTextColorsV332().map(([color,label])=>`<button type="button" data-style-color-preset-v309="${color}" style="--preset:${color}" aria-label="${label}" title="${label}"></button>`).join("")}
     </div>
+    <div class="textNavigationV342" data-text-navigation-v342 hidden><span data-text-help-v342>Enter = nový řádek · Tab = Zodpovídá</span><div><button type="button" data-text-next-v342></button><button type="button" data-text-done-v342>Hotovo</button></div></div>
     <div class="styleEditorFooterV327"><span>Označený text nebo celá buňka.<br>Změny se ukládají automaticky.</span><button type="button" data-style-reset-v327>Výchozí vzhled</button></div>
   `;
   document.body.appendChild(pop);
@@ -1441,6 +1467,11 @@ function showPlanStylePopoverV307(cell){
   pop.dataset.keyV307 = cell.dataset.planRowKeyV302;
   pop.dataset.fieldV307 = cell.dataset.planFieldV302;
   pop.querySelector("[data-style-heading-v327]").textContent = ({title:"Akce",person:"Zodpovídá",note:"Poznámka",day:"Název dne",date:"Datum"})[cell.dataset.planFieldV302] || "Text";
+  const navigation=pop.querySelector("[data-text-navigation-v342]");
+  const textField=cell.dataset.planFieldV302;
+  navigation.hidden=!["title","person"].includes(textField);
+  navigation.querySelector("[data-text-help-v342]").textContent=textField==="person" ? "Enter = nový řádek · Shift+Tab = Akce" : "Enter = nový řádek · Tab = Zodpovídá";
+  navigation.querySelector("[data-text-next-v342]").textContent=textField==="person" ? "Další akce +" : "Další → Zodpovídá";
   pop.dataset.boldTouchedV319 = "";
   pop.querySelector("[data-style-size-v307]").value = style.size || "";
   pop.dataset.colorV307 = style.color || "";
@@ -1844,6 +1875,7 @@ function initResponsibleEditingV300(){
   });
 
   preview.addEventListener("keydown", event=>{
+    if(event.target.closest("button"))return;
     const dayLabel = event.target.closest(".dayColorEditableV331");
     if(dayLabel && (event.key === "Enter" || event.key === " ")){
       event.preventDefault();
@@ -1945,13 +1977,28 @@ function initPlanEditingV302(){
   });
 
   stylePopover.addEventListener("click", event=>{
+    const nextText=event.target.closest("[data-text-next-v342]");
+    const doneText=event.target.closest("[data-text-done-v342]");
+    if(nextText||doneText){
+      const key=stylePopover.dataset.keyV307,field=stylePopover.dataset.fieldV307;
+      const cell=preview.querySelector(`[data-plan-row-key-v302="${CSS.escape(key)}"][data-plan-field-v302="${CSS.escape(field)}"]`);
+      cell?.blur();stylePopover.hidden=true;
+      if(nextText){
+        if(field==="title")focusManualPersonByKeyV320(key);
+        else if(field==="person"){
+          const dateKey=dateFromPlanRowKeyV320(key);
+          if(dateKey)addPreviewManualRowV308(dateKey);
+        }
+      }
+      return;
+    }
     if(event.target.closest("[data-editor-close-v327]")){ stylePopover.hidden = true; return; }
     if(event.target.closest("[data-style-reset-v327]")){
       const key = stylePopover.dataset.keyV307;
       const field = stylePopover.dataset.fieldV307;
       const cell = preview.querySelector(`[data-plan-row-key-v302="${CSS.escape(key)}"][data-plan-field-v302="${CSS.escape(field)}"]`);
       if(!cell) return;
-      const text = editableTextV318(cell, true);
+      const text = ["title","person"].includes(field) ? multilineCellTextV342(cell) : editableTextV318(cell, true);
       clearPlanVisualEditV320(key, field);
       if(!cell.classList.contains("dayColorEditableV331")) saveRichHtmlV308(key, field, escapeHtml(text).replace(/\n/g,"<br>"));
       renderPreview();
@@ -2166,7 +2213,7 @@ function initPlanEditingV302(){
     }
     const cell = event.target.closest(".planEditableCellV302");
     if(cell){
-      cell.dataset.beforeV302 = cellTextV300(cell);
+      cell.dataset.beforeV302 = ["title","person"].includes(cell.dataset.planFieldV302) ? multilineCellTextV342(cell) : cellTextV300(cell);
       showPlanStylePopoverV307(cell);
     }
   });
@@ -2184,6 +2231,7 @@ function initPlanEditingV302(){
   });
 
   preview.addEventListener("keydown", event=>{
+    if(event.target.closest("button"))return;
     const dayLabel = event.target.closest(".dayColorEditableV331");
     if(dayLabel && (event.key === "Enter" || event.key === " ")){
       event.preventDefault();
@@ -2193,29 +2241,22 @@ function initPlanEditingV302(){
     const cell = event.target.closest(".planEditableCellV302");
     if(!cell) return;
 
-    if((event.key === "Enter" || event.key === "Tab") && cell.dataset.planFieldV302 === "title"){
+    const field=cell.dataset.planFieldV302;
+    if(event.isComposing)return;
+    if(event.key === "Tab" && !event.shiftKey && field === "title"){
       event.preventDefault();
-      const key = cell.dataset.planRowKeyV302;
-      cell.blur();
-      focusManualPersonByKeyV320(key);
+      const key=cell.dataset.planRowKeyV302;cell.blur();focusManualPersonByKeyV320(key);
       return;
     }
-
-    if(event.key === "Enter" && cell.dataset.planFieldV302 === "person"){
-      const dateKey = dateFromPlanRowKeyV320(cell.dataset.planRowKeyV302);
-      if(dateKey){
-        event.preventDefault();
-        cell.blur();
-        preview.classList.add("suppressRowHoverV321");
-        addPreviewManualRowV308(dateKey);
-        setTimeout(()=>preview.classList.remove("suppressRowHoverV321"), 700);
-        return;
-      }
-    }
-
-    if(event.key === "Enter" && !event.target.closest("[data-inline-note-v310]")){
+    if(event.key === "Tab" && event.shiftKey && field === "person"){
       event.preventDefault();
-      cell.blur();
+      const key=cell.dataset.planRowKeyV302;cell.blur();focusPlanTitleByKeyV342(key);
+      return;
+    }
+    // Let the browser insert a line break in both multiline text fields.
+    if(event.key === "Enter" && ["title","person"].includes(field))return;
+    if(event.key === "Enter" && !event.target.closest("[data-inline-note-v310]")){
+      event.preventDefault();cell.blur();
     }
 
     if(event.key === "Escape"){
@@ -2254,7 +2295,7 @@ function initPlanEditingV302(){
     if(!key || !field) return;
 
     const original = cell.dataset.planOriginalV302 || "";
-    const value = cellTextV300(cell);
+    const value = ["title","person"].includes(field) ? multilineCellTextV342(cell) : cellTextV300(cell);
     saveRichHtmlV308(key, field, cleanEditableHtmlV308(cell));
     const overrides = loadJsonMapV300(PLAN_CELL_STORE_V302);
     if(!overrides[key]) overrides[key] = {};

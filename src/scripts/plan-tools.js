@@ -22,7 +22,7 @@
         const rich=JSON.parse(value);
         if(!rich||typeof rich!=='object'||Array.isArray(rich))throw new Error('Neplatné formátování v záloze.');
         Object.values(rich).forEach(fields=>Object.keys(fields).forEach(field=>{
-          const holder=document.createElement('div');holder.innerHTML=String(fields[field]);fields[field]=cleanEditableHtmlV308(holder);
+          const holder=document.createElement('template');holder.innerHTML=String(fields[field]);fields[field]=cleanEditableHtmlV308(holder.content);
         }));
         value=JSON.stringify(rich);
       }

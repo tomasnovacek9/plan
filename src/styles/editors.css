@@ -67,3 +67,10 @@
 .timeChoicePopoverV307 .timeColorOptionsV332 [data-time-color-preset-v332]{width:26px!important;height:26px!important;min-height:26px!important;padding:0!important;border:3px solid #fff!important;border-radius:50%!important;background:var(--preset)!important;box-shadow:0 0 0 1px #dbe2ea!important}
 .timeChoicePopoverV307 .timeColorOptionsV332 [data-time-color-preset-v332].active{box-shadow:0 0 0 2px #64748b!important}
 .timeColorOptionsV332 [data-time-color-default-v330]{margin-left:auto}
+
+.textNavigationV342{display:grid;gap:8px;padding-top:12px;border-top:1px solid #edf1f5}
+.textNavigationV342[hidden]{display:none!important}
+.textNavigationV342>span{font-size:11px;color:#64748b}
+.textNavigationV342>div{display:flex;gap:6px}
+.textNavigationV342 button{height:32px!important;min-height:32px!important;padding:0 10px!important;border-radius:8px!important;font-size:11px!important;white-space:nowrap}
+.textNavigationV342 [data-text-next-v342]{background:#155a94!important;border-color:#155a94!important;color:#fff!important}
