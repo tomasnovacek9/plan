@@ -1,0 +1,46 @@
+/* The same editable document and data; only the screen layout changes. */
+@media screen and (max-width:700px), screen and (max-width:1000px) and (orientation:portrait){
+  body:not(.measuringPrintV343) .page{padding:10px!important;min-width:0!important}
+  body:not(.measuringPrintV343) .previewShell{padding:10px!important;overflow:visible!important}
+  body:not(.measuringPrintV343) #pdfArea{width:100%!important;min-width:0!important;max-width:100%!important;padding:0!important;min-height:0!important;box-sizing:border-box!important}
+  body:not(.measuringPrintV343) #preview{width:100%!important;min-width:0!important}
+  body:not(.measuringPrintV343) #preview .docHeader{display:grid!important;grid-template-columns:minmax(0,1fr) 65px!important;gap:8px!important;width:100%!important;padding:8px 0 16px!important}
+  body:not(.measuringPrintV343) #preview .docHeaderTextV93,
+  body:not(.measuringPrintV343) #preview .docHeaderTextV93>*{width:auto!important;min-width:0!important;max-width:100%!important;overflow-wrap:anywhere!important}
+  body:not(.measuringPrintV343) #preview .docLogo{width:65px!important;height:65px!important;object-fit:contain!important;transform:none!important}
+  body:not(.measuringPrintV343) #preview .planTable{display:block!important;width:100%!important;border:0!important;box-shadow:none!important}
+  body:not(.measuringPrintV343) #preview .planTable colgroup,
+  body:not(.measuringPrintV343) #preview .planTable thead{display:none!important}
+  body:not(.measuringPrintV343) #preview .planTable tbody{display:block!important}
+  body:not(.measuringPrintV343) #preview .planTable tbody>tr{display:grid!important;grid-template-columns:minmax(0,1fr)!important;border:1px solid #dce5ee!important;border-top:0!important;margin:0!important;width:100%!important;box-sizing:border-box!important}
+  body:not(.measuringPrintV343) #preview .planTable tbody>tr.dayBreak{margin-top:18px!important;border-top:2px solid #9aaec3!important;border-radius:10px 10px 0 0!important}
+  body:not(.measuringPrintV343) #preview .planTable tbody>tr>td{display:block!important;width:auto!important;min-width:0!important;max-width:100%!important;height:auto!important;border-top:0!important;border-right:0!important;border-bottom:0!important;box-sizing:border-box!important;overflow-wrap:anywhere!important}
+  body:not(.measuringPrintV343) #preview .dayCell{padding:12px 54px 12px 14px!important;text-align:left!important;background:#edf2f7!important;border-bottom:1px solid #dce5ee!important}
+  body:not(.measuringPrintV343) #preview .dayName,
+  body:not(.measuringPrintV343) #preview .dayDate{display:inline!important;margin-right:8px!important}
+  body:not(.measuringPrintV343) #preview .dayAddRowV308{left:auto!important;right:8px!important;top:6px!important;opacity:1!important;visibility:visible!important;width:36px!important;height:36px!important}
+  body:not(.measuringPrintV343) #preview .timeCell{padding:12px 14px 5px!important;font-size:13px!important}
+  body:not(.measuringPrintV343) #preview .eventCell{padding:8px 14px!important;font-size:15px!important;line-height:1.5!important;min-height:40px!important}
+  body:not(.measuringPrintV343) #preview .personCell{padding:8px 14px 12px!important;font-size:13px!important;line-height:1.5!important;min-height:44px!important}
+  body:not(.measuringPrintV343) #preview .planRowChangeToolsV304{position:static!important;transform:none!important;display:flex!important;flex-wrap:wrap!important;width:auto!important;max-width:100%!important;margin-top:10px!important;gap:6px!important}
+  body:not(.measuringPrintV343) #preview .planRowChangeToolsV304 button,
+  body:not(.measuringPrintV343) #preview .planRowDeleteV302{min-width:36px!important;width:36px!important;min-height:36px!important;height:36px!important;opacity:1!important;visibility:visible!important}
+  body:not(.measuringPrintV343) #preview .planRowDeleteV302{position:static!important;transform:none!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;margin:8px 6px 0 0!important}
+  body:not(.measuringPrintV343) #preview .manualRowControlsV316{position:static!important;transform:none!important}
+  body:not(.measuringPrintV343) #preview .planNoteAddV310{position:static!important;transform:none!important;margin:8px 0!important}
+  body:not(.measuringPrintV343) #preview .signatureChangeToolsV310,
+  body:not(.measuringPrintV343) #preview .noteResetV310{position:static!important;transform:none!important;margin:8px 0!important}
+  body:not(.measuringPrintV343) #preview .podpisFinal41{flex-wrap:wrap!important;gap:8px!important}
+  body:not(.measuringPrintV343) #preview .podpisFinal41Box{min-width:0!important;max-width:100%!important;overflow-wrap:anywhere!important}
+  body:not(.measuringPrintV343) .planToolsV335{gap:6px!important}
+  body:not(.measuringPrintV343) .planToolsV335 button{min-height:40px!important}
+  body:not(.measuringPrintV343) #preview .planNoteSlotV318{height:auto!important;min-height:0!important}
+  body:not(.measuringPrintV343) #preview .planNoteAddV310{opacity:1!important;min-height:36px!important}
+  body:not(.measuringPrintV343) #preview .docTitle{font-size:28px!important;line-height:1.15!important}
+  body:not(.measuringPrintV343) .top .actions{grid-template-rows:40px 40px!important;height:auto!important;contain:none!important}
+  body:not(.measuringPrintV343) .topWeekControlsV310 button{min-height:40px!important}
+  body.hideWeekendV184:not(.measuringPrintV343) #preview .planTable tr.weekendRowV184{display:none!important}
+  .planStylePopoverV307,.timeChoicePopoverV307{max-height:70dvh!important}
+  #schoolPrintRoot .printToolbar{flex-wrap:wrap!important;padding:10px!important;gap:8px!important}
+  #schoolPrintRoot .printToolbar button{min-height:42px!important}
+}

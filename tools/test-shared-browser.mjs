@@ -159,7 +159,7 @@ try{
  assert.equal(await pageB.evaluate(()=>loadManualEventsV300().length),beforeNext+1,'Tlačítko další akce přidá právě jednu událost a otevře její čas');
  await pageB.locator('.timeChoicePopoverV307 [data-editor-close-v327]').first().click();
 
- for(const width of [1440,1024,390]){
+ for(const width of [1440,1024,768,390]){
   await pageC.setViewportSize({width,height:900});
   const fit=await pageC.evaluate(()=>{
    const paper=document.getElementById('pdfArea').getBoundingClientRect();
@@ -167,7 +167,25 @@ try{
    return {count:buttons.length,inside:buttons.every(button=>{const rect=button.getBoundingClientRect();return rect.left>=paper.left+4&&rect.right<=paper.right-8;}),overflow:getComputedStyle(document.querySelector('.previewShell')).overflowX};
   });
   assert.ok(fit.count>0&&fit.inside,'Ikony jsou uvnitř bílé plochy při šířce '+width);
-  assert.equal(fit.overflow,'auto');
+  assert.equal(fit.overflow,width<=768?'visible':'auto');
+  const layout=await pageC.evaluate(()=>{
+   const row=document.querySelector('#preview .eventCell').closest('tr');
+   const overflow=document.documentElement.scrollWidth>innerWidth;
+   const offenders=[...document.querySelectorAll('body *')].filter(el=>el.getBoundingClientRect().right>innerWidth+1).map(el=>el.className).slice(0,20);
+   const target=document.createElement('div');target.id='schoolPrintRoot';document.body.append(target);
+   const sheets=buildSchoolPrintPages(document.getElementById('preview'),target);
+   const result={rowDisplay:getComputedStyle(row).display,overflow,offenders,
+    printed:target.querySelectorAll('.eventCell').length,expected:document.querySelectorAll('#preview tr:not(.weekendRowV184) .eventCell').length,
+    width:sheets[0].getBoundingClientRect().width,tableDisplay:getComputedStyle(target.querySelector('.planTable')).display,
+    measuring:document.body.classList.contains('measuringPrintV343')};
+   target.remove();return result;
+  });
+  assert.equal(layout.rowDisplay,width<=768?'grid':'table-row','Mobilní bloky / desktopová tabulka');
+  if(width<=768) assert.equal(layout.overflow,false,'Mobilní stránka nemá vodorovný posuvník '+width+': '+JSON.stringify(layout.offenders));
+  assert.equal(layout.printed,layout.expected,'Tisk obsahuje všechny viditelné akce i z telefonu');
+  assert.equal(layout.tableDisplay,'table','Tisk zachovává tabulku');
+  assert.ok(layout.width>780&&layout.width<810,'Tisk zachovává A4');
+  assert.equal(layout.measuring,false);
  }
  assert.deepEqual(errors,[]);
  console.log('Dva nezávislé prohlížeče + nový čtenář: zachování místní zálohy bez převodního tlačítka, sdílení, souběžné úpravy, konflikt, výpadek, opakované otevření a bezpečné HTML: OK');

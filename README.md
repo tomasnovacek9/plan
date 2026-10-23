@@ -228,7 +228,7 @@ klíče se nemění. Tisk/PDF zachovají výsledné pořadí a ovládací šipky
 Běžné úspěšné ukládání nezobrazuje informační pruh. Počáteční načítání, chyby,
 konflikty a obnova neodeslané práce zůstávají dostupné. Vedle obsahu A4 je
 v editoru vyhrazený bílý prostor pro šipky i ikony změn; ovládání se zalamuje
-a má dostatečnou výšku řádku. Na úzké obrazovce lze náhledem posouvat vodorovně.
+a má dostatečnou výšku řádku. Na telefonu a tabletu na výšku se plán automaticky přepne do bloků dnů.
 Šířka samotné tabulky i tiskového dokumentu zůstává stejná.
 
 
@@ -239,3 +239,13 @@ Shift+Tab se vrátí zpět. V panelu formátování je také „Další → Zodp
 u osoby „Další akce +“ pro přidání nové akce s nastavením času a „Hotovo“ pro uložení
 a zavření panelu. Enter už nepřidává novou událost. Zalomení se uchová v prostém
 i formátovaném textu, při sdílení, kopírování, obnovení vzhledu a v tisku/PDF.
+
+
+## Telefon a tablet
+
+Do šířky 700 px a na tabletu na výšku do 1000 px se místo tabulky zobrazí
+bloky dnů s časem, akcí a zodpovědnou osobou pod sebou. Tlačítka pro přidání,
+smazání a pořadí jsou viditelná bez najetí myší a mají větší dotykovou plochu.
+Na PC a větším tabletu na šířku zůstává původní tabulka. Jde o stejná data
+i editaci. Tisk při měření dočasně použije původní rozložení, takže PDF a A4
+nepřebírají mobilní vzhled. Mobilní pravidla platí pouze pro obrazovku a #preview.

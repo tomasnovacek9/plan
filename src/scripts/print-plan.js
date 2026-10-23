@@ -36,7 +36,13 @@
     return copy;
   }
 
+  // Measure the canonical desktop document even when opened from a phone.
   function build(source, target) {
+    document.body.classList.add('measuringPrintV343');
+    try { return buildDocument(source, target); }
+    finally { document.body.classList.remove('measuringPrintV343'); }
+  }
+  function buildDocument(source, target) {
     target.replaceChildren();
     const pages = [];
     const table = source.querySelector('.planTable');
