@@ -252,5 +252,7 @@ Při blokování nové karty se soubor stáhne. PDF lze tisknout v prohlížeči
 Export používá stejné naměřené stránky jako tiskový náhled, vektorové čáry,
 barvy a skutečný text s vloženými českými fonty. Převádí viditelný text
 i formátování, žádné úpravy dat neprovádí. Lokálně hostované pdf-lib 1.17.1,
-@pdf-lib/fontkit 1.1.1 a fonty Roboto se načtou až při exportu. Licence
+@pdf-lib/fontkit 1.1.1 a záložní fonty Roboto se načtou až při exportu. Open Sans se načítá místně
+pro zobrazení plánu a stejné soubory i řezy (400, 600, 700, 800 a kurzíva)
+se vkládají do PDF. Hlavička tedy nepoužívá náhradní font. Licence
 jsou přiloženy u souborů v src/vendor/pdf a src/assets/fonts.

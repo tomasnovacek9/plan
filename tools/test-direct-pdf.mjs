@@ -35,6 +35,8 @@ try {
  const page=await context.newPage();page.on('pageerror',error=>errors.push(error.message));
  await page.goto(address);await page.locator('.sharedPlanStatusV340[data-state=saved]').waitFor({state:'attached'});
  await page.locator('#preview .eventCell').first().waitFor();
+ await page.evaluate(()=>document.fonts.ready);
+ assert.ok(await page.evaluate(()=>document.fonts.check('800 39px "Open Sans"')),'Hlavička načítá místní Open Sans i bez Google Fonts');
  await page.evaluate(()=>{
   const events=Array.from({length:48},(_,i)=>({uid:'pdf-test-'+i,date:'2026-10-'+(19+Math.floor(i/8)),from:'08:00',to:'09:00',title:'KontrolaPDF'+String(i).padStart(3,'0')+' Školní akce s podrobným popisem a víceřádkovým textem. '.repeat(2),person:'Nováková, Schollerová, Ondráčková, Křenková a Zemanová'}));
   saveManualEventsV308(events);mergeManualEventsV300();renderAll();
@@ -49,8 +51,13 @@ try {
   const snapshot=createSchoolPrintSnapshot();const expected=snapshot.pages.length;snapshot.remove();
   const result=await generateSchoolPdf();const parsed=await PDFLib.PDFDocument.load(result.bytes);
   return {bytes:Array.from(result.bytes),pages:result.pages,actual:parsed.getPageCount(),expected,filename:result.filename,
+   fontNames:parsed.getPages().flatMap(page=>{
+    const fonts=page.node.Resources()?.lookup(PDFLib.PDFName.of('Font'),PDFLib.PDFDict);
+    return fonts?fonts.keys().map(key=>fonts.lookup(key,PDFLib.PDFDict).lookup(PDFLib.PDFName.of('BaseFont')).toString()):[];
+   }),
    fontCount:parsed.getPages().reduce((n,page)=>n+(page.node.Resources()?.lookup(PDFLib.PDFName.of('Font'),PDFLib.PDFDict)?.keys().length||0),0)};
  });
+ assert.ok(result.fontNames.some(name=>name.includes('OpenSans-ExtraBold')),'PDF obsahuje stejný tučný font Open Sans jako hlavička');
  assert.equal(result.filename,'Týdenní plán 19.10.2026–25.10.2026.pdf','Název používá zvolený týden');
  assert.ok(result.pages>1);assert.equal(result.pages,result.expected);assert.equal(result.actual,result.expected);assert.ok(result.fontCount>0);
  assert.equal(Buffer.from(result.bytes).subarray(0,5).toString(),'%PDF-');

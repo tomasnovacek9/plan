@@ -1,0 +1,9 @@
+/* Same local font files for the plan, print preview and vector PDF. */
+@font-face{font-family:"Open Sans";font-style:italic;font-weight:400;font-display:swap;src:url("../assets/fonts/OpenSans-400-Italic.ttf") format("truetype")}
+@font-face{font-family:"Open Sans";font-style:italic;font-weight:600;font-display:swap;src:url("../assets/fonts/OpenSans-600-Italic.ttf") format("truetype")}
+@font-face{font-family:"Open Sans";font-style:italic;font-weight:700;font-display:swap;src:url("../assets/fonts/OpenSans-700-Italic.ttf") format("truetype")}
+@font-face{font-family:"Open Sans";font-style:italic;font-weight:800;font-display:swap;src:url("../assets/fonts/OpenSans-800-Italic.ttf") format("truetype")}
+@font-face{font-family:"Open Sans";font-style:normal;font-weight:400;font-display:swap;src:url("../assets/fonts/OpenSans-400.ttf") format("truetype")}
+@font-face{font-family:"Open Sans";font-style:normal;font-weight:600;font-display:swap;src:url("../assets/fonts/OpenSans-600.ttf") format("truetype")}
+@font-face{font-family:"Open Sans";font-style:normal;font-weight:700;font-display:swap;src:url("../assets/fonts/OpenSans-700.ttf") format("truetype")}
+@font-face{font-family:"Open Sans";font-style:normal;font-weight:800;font-display:swap;src:url("../assets/fonts/OpenSans-800.ttf") format("truetype")}

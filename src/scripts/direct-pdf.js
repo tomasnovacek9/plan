@@ -48,9 +48,13 @@
       pdf.setTitle(title);pdf.setCreator('Generátor týdenního plánu školy');pdf.setLanguage('cs-CZ');
       const fonts=new Map(),images=new Map();
       async function fontFor(style) {
-        const bold=Number(style.fontWeight)>=600||style.fontWeight==='bold';
-        const italic=style.fontStyle==='italic';
-        const name=bold?(italic?'Roboto-MediumItalic.ttf':'Roboto-Medium.ttf'):(italic?'Roboto-Italic.ttf':'Roboto-Regular.ttf');
+        const weight=Number(style.fontWeight)||(style.fontWeight==='bold'?700:400);
+        const bold=weight>=600,italic=style.fontStyle!=='normal';
+        // Match CSS font selection, including the 800 face used by 900 headings.
+        const openSans=/Open Sans/i.test(style.fontFamily);
+        const faceWeight=weight<=500?400:weight<=600?600:weight<=700?700:800;
+        const name=openSans?`OpenSans-${faceWeight}${italic?'-Italic':''}.ttf`:
+          bold?(italic?'Roboto-MediumItalic.ttf':'Roboto-Medium.ttf'):(italic?'Roboto-Italic.ttf':'Roboto-Regular.ttf');
         if(!fonts.has(name)) {
           if(!fontBytes.has(name))fontBytes.set(name,bytes('src/assets/fonts/'+name).catch(error=>{fontBytes.delete(name);throw error;}));
           fonts.set(name,await pdf.embedFont(await fontBytes.get(name),{subset:true}));
